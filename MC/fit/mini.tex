@@ -1,0 +1,365 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%   PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\batchmode
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{epsf}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\newcounter{eqn}
+\renewcommand*{\theeqn}{\alph{eqn})}
+\newcommand{\num}{\refstepcounter{eqn}\text{\theeqn}\;}
+
+
+%----------------------------------------------------------------------------------------
+%   TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[ $B^+ \to J/\psi \, K^+ \, K^- \, \pi^+$ ]{ $B^+ \to J/\psi \, K^+ \, K^- \, \pi^+$ Two-weeks progress report. } % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Alexander Baranov} % Your name
+\institute[SINP MSU] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Lomonosov Moscow State University Skobeltsyn Institute of Nuclear Physics (MSU SINP) \\ % Your institution for the title page
+\medskip
+\textit{a.baranov@cern.ch} % Your email address
+}
+\date{17 October, 2013} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+%\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+%\end{frame}
+
+%----------------------------------------------------------------------------------------
+%   PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+%\section{First Section} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+% %------------------------------------------------
+
+% \subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+% \begin{frame}
+% \frametitle{Paragraphs of Text}
+% Sed iaculis dapibus gravida. Morbi sed tortor erat, nec interdum arcu. Sed id lorem lectus. Quisque viverra augue id sem ornare non aliquam nibh tristique. Aenean in ligula nisl. Nulla sed tellus ipsum. Donec vestibulum ligula non lorem vulputate fermentum accumsan neque mollis.\\~\\
+
+% Sed diam enim, sagittis nec condimentum sit amet, ullamcorper sit amet libero. Aliquam vel dui orci, a porta odio. Nullam id suscipit ipsum. Aenean lobortis commodo sem, ut commodo leo gravida vitae. Pellentesque vehicula ante iaculis arcu pretium rutrum eget sit amet purus. Integer ornare nulla quis neque ultrices lobortis. Vestibulum ultrices tincidunt libero, quis commodo erat ullamcorper id.
+% \end{frame}
+
+% %------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{Two weeks progress report}}
+\end{frame}
+
+% %------------------------------------------------
+
+\begin{frame}
+\frametitle{$B^+ \to J/\psi \, K^+ \, K^- \, \pi^+$ decay}
+\begin{itemize}
+\item New decay
+\item Decay similar to: $B_{c} \to J/\psi \, K^+ \, K^- \, \pi^+$, $B^+ \to J/\psi \, K^+ \, K^- \, K^+$, $B^+ \to J/\psi \, K^+ \, \pi^+ \, \pi^-$.
+\item Is Cabibbo suppressed(unlike listed).
+\item Motivation - gain some experience in analysis.
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Data}
+\begin{itemize}
+\item 2011 and 2012
+\item Reco14
+\item Stripping 20 for 2012(20r1 for 2011)
+\item WGBandQSelection5
+\item PSIX/Phys/SelPsi3KPiForPsiX stripping line
+\end{itemize}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Selection}
+\begin{itemize}
+\item FullDSTDiMuonJpsi2MuMuDetachedLine
+\item BandQ selection:
+
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Cut} & \textbf{Cut Value} \\
+\midrule
+KL Distance & $> 5000 $\\
+Ghost Probability & $< 0.5 $\\
+$\chi^{2}_{Tr} / ndf$ & $< 4 $\\
+$\eta$ & $(2, 5) $\\
+RICH Acceptance & $ true $\\
+$\log(\frac{P_\pi}{P_K})$  & $> -5(for\,\pi), > 5(for\,K) $\\
+$\min(\chi^{2}_{IP})$ & $> 9 $\\
+\bottomrule
+\end{tabular}
+\caption{Cuts for K an $\pi$}
+\end{table}
+
+
+\item BandQ B^+ selection: $\max(\chi^{2}_{DOCA}(KK\pi)) < 9$, $\chi^{2}_{vx} < 36$, $c\tau > 100 \mu m$
+
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Applying selection}
+Applying only stripping selection gives large background. Note: all mass distributions are plotted with DTF applied.
+
+\begin{figure}
+\includegraphics[scale=0.4]{NoCuts.eps}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Custom preliminary cuts}
+Applying additional cuts. Cuts were optimizied by maximization of fits FOM.
+\begin{itemize}
+\item $0 < \chi^{2}_{DTF} / ndof < 5$ (*)
+\item $c\tau(B^{+}) > 200 \mu m$ (*)
+\item $p_{T}(K) > 0.6 GeV/c$
+\item $p_{T}(\pi) > 0.3 GeV/c$
+\item $3.020 GeV< M_{J/\psi} < 3.135 GeV$
+\item $\min(ann)\,of\,K > 0.2$
+
+\end{itemize}
+
+(*) \- Decay Tree Filter applied.
+\end{frame}
+
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Applying cuts}
+Applying only stripping selection gives large background.
+
+\begin{figure}
+\includegraphics[scale=0.2]{Cuts.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Simple fit}
+At first: simple fit with double-sided Crystal Ball for signal + $exp \times pol(4)$ for background. Mass and width are fixed to their PDG values. It gives $440 \pm 36$ signal events.
+
+\begin{figure}
+\includegraphics[scale=0.2]{SimpleFit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{$B^+ \to J/\psi \, K^+ \, K^- \, K^+$ reflection}
+Using MC11 to obtain $B^+ \to J/\psi \, K^+ \, K^- \, K^+$ mass distribution with misidentification of $K^+$ to $\pi^+$.
+Fitting with double-sided Crystal Ball gives pretty bad result. Using RooHistPdf in final fit.
+
+\begin{figure}
+\includegraphics[scale=0.25]{KKKfit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{$B^+ \to J/\psi \, K^+ \, \pi^+ \, \pi^-$ reflection}
+Using MC11 to obtain $B^+ \to J/\psi \, K^+ \, \pi^+ \, \pi^-$ mass distribution with misidentification of $K^-$ to $\pi^-$.
+Fitting with double-sided Crystal Ball gives pretty bad result. Using RooHistPdf in final fit.
+
+\begin{figure}
+\includegraphics[scale=0.25]{KPIPIfit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Final fit}
+Double-sided Crystal Ball for signal, exponential background background, both reflections. 
+Result($\mu,\sigma$ fixed on PDG values): $400 \pm 35$ signal events. 
+
+\begin{figure}
+\includegraphics[scale=0.2]{KINGFit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Naive stat. significance}
+$S = \sqrt{2 \times (\mathcal{L}_{Signal=0} - \mathcal{L}_{fixed})} = 12.3 \sigma $
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Mass distributions in signal}
+To check for resonanses in $J/\psi\,K\,K$(a), $KK$(b), $KK\pi$(c) and $K\pi$(d) systems invariant mass distributions sPlot technique was applied.
+
+\begin{tabular}{cc}
+  \num\putindeepbox{\includegraphics[scale=0.1]{jpsikk.png}}
+    & \num\putindeepbox{\includegraphics[scale=0.1]{kk.png}} \\
+  \num\putindeepbox{\includegraphics[scale=0.1]{kkpi.png}}
+    & \num\putindeepbox{\includegraphics[scale=0.1]{kpi-nofit.png}} \\
+\end{tabular}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{$K^{*}(892)$ production}
+Distribution of $K\pi$ system's invariant mass hints, that there is $B^{+} \to J/\psi K^+ (K^{*}(892) \to K^- \pi^+)$ mode in data. 
+Fitting with Breit-Wigner(mass and width are fixed fo PDG values) for signal and Phase-Space(N=2, L=4) gives $235 \pm 213$ signal events.
+\begin{figure}
+\includegraphics[scale=0.2]{kpi-fit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{$\phi(1020) production$ production}
+Distribution of $KK$ system's invariant mass hints, that there is $B^{+} \to J/\psi \pi^+ (\phi(1020) \to K^+ K^-)$ mode in data. 
+Fitting with Breit-Wigner(mass and width are fixed fo PDG values) for signal and Phase-Space(N=2, L=4) gives $43 \pm 8$ signal events.
+\begin{figure}
+\includegraphics[scale=0.2]{kk-fit.png}
+\end{figure}
+\end{frame}
+
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Work to be done}
+\begin{itemize}
+\item DEC file for MC is ready with $50\%$ of $K^{*}(892)$ in it.
+\item Accurate cut optimization
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

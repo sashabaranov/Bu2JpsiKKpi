@@ -7,7 +7,7 @@
 .DS_Store
 *.svn-base
 .svn
-
+*.py~
 
 # C extensions
 *.so

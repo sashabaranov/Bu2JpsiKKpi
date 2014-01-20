@@ -12,8 +12,8 @@ nbin_Bu = 75
 
 
 # K*(892)
-m_Kstar = ROOT.RooRealVar('m_Kstar', 'mass(K+ pi-)', 0.634, 1.6)
-nbin_Kstar = 30
+m_Kstar = ROOT.RooRealVar('m_Kstar', 'mass(K+ pi-)', 0.634, 1.2)
+nbin_Kstar = 20
 
 mm_Kstar = ROOT.RooRealVar('mm_Kstar', 'mass(Kstar0)', 0.85, 0.9)
 mm_Kstar.fix(0.892)

@@ -168,7 +168,7 @@ class B2JpsiKKpi(Algo):
 # configure the job
 
 
-def configure(datafiles, catalogs=[]):
+def configure(datafiles, catalogs=[], params={}, castor=False):
     from Configurables import DaVinci
     from Configurables import EventSelector
 
@@ -182,7 +182,7 @@ def configure(datafiles, catalogs=[]):
     filters = fltrs.filters('Filters')
 
     daVinci = DaVinci(
-        DataType='2011',
+        DataType=params['year'],
         PrintFreq=1000,
         EvtMax=-1,
         #
@@ -198,7 +198,7 @@ def configure(datafiles, catalogs=[]):
     IODataManager().AgeLimit = 2
 
     # define input data
-    setData(datafiles, catalogs)
+    setData(datafiles, catalogs, castor)
 
     #
     # Dynamic Configuration: Jump into the wonderful world of GaudiPython
@@ -232,6 +232,8 @@ if __name__ == '__main__':
     print ' Date    : %s ' % __date__
     print '*' * 120
 
-    inputdata = []
-    configure(inputdata)
-    run(-1)
+    inputdata = ['/lhcb/LHCb/Collision12/PSIX.MDST/00033675/0000/00033675_00000001_1.psix.mdst']
+    params = {'year' : '2012'}
+
+    configure(inputdata, params=params, castor=True)
+    run(200)

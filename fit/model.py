@@ -79,17 +79,17 @@ Kpipi_hist = ROOT.RooDataHist("Kpipi_hist", "Kpipi_hist", alist, Kpipi_h2)
 KKK_pdf = ROOT.RooHistPdf("KKK_pdf", "Kpipi_pdf", alist, alist, KKK_hist)
 Kpipi_pdf = ROOT.RooHistPdf("Kpipi_pdf", "Kpipi_pdf", alist, alist, Kpipi_hist)
 
-model_Bu = Models.Charm3_pdf(
-    signal=s1_Bu,
-    signal2=KKK_pdf,
-    signal3=Kpipi_pdf,
-    background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
-)
-
-# model_Bu = Models.Charm1_pdf(
+# model_Bu = Models.Charm3_pdf(
 #     signal=s1_Bu,
-#     background=Models.Bkg_pdf('BBu', mass=m_Bu, power=4), suffix='Bu'
+#     signal2=KKK_pdf,
+#     signal3=Kpipi_pdf,
+#     background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
 # )
+
+model_Bu = Models.Charm1_pdf(
+    signal=s1_Bu,
+    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=4), suffix='Bu'
+)
 
 # model_Bu.background.tau.fix(0)
 # model_Bu.b.fix(0)

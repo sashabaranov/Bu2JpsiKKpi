@@ -36,6 +36,8 @@ j2012 = Job(
     splitter=SplitByFiles(filesPerJob=10, maxFiles=-1)
 )
 
+j2012.splitter.ignoremissing = True
+
 j2012.name = 'RD-KKpi-2012'
 j2012.inputdata = DaVinci(version='v32r2p1').readInputData('selection6-2012.py')
 j2012.application.params = {'year': '2012'}

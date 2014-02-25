@@ -2,6 +2,8 @@ import ROOT
 from fit5 import ds_Bu as ds5
 from fit6 import ds_Bu as ds6
 
+from Selectors import filter_name
+
 # plotting against MC
 
 ROOT.gStyle.SetPalette(1)
@@ -22,12 +24,12 @@ mctrue = " && mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTrueK3 && mcTrue
 for v in varlist:
     hh_rd = ROOT.TH1F("rd_h_" + v[0], '', v[1], v[2], v[3])
     hh_rd.Sumw2()
-    ds5.project(hh_rd, v[0], "SBu_sw")
+    ds5.project(hh_rd, filter_name(v[0]), "SBu_sw")
 
     hh_mc = ROOT.TH1F("mc_h_" + v[0], '', v[1], v[2], v[3])
     hh_mc.Sumw2()
 
-    ds6.project(hh_mc, v[0], "SBu_sw")
+    ds6.project(hh_mc, filter_name(v[0]), "SBu_sw")
     # tBu5.project(hh_rd, v[0], cuts_Bu)
     # tBu6.project(hh_mc, v[0], cuts_Bu)
 
@@ -58,6 +60,4 @@ for i, name in enumerate(varlist):
 
 canvas.Update()
 
-
-  
 # logger.info('end of the module')

@@ -51,6 +51,8 @@ __date__ = "2011-07-22"
 __version__ = '$Revision$'
 # =============================================================================
 import ROOT
+import re
+
 from AnalysisPython.PyRoUts import cpp, hID, SE
 from AnalysisPython.PySelector import Selector, SelectorWithCuts
 from AnalysisPython.progress_bar import ProgressBar
@@ -67,6 +69,10 @@ if not _name_ or '__main__' == _name_:
 logger = getLogger(_name_)
 
 
+def filter_name(name):
+    "Datasets are dealing bad w/ `var[N]`, so use `varN` instead"
+    return name.replace('[', '').replace(']', '')
+
 # ========================================================================
 # Create&Fill  the basic dataset for RooFit
 #  @date   2013-05-07
@@ -78,8 +84,15 @@ class SBT(SelectorWithCuts):
     Create and fill the basic dataset for RooFit
     """
     def add_variable(self, name, description, low, high):
-        self.variables[name] = ROOT.RooRealVar(name, description, low, high)
-        self.varset.add(self.variables[name])
+        self.variables[name] = ROOT.RooRealVar(filter_name(name), description, low, high)
+        self.varset.add(self.variables[name])        
+
+        index = self.num_re.search(name)
+        if index:
+            i = int(index.group(0))
+            name_noindex = name.replace('[' + str(i) + ']', '')
+            self.meta[name] = (name_noindex, i)
+
 
     def __init__(self,
                  mass,  # mass-variable
@@ -95,15 +108,20 @@ class SBT(SelectorWithCuts):
 
         SelectorWithCuts.__init__(self, selection)  # initialize the base
 
+        self.num_re = re.compile(r"[(\d)]")
+
         self._cuts = cuts
         self._weight = weight
         self._short = short
 
         self.variables = {}
 
+        # meta info about vector-variables
+        # contain pairs (name without `[N]`, N as int)
+        self.meta = {} 
+
         self.mass = mass
         self.varset = ROOT.RooArgSet(self.mass)
-
 
         for v in varlist:
             self.add_variable(v[0], v[4], v[2] - 0.1, v[3] + 0.1,)
@@ -199,10 +217,15 @@ class SBT(SelectorWithCuts):
         vv = self._mlp()
         # if vv < 0.75 : return 0
 
-        self.mass   . setVal(bamboo.DTFm_b)
-        for k, v in self.variables.items():
-            v.setVal(getattr(bamboo, k))
 
+        self.mass   . setVal(bamboo.DTFm_b)
+
+        for k, v in self.variables.items():
+            if k in self.meta:
+                v.setVal(getattr(bamboo, self.meta[k][0])[self.meta[k][1]])
+            else:
+                v.setVal(getattr(bamboo, k))
+            # v.setVal(self.get_from_bamboo(k, bamboo))
         
         self.data .add(self.varset)
 

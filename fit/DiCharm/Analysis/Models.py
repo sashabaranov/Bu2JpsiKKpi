@@ -1380,7 +1380,7 @@ class Charm3_pdf (object):
             self.frame.SetZTitle('')
 
             self.frame.Draw()
-            self.legend.Draw()
+            # self.legend.Draw()
 
             return result, self.frame
 

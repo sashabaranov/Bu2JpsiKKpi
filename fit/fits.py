@@ -10,7 +10,7 @@ from cuts import cuts_Bu, prntCuts
 from cuts import h1, h2, h3
 
 from model import model_Bu
-from data_Bc import tBu2 as tBu
+from data_Bc import tSelection5 as tBu
 from Selectors import SBT
 
 
@@ -62,8 +62,8 @@ with rooSilent():
 
 
 
-logger.info('running sPlot')
-model_Bu.sPlot(ds_Bu)
+# logger.info('running sPlot')
+# model_Bu.sPlot(ds_Bu)
 
 
 # w_s = "SBu_sw"
@@ -105,3 +105,37 @@ model_Bu.sPlot(ds_Bu)
 
   
 logger.info('end of the module')
+
+
+def count_significance():
+    global ds_Bu, nbin_Bu, model_Bu
+    from math import sqrt
+
+    vals = [
+        model_Bu.s,
+        model_Bu.s2,
+        model_Bu.s3,
+        model_Bu.b,
+        model_Bu.background.tau,
+        model_Bu.signal.aL,
+        model_Bu.signal.aR,
+        model_Bu.signal.nL,
+        model_Bu.signal.nR,
+        model_Bu.signal.mean,
+        model_Bu.signal.sigma
+    ]
+
+    for x in vals:
+        x.fix(x.getVal())
+
+    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+    Lfixed = ru.minNll()
+
+    model_Bu.s.fix(0)
+
+    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+    Ls0 = ru.minNll()
+    return sqrt(2 * (Ls0 - Lfixed))
+
+print ru
+print "Signficance is ", count_significance()

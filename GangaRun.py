@@ -16,7 +16,7 @@ j2011 = Job(
 
 j2011.splitter.ignoremissing = True
 
-j2011.name = 'RD-KKpi-2011'
+j2011.name = 'RD-KKpi-11'
 j2011.inputdata = DaVinci(version='v32r2p1').readInputData('selection6-2011.py')
 j2011.application.params = {'year': '2011'}
 
@@ -38,7 +38,7 @@ j2012 = Job(
 
 j2012.splitter.ignoremissing = True
 
-j2012.name = 'RD-KKpi-2012'
+j2012.name = 'RD-KKpi-12'
 j2012.inputdata = DaVinci(version='v32r2p1').readInputData('selection6-2012.py')
 j2012.application.params = {'year': '2012'}
 

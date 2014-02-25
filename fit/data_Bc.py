@@ -26,17 +26,25 @@ ROOT.RooDataSet.Draw = _draw_
 
 
 #
-tBu2 = ROOT.TChain('JpsiKKpi/t')
+tSelection5 = ROOT.TChain('JpsiKKpi/t')
+tSelection6 = ROOT.TChain('JpsiKKpi/t')
 
 #
 tLumi = ROOT.TChain('GetIntegratedLuminosity/LumiTuple')
 
 outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/testing/output/'
+
 files = ['B2JpsiKKpi-2011.root',  'B2JpsiKKpi-2012.root']
+files_sel6 = ['B2JpsiKKpi-2011-sel6.root',  'B2JpsiKKpi-2012-sel6.root']
+
+
 nFiles = len(files)
 
 for f in files:
-    tBu2.Add(outputdir + f)
+    tSelection5.Add(outputdir + f)
+
+for f in files_sel6:
+    tSelection6.Add(outputdir + f)    
 
 
 # mc_outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/testing/MC/output/'
@@ -49,11 +57,16 @@ for f in files:
 # for f in mc_files:
 #     tBu_mc.Add(mc_outputdir + f)
 
+
+
+
+
+
 # =============================================================================
 # get the luminosity
 lumi = getLumi(tLumi)
 logger.info(" Luminosity: %s #files %d" % (lumi, nFiles))
-logger.info(" Entries  B+ -> J/psi KK pi+: %s" % len(tBu2))
+logger.info(" Entries  B+ -> J/psi KK pi+: %s" % len(tSelection5))
 
 
 from GaudiKernel.SystemOfUnits import second, nanosecond

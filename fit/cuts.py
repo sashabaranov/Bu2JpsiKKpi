@@ -10,6 +10,8 @@ logger = getLogger(__name__)
 m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.16, 5.45)
 nbin_Bu = 75
 
+m_Bu_a = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.16, 5.45)
+
 
 # K*(892)
 m_Kstar = ROOT.RooRealVar('m_Kstar', 'mass(K+ pi-)', 0.634, 1.2)
@@ -46,6 +48,9 @@ high_kk = ROOT.RooRealVar('high', 'high_PhiBg', 2.0, 2.1)
 h1 = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
 h1.Sumw2()
 
+h1a = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
+h1a.Sumw2()
+
 h2 = ROOT.TH1F(hID(), '', nbin_Kstar, m_Kstar.getMin(), m_Kstar.getMax())
 h2.Sumw2()
 
@@ -64,8 +69,8 @@ cuts_ += "&& pt_pion > 0.3"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
 cuts_ += "&& minann_K  > 0.2"
 cuts_ += "&& ((psi_l0tos & 2) == 2)"
-cuts_ += "&& ((psi_l1tos & 2) == 2)"
-cuts_ += "&& ((psi_l2tos & 2) == 2)"
+# cuts_ += "&& ((psi_l1tos & 2) == 2)"
+# cuts_ += "&& ((psi_l2tos & 2) == 2)"
 
 # cuts_ += "&& ann_kaon[0] > 0.2 && ann_kaon[1] < 0.4"
 # cuts_ += "&& ann_pion > 0.7"

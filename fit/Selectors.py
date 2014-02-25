@@ -56,6 +56,7 @@ from AnalysisPython.PySelector import Selector, SelectorWithCuts
 from AnalysisPython.progress_bar import ProgressBar
 from AnalysisPython.Logger import getLogger
 
+from variables import varlist
 
 # =============================================================================
 TisTosTob = cpp.ITisTos.TisTosTob
@@ -76,6 +77,9 @@ class SBT(SelectorWithCuts):
     """
     Create and fill the basic dataset for RooFit
     """
+    def add_variable(self, name, description, low, high):
+        self.variables[name] = ROOT.RooRealVar(name, description, low, high)
+        self.varset.add(self.variables[name])
 
     def __init__(self,
                  mass,  # mass-variable
@@ -95,55 +99,14 @@ class SBT(SelectorWithCuts):
         self._weight = weight
         self._short = short
 
+        self.variables = {}
+
         self.mass = mass
-
-        # cuts_ =  " DTFchi2ndof > 0"
-        # cuts_ += "&& DTFchi2ndof < 4"
-        # cuts_ += "&& DTFctau > 0.4"
-        # cuts_ += "&& c2ip_b    < 4"
-        # cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
-        # cuts_ += "&& minann_K  > 0.2   && minann_pi > 0.2"
-        # cuts_ += "&& minann_mu > 0.2"
-
-        self.DTFm_b = ROOT.RooRealVar("DTFm_b", "", 5.0, 5.5)
-        self.DTFchi2ndof = ROOT.RooRealVar("DTFchi2ndof", "", -0.5, 5.0)
-        self.DTFctau = ROOT.RooRealVar("DTFctau", "", 0.0, 10.0)
-        self.c2ip_b = ROOT.RooRealVar("c2ip_b", "", -0.5, 20.5)
-        self.m_jpsi = ROOT.RooRealVar("m_jpsi", "", 3.0, 3.2)
-        self.minann_K = ROOT.RooRealVar("minann_K", "", -0.5, 1.5)
-        self.minann_pi = ROOT.RooRealVar("minann_pi", "", -0.5, 1.5)
-        self.minann_mu = ROOT.RooRealVar("minann_mu", "", -0.5, 1.5)
-
-        self.DTFm_jpsikk = ROOT.RooRealVar("DTFm_jpsikk", "", 0.0, 10.0)
-        self.m_Phi = ROOT.RooRealVar("m_Phi", "", 0.0, 10.0)
-        self.DTFm_kpi = ROOT.RooRealVar("DTFm_kpi", "", 0.0, 10.0)
-        self.DTFm_kk = ROOT.RooRealVar("DTFm_kk", "", 0.0, 10.0)
-        self.DTFm_kkpi = ROOT.RooRealVar("DTFm_kkpi", "", 0.0, 10.0)
-
-        self.ann_pion = ROOT.RooRealVar("ann_pion", "", -0.1, 1.1)
-        self.ann_kaon = ROOT.RooRealVar("ann_kaon", "", -0.1, 1.1)
-
-
-
         self.varset = ROOT.RooArgSet(self.mass)
 
-        self.varset.add(self.DTFchi2ndof)
-        self.varset.add(self.DTFctau)
-        self.varset.add(self.c2ip_b)
-        self.varset.add(self.m_jpsi)
-        self.varset.add(self.minann_K)
-        self.varset.add(self.minann_pi)
-        self.varset.add(self.minann_mu)
 
-        self.varset.add(self.DTFm_jpsikk)
-        self.varset.add(self.m_Phi)
-        self.varset.add(self.DTFm_kpi)
-        self.varset.add(self.DTFm_kkpi)
-        self.varset.add(self.DTFm_b)
-        self.varset.add(self.DTFm_kk)
-
-        self.varset.add(self.ann_pion)
-        self.varset.add(self.ann_kaon)
+        for v in varlist:
+            self.add_variable(v[0], v[4], v[2] - 0.1, v[3] + 0.1,)
 
         self.data = ROOT.RooDataSet(
             #
@@ -237,23 +200,9 @@ class SBT(SelectorWithCuts):
         # if vv < 0.75 : return 0
 
         self.mass   . setVal(bamboo.DTFm_b)
-        self.DTFm_b. setVal(bamboo.DTFm_b)
-        self.DTFchi2ndof.setVal(bamboo.DTFchi2ndof)
-        self.DTFctau.setVal(bamboo.DTFctau)
-        self.c2ip_b.setVal(bamboo.c2ip_b)
-        self.m_jpsi.setVal(bamboo.m_jpsi)
-        self.minann_K.setVal(bamboo.minann_K)
-        self.minann_pi.setVal(bamboo.minann_pi)
-        self.minann_mu.setVal(bamboo.minann_mu)
+        for k, v in self.variables.items():
+            v.setVal(getattr(bamboo, k))
 
-        self.DTFm_jpsikk.setVal(bamboo.DTFm_jpsikk)
-        self.m_Phi.setVal(bamboo.DTFm_kk)
-        self.DTFm_kpi.setVal(bamboo.DTFm_kpi)
-        self.DTFm_kkpi.setVal(bamboo.DTFm_kkpi)
-        self.DTFm_kk.setVal(bamboo.DTFm_kk)
-        
-        self.ann_pion.setVal(float(bamboo.ann_pion[0]))
-        self.ann_kaon.setVal(float(bamboo.ann_kaon[1]))
         
         self.data .add(self.varset)
 

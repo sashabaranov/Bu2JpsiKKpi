@@ -41,6 +41,7 @@ import ROOT
 import math
 from AnalysisPython.PyRoUts import VE, hID, allInts, cpp, rootID
 from AnalysisPython.Logger import getLogger
+from ROOT import SetOwnership
 # =============================================================================
 logger = getLogger(__name__)
 # =============================================================================
@@ -1329,16 +1330,16 @@ class Charm3_pdf (object):
                                     *args)
 
         if draw:
-            self.frame = self.mass.frame(nbins)
-            dataset  .plotOn(self.frame, ROOT.RooFit.Name("data"))
-            self.pdf .plotOn(self.frame,
+            frame = self.mass.frame(nbins)
+            dataset  .plotOn(frame, ROOT.RooFit.Name("data"))
+            self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
                                  self.background.pdf.GetName()),
                              ROOT.RooFit.Name("background"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kBlue))
 
-            self.pdf .plotOn(self.frame,
+            self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
                                  self.signal.pdf.GetName()),
                              ROOT.RooFit.Name("signal"),
@@ -1346,14 +1347,14 @@ class Charm3_pdf (object):
                              ROOT.RooFit.LineColor(ROOT.kGreen))
 
             if hasattr(self, 'signal2'):
-                self.pdf .plotOn(self.frame,
+                self.pdf .plotOn(frame,
                                  ROOT.RooFit.Components(
                                      self.signal2.GetName()),
                                  ROOT.RooFit.Name("signal2"),
                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
                                  ROOT.RooFit.LineColor(ROOT.kCyan))
                 if hasattr(self, 'signal3'):
-                    self.pdf .plotOn(self.frame,
+                    self.pdf .plotOn(frame,
                                  ROOT.RooFit.Components(
                                      self.signal3.GetName()),
                                  ROOT.RooFit.Name("signal3"),
@@ -1361,9 +1362,9 @@ class Charm3_pdf (object):
                                  ROOT.RooFit.LineColor(ROOT.kMagenta))
 
 
-            self.pdf.plotOn(self.frame, ROOT.RooFit.Name("total"), ROOT.RooFit.LineColor(ROOT.kRed))
+            self.pdf.plotOn(frame, ROOT.RooFit.Name("total"), ROOT.RooFit.LineColor(ROOT.kRed))
 
-            self.legend = ROOT.TLegend(0.65, 0.73, 0.9, 0.87);
+            self.legend = ROOT.TLegend(0.65, 0.73, 0.86, 0.87);
             self.legend.SetFillColor(ROOT.kWhite);
             
             self.legend.AddEntry("data", "Data", "P")
@@ -1375,14 +1376,15 @@ class Charm3_pdf (object):
             self.legend.AddEntry("signal2", "B^+ \\to J/\psi K^+ K^- K^+ reflection", "L")
             self.legend.AddEntry("signal3", "B^+ \\to J/\psi K^+ \pi^+ \pi^- reflection", "L")
 
-            self.frame.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,\pi^+), GeV/c^2')
-            self.frame.SetYTitle('')
-            self.frame.SetZTitle('')
+            frame.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,\pi^+), GeV/c^2')
+            frame.SetYTitle('')
+            frame.SetZTitle('')
 
-            self.frame.Draw()
-            # self.legend.Draw()
+            frame.Draw()
+            self.legend.Draw()
+            # SetOwnership(self.legend, 0)
 
-            return result, self.frame
+            return result, frame
 
         return result, None
 
@@ -1419,20 +1421,20 @@ class Charm3_pdf (object):
                                 ROOT.RooFit.Save(),
                                 *args)
 
-        self.frame = None
+        frame = None
 
         if draw:
-            self.frame = self.mass.frame()
-            self.hset.plotOn(self.frame)
+            frame = self.mass.frame()
+            self.hset.plotOn(frame)
 
-            self.pdf .plotOn(self.frame,
+            self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
                                  self.background.pdf.GetName()),
                              ROOT.RooFit.Name("background"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kBlue))
 
-            self.pdf .plotOn(self.frame,
+            self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
                                  self.signal.pdf.GetName()),
                              ROOT.RooFit.Name("signal"),
@@ -1440,13 +1442,13 @@ class Charm3_pdf (object):
                              ROOT.RooFit.LineColor(ROOT.kGreen))
 
             if hasattr(self, 'signal2'):
-                self.pdf .plotOn(self.frame,
+                self.pdf .plotOn(frame,
                                  ROOT.RooFit.Components(
                                      self.signal2.GetName()),
                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
                                  ROOT.RooFit.LineColor(ROOT.kPink))
                 if hasattr(self, 'signal3'):
-                    self.pdf .plotOn(self.frame,
+                    self.pdf .plotOn(frame,
                                  ROOT.RooFit.Components(
                                      self.signal3.GetName()),
                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
@@ -1454,15 +1456,15 @@ class Charm3_pdf (object):
 
 
 
-            self.pdf .plotOn(self.frame, ROOT.RooFit.LineColor(ROOT.kRed))
+            self.pdf .plotOn(frame, ROOT.RooFit.LineColor(ROOT.kRed))
 
-            self.frame.SetXTitle('')
-            self.frame.SetYTitle('')
-            self.frame.SetZTitle('')
+            frame.SetXTitle('')
+            frame.SetYTitle('')
+            frame.SetZTitle('')
 
-            self.frame.Draw()
+            frame.Draw()
 
-        return result, self.frame
+        return result, self
 
 
 # =============================================================================

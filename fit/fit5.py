@@ -43,10 +43,16 @@ with rooSilent():
     logger.info('Make unbinned fit for B+')
 
     model_Bu.s.setMax(1.2 * len(ds_Bu))
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
     model_Bu.signal.sigma.release()
     model_Bu.signal.mean.release()
+
+    model_Bu.signal.aR.release()
+    model_Bu.signal.aL.release()
+
+    model_Bu.signal.nR.release()
+    model_Bu.signal.nL.release()
 
     ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 

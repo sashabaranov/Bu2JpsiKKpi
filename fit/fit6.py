@@ -15,8 +15,14 @@ from data_Bc import tSelection6 as tBu6
 
 from Selectors import SBT
 
+cuts_s6 = "&& ann_pion > 0.15 && minann_K > 0.15"
+cuts_Bu += cuts_s6
+
+
 
 logger = getLogger(__name__)
+for i in prntCuts(cuts_Bu, "  CUTS B+  "):
+    logger.info(i)
 
 
 
@@ -44,10 +50,17 @@ with rooSilent():
     logger.info('Make unbinned fit for B+')
 
     model_Bu.s.setMax(1.2 * len(ds_Bu))
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
     model_Bu.signal.sigma.release()
     model_Bu.signal.mean.release()
+
+    model_Bu.signal.aR.release()
+    model_Bu.signal.aL.release()
+
+    model_Bu.signal.nR.release()
+    model_Bu.signal.nL.release()
+
 
     ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
@@ -55,44 +68,44 @@ with rooSilent():
 # print 'FIT#2 precision:', ru("SBu")[0].prec()
 
 
-logger.info('running sPlot')
-model_Bu.sPlot(ds_Bu)
+# logger.info('running sPlot')
+# model_Bu.sPlot(ds_Bu)
 
-def count_significance():
-    global ds_Bu, nbin_Bu, model_Bu
-    from math import sqrt
+# def count_significance():
+#     global ds_Bu, nbin_Bu, model_Bu
+#     from math import sqrt
 
-    vals = [
-        model_Bu.s,
-        model_Bu.s2,
-        model_Bu.s3,
-        model_Bu.b,
-        model_Bu.background.tau,
-        model_Bu.signal.aL,
-        model_Bu.signal.aR,
-        model_Bu.signal.nL,
-        model_Bu.signal.nR,
-        model_Bu.signal.mean,
-        model_Bu.signal.sigma
-    ]
+#     vals = [
+#         model_Bu.s,
+#         model_Bu.s2,
+#         model_Bu.s3,
+#         model_Bu.b,
+#         model_Bu.background.tau,
+#         model_Bu.signal.aL,
+#         model_Bu.signal.aR,
+#         model_Bu.signal.nL,
+#         model_Bu.signal.nR,
+#         model_Bu.signal.mean,
+#         model_Bu.signal.sigma
+#     ]
 
-    for x in vals:
-        x.fix(x.getVal())
+#     for x in vals:
+#         x.fix(x.getVal())
 
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
-    Lfixed = ru.minNll()
+#     ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+#     Lfixed = ru.minNll()
 
-    model_Bu.s.fix(0)
+#     model_Bu.s.fix(0)
 
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
-    Ls0 = ru.minNll()
-    return sqrt(2 * (Ls0 - Lfixed))
+#     ru, fu = model_Bu.fitTo(ds_Bu, draw=False, nbins=nbin_Bu)
+#     Ls0 = ru.minNll()
+#     return sqrt(2 * (Ls0 - Lfixed))
 
 
-logger.info('=' * 20)
-logger.info("Selection 6\n\n")
-logger.info(ru)
+# logger.info('=' * 20)
+# logger.info("Selection 6\n\n")
+# logger.info(ru)
 
-logger.info("Signficance6 is " + str(count_significance()))
-logger.info('=' * 20)
+# logger.info("Signficance6 is " + str(count_significance()))
+# logger.info('=' * 20)
 

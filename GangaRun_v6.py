@@ -41,8 +41,7 @@ j2012 = Job(
     ),
     outputfiles=output,
     backend=Dirac(),
-    splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True),
-    bulksubmit = True
+    splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True)
 )
 
 j2012.splitter.ignoremissing = True

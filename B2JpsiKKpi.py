@@ -104,6 +104,7 @@ class B2JpsiKKpi(Algo):
         # Minimal impact parameter chi2
         mipFun = MIP(prims, self.geo())
         CHI2mipFun = MIPCHI2(prims, self.geo())
+        MIPCHI2DVfun= MIPCHI2DV()
 
         DLLKpi = PIDK - PIDpi
         DLLKp = PIDK - PIDp
@@ -122,8 +123,12 @@ class B2JpsiKKpi(Algo):
 
         for myb in MyB:
 
-            b = myb(0)
-            jpsi = myb(1)
+            b, jpsi, k1, k2, pi = tuple(myb(i) for i in xrange(5))
+            #b    = myb(0)
+            #jpsi = myb(1)
+            #k1   = myb(2)
+            #k2   = myb(3)
+            #pi   = myb(4)
 
             self.treatKine(nt, b, '_b')
             self.treatKine(nt, jpsi, '_jpsi')
@@ -143,6 +148,10 @@ class B2JpsiKKpi(Algo):
             nt.column('DTFm_kk', dtffun_m23(myb) / GeV)
             nt.column('DTFm_kpi', dtffun_m34(myb) / GeV)
             nt.column('DTFm_kkpi', dtffun_m234(myb) / GeV)
+
+            nt.column('MIPCHI2DV_k1', MIPCHI2DVfun(k1))
+            nt.column('MIPCHI2DV_k2', MIPCHI2DVfun(k2))
+            nt.column('MIPCHI2DV_pi', MIPCHI2DVfun(pi))
 
             # add the information needed for TisTos
             self.tisTos ( jpsi  , nt  , 'psi_' ,

@@ -9,9 +9,9 @@ logger = getLogger(__name__)
 
 import DiCharm.Analysis.Models as Models
 
-from cuts import m_Bu
-from cuts import m_Kstar, mm_Kstar, width_Kstar, low_kpi, high_kpi
-from cuts import m_Phi, mm_Phi, width_Phi, low_kk, high_kk
+from Variables import m_Bu
+from Variables import m_Kstar, mm_Kstar, width_Kstar, low_kpi, high_kpi
+from Variables import m_Phi, mm_Phi, width_Phi, low_kk, high_kk
 
 
 d = shelve.open("/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/testing/MC/fit/result_lowbins.shelve")

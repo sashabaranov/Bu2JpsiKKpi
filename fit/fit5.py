@@ -5,9 +5,9 @@ from AnalysisPython.Utils import timing
 from AnalysisPython.Utils import rooSilent
 from AnalysisPython.Logger import getLogger
 
-from cuts import h1
-from cuts import m_Bu, nbin_Bu
-from cuts import cuts_Bu, prntCuts
+from Histograms import h1
+from Variables import m_Bu, nbin_Bu
+from Cuts import cuts_Bu, prntCuts
 
 from model import model_Bu
 

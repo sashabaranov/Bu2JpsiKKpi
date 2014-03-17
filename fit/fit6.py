@@ -15,7 +15,7 @@ from data_Bc import tSelection6 as tBu6
 
 from Selectors import SBT
 
-cuts_s6 = "&& ann_pion > 0.15 && minann_K > 0.15"
+cuts_s6 = "&& ann_pion > 0.15 && minann_K > 0.15 && MIPCHI2DV_k1 > 9 && MIPCHI2DV_k2 > 9 && MIPCHI2DV_pi > 9"
 cuts_Bu += cuts_s6
 
 

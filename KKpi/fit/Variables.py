@@ -69,18 +69,18 @@ comparison_variables = [
 
     # Kinematics
     ("pt_pion", "p_{T}(\pi)", -0.5, 10.0, lambda s: s.pt_pion[0]),
-    # ("eta_pion[0]", "\eta(\pi)", 2.0, 5.5),
-    # ("p_pion[0]", "p(\pi)", 3.0, 20.0),
+    ("eta_pion[0]", "\eta(\pi)", 2.0, 5.5),
+    ("p_pion[0]", "p(\pi)", 3.0, 20.0),
 
-    # ("pt_kaon[0]", "p_{T}(K1)", -0.5, 10.0),
-    # ("eta_kaon[0]", "\eta(K1)", 2.0, 5.5),
-    # ("p_kaon[0]", "p(K1)",  3.0, 20.0),
+    ("pt_kaon[0]", "p_{T}(K1)", -0.5, 10.0),
+    ("eta_kaon[0]", "\eta(K1)", 2.0, 5.5),
+    ("p_kaon[0]", "p(K1)",  3.0, 20.0),
 
-    # ("pt_kaon[1]", "p_{T}(K2)", -0.5, 10.0),
-    # ("eta_kaon[1]", "\eta(K2)", 2.0, 5.5),
-    # ("p_kaon[1]", "p(K2)",  3.0, 20.0),
+    ("pt_kaon[1]", "p_{T}(K2)", -0.5, 10.0),
+    ("eta_kaon[1]", "\eta(K2)", 2.0, 5.5),
+    ("p_kaon[1]", "p(K2)",  3.0, 20.0),
 ]
 
 
 
-selector_variables = [(m_Bu, lambda s: s.DTFm_b ),  (m_Kstar, ), (m_Phi, )] # + comparison_variables
+selector_variables = [(m_Bu, lambda s: s.DTFm_b )] # ,  (m_Kstar, ), (m_Phi, )] # + comparison_variables

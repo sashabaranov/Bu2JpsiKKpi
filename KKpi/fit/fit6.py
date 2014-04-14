@@ -50,7 +50,7 @@ with rooSilent():
     logger.info('Make unbinned fit for B+')
 
     model_Bu.s.setMax(1.2 * len(ds_Bu))
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+    # ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
     model_Bu.signal.sigma.release()
     model_Bu.signal.mean.release()
@@ -64,11 +64,11 @@ with rooSilent():
 
     ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-# print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
-# print 'FIT#2 precision:', ru("SBu")[0].prec()
+print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
+print 'FIT#2 precision:', ru("SBu")[0].prec()
 
 
-# logger.info('running sPlot')
+# # logger.info('running sPlot')
 # model_Bu.sPlot(ds_Bu)
 
 # def count_significance():

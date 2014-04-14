@@ -13,7 +13,7 @@ ROOT.gStyle.SetOptStat(0)
 canvas = ROOT.TCanvas("canvas", "MC vs RD", 700,700)
 canvas.Divide(3,3)
 
-from variables import varlist
+from Variables import comparison_variables
 
 hists_rd = []
 hists_mc = []
@@ -22,11 +22,11 @@ hists_mc = []
 mctrue = " && mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTrueK3 && mcTrueMu1 && mcTrueMu2"
 
 for v in varlist:
-    hh_rd = ROOT.TH1F("rd_h_" + v[0], '', v[1], v[2], v[3])
+    hh_rd = ROOT.TH1F("rd_h_" + v[0], '', 25, v[2], v[3])
     hh_rd.Sumw2()
     ds5.project(hh_rd, filter_name(v[0]), "SBu_sw")
 
-    hh_mc = ROOT.TH1F("mc_h_" + v[0], '', v[1], v[2], v[3])
+    hh_mc = ROOT.TH1F("mc_h_" + v[0], '', 25, v[2], v[3])
     hh_mc.Sumw2()
 
     ds6.project(hh_mc, filter_name(v[0]), "SBu_sw")

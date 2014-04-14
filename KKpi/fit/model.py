@@ -14,9 +14,7 @@ from Variables import m_Kstar, mm_Kstar, width_Kstar, low_kpi, high_kpi
 from Variables import m_Phi, mm_Phi, width_Phi, low_kk, high_kk
 
 
-d = shelve.open("/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/testing/MC/fit/result_lowbins.shelve")
-d2 = shelve.open("/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/new_result.shelve")
-d3 = shelve.open("/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKKK/fit/new_result.shelve")
+d = shelve.open("$KKpidir/fit/histos.shelve")
 
 # B+ -> J/psi K+ K- pi+
 s1_Bu = Models.CB2_pdf(
@@ -43,7 +41,7 @@ s1_Bu = Models.CB2_pdf(
 
 alist = ROOT.RooArgList(m_Bu)
 
-KKK_h = d['KKK_hist']
+KKK_h = d['KKK_30bin_sel6']
 
 for j in xrange(0, KKK_h.GetNbinsX()):
     if KKK_h.GetBinContent(j) < 0:
@@ -58,7 +56,7 @@ KKK_h2 += KKK_h
 
 #KKK_h.smear(0.003)
 
-Kpipi_h = d2['Kpipi_hist']
+Kpipi_h = d['Kpipi_30bin_sel6']
 
 for j in xrange(0, Kpipi_h.GetNbinsX()):
     if Kpipi_h.GetBinContent(j) < 0:

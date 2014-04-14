@@ -57,8 +57,8 @@ with rooSilent():
     ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
 
-# print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
-# print 'FIT#2 precision:', ru("SBu")[0].prec()
+print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
+print 'FIT#2 precision:', ru("SBu")[0].prec()
 
 
 logger.info('running sPlot')

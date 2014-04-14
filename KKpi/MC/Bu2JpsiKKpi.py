@@ -180,16 +180,16 @@ class MCAnalysisAlgorithm(AlgoMC):
 
             # add the information needed for TisTos
             self.tisTos ( jpsi  , nt  , 'psi_' ,
-                          self.lines [ 'psi' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi1_' ,
-                          self.lines [ 'psi1' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi1' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi2_' ,
-                          self.lines [ 'psi2' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi2' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi3_' ,
-                          self.lines [ 'psi3' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             nt.write()
 
@@ -378,7 +378,7 @@ if __name__ == '__main__':
     configure(inputdata, params=test_params, castor=True)
 
     # run the job
-    run(-1)
+    run(1000)
 
     gaudi = appMgr()
     

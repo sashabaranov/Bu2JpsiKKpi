@@ -1,4 +1,4 @@
-Bu2JpsiKKpi
+Bu -> J/ψ K K π
 ===========
 
 LHCb physics analysis

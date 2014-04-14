@@ -20,7 +20,7 @@ export Kpipidir=$ANALYSIS/Kpipi
 To use data(on lxplus):
 
 ```
-export DATADIR=/afs/cern.ch/work/a/albarano/data
+export DATADIR=/afs/cern.ch/work/a/albarano/public/data
 ln -s $DATADIR/KKK $KKKdir/output 
 ln -s $DATADIR/KKpi $KKpidir/output
 ln -s $DATADIR/Kpipi $Kpipidir/output

@@ -1,0 +1,153 @@
+diff ./cuts.py /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/cuts.py
+10c10
+< m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKK)', 5.16, 5.45)
+---
+> m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKpipi)', 5.18, 5.45)
+12a13,14
+> 
+> 
+17,19c19,20
+< 
+< h2 = ROOT.TH1F(hID(), '', nbin_Bu, 0.0, 3.0)
+< h2.Sumw2()
+---
+> h_mc = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
+> h_mc.Sumw2()
+26c27,28
+< cuts_ += "&& pt_kaon[0] > 0.6 && pt_kaon[1] > 0.6 && pt_kaon[2] > 0.6"
+---
+> cuts_ += "&& pt_kaon > 0.6"
+> cuts_ += "&& pt_pion[0] > 0.3 && pt_pion[1] > 0.6"
+28a31
+> cuts_ += "&& minann_pi  < 0.4"
+Двоичные файлы ./cuts.pyc и /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/cuts.pyc различаются
+diff ./data_Bc.py /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/data_Bc.py
+28,31c28,29
+< #
+< tBu2 = ROOT.TChain('JpsiKKK/t')
+< 
+< #
+---
+> # =============================================================================
+> tBu2   = ROOT.TChain('JpsiKpipi/t')
+34c32
+< outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKKK/output/'
+---
+> outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/output/'
+36,37d33
+< 
+< 
+39d34
+< 
+44,50c39,44
+< 
+< mc_outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKKK/MC/output/'
+< tBu_mc = ROOT.TChain('MCBu2JpsiKKK/NTuple_for_B-mesons')
+< mc_files = ['2011-KKK-Pythia6.root', 
+<          '2011-KKK-Pythia8.root',
+<          '2012-KKK-Pythia6.root', 
+<          '2012-KKK-Pythia8.root']
+---
+> mc_outputdir = '/afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/MC/output/'
+> tBu_mc = ROOT.TChain('MCBu2JpsiKpipi/NTuple_for_B-mesons')
+> mc_files = ['2011-Kpipi-Pythia6.root', 
+>          '2011-Kpipi-Pythia8.root',
+>          '2012-Kpipi-Pythia6.root', 
+>          '2012-Kpipi-Pythia8.root']
+56,57d49
+< 
+< 
+62c54
+< logger.info(" Entries  B+ -> J/psi KK pi+: %s" % len(tBu2))
+---
+> logger.info(" Entries  B+ -> J/psi K pi- pi+: %s" % len(tBu2))
+Двоичные файлы ./data_Bc.pyc и /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/data_Bc.pyc различаются
+Общие подкаталоги: ./DiCharm и /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/DiCharm
+Только в .: difference.diff
+diff ./fits.py /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/fits.py
+11c11
+< from cuts import h1, h2
+---
+> from cuts import h1, h_mc
+25,26d24
+< tBu.project(h2, "pt_kaon[2]")
+< h2.Draw()
+37a36
+> 
+49a49,51
+> # tBu_mc.project(h_mc, "m_b")
+> # r, f = model_Bu.fitHisto(h_mc, draw=True)
+> # h_mc.Draw()
+53,54c55,59
+< 
+< tBu.process(sel_Bu)
+---
+> with timing():
+>     ## logger.warning('almost skip B+')
+>     ## with rooSilent () : tBu.process ( sel_Bu , 100000 )
+>     with rooSilent():
+>         tBu.process(sel_Bu)
+67,69c72,74
+< print ru
+< print 'FIT results for B+  ', ru(model_Bu.s_name)[0]
+< print 'FIT precision:', ru("SBu")[0].prec()
+---
+> # print ru
+> # print 'FIT results for B+  ', ru(model_Bu.s_name)[0]
+> # print 'FIT precision:', ru("SBu")[0].prec()
+73,74c78,79
+< print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
+< print 'FIT#2 precision:', ru("SBu")[0].prec()
+---
+> # print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
+> # print 'FIT#2 precision:', ru("SBu")[0].prec()
+88c93
+< canvas.Divide(3,2)
+---
+> canvas.Divide(3,3)
+94c99
+<     # ('m_jpsi', 25, 3.0, 3.2),
+---
+>     ('m_jpsi', 25, 3.0, 3.2),
+134,135c139,140
+<     hists_rd[i].Draw()
+<     hists_mc[i].Draw("same")
+---
+>     hists_mc[i].Draw()
+>     hists_rd[i].Draw("same")
+140d144
+< 
+diff ./model.py /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/model.py
+15c15
+< # B+ -> J/psi K+ K- K+
+---
+> # B+ -> J/psi K+ K- pi+
+Двоичные файлы ./model.pyc и /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/model.pyc различаются
+diff ./Selectors.py /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/Selectors.py
+100d99
+< 
+107,109c106,108
+<         self.minPt_track = ROOT.RooRealVar('minPt_track', "", 25, 0, 6)
+<         self.y_jpsi = ROOT.RooRealVar('y_jpsi', "", 25, 1.5, 5.0)
+<         self.pt_jpsi = ROOT.RooRealVar('pt_jpsi', "", 25, 0, 25)
+---
+>         self.y_jpsi = ROOT.RooRealVar("y_jpsi", "", 0.0, 5.0)
+>         self.pt_jpsi = ROOT.RooRealVar("pt_jpsi", "", -0.5, 20.0)
+>         self.minPt_track = ROOT.RooRealVar("minPt_track", "", -0.5, 20.0)
+119d117
+<         self.varset.add(self.minPt_track)
+121a120
+>         self.varset.add(self.minPt_track)
+126c125
+<             "Bu -> J/psi KKK: " + self.mass.GetName(),
+---
+>             "Bu -> J/psi KK pi: " + self.mass.GetName(),
+178d176
+<         raise Exception("Process started")
+218a217
+> 
+223c222
+<         self.data .add(self.varset)
+---
+>         self.data.add(self.varset)
+Двоичные файлы ./Selectors.pyc и /afs/cern.ch/user/a/albarano/cmtuser/Bender_v22r8/Scripts/Bu2JpsiKpipi/fit/Selectors.pyc различаются

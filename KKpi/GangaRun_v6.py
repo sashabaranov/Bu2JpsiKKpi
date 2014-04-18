@@ -22,7 +22,7 @@ j2011 = Job(
     splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True),
 )
 
-j2011.splitter.ignoremissing = True
+j2011.splitter.ignoremissing = False
 
 j2011.name = 'RD-KKpi-11'
 j2011.inputdata = DaVinci(version='v33r9').readInputData('$ANALYSIS/selections/selection7-2011.py')
@@ -44,7 +44,7 @@ j2012 = Job(
     splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True)
 )
 
-j2012.splitter.ignoremissing = True
+j2012.splitter.ignoremissing = False
 
 j2012.name = 'RD-KKpi-12'
 j2012.inputdata = DaVinci(version='v33r9').readInputData('$ANALYSIS/selections/selection7-2012.py')

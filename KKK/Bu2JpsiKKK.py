@@ -86,7 +86,6 @@ class Bu2JpsiKKK(Algo):
         return Algo.finalize(self)
 
     def analyse(self):
-        
         MyB = self.select('psi', '[( B+ ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K-  K+ )]CC')
         if MyB.empty():
             return self.Warning("No B+ are found!", SUCCESS)
@@ -106,6 +105,8 @@ class Bu2JpsiKKK(Algo):
 
         nt = self.nTuple("t")
 
+        pion_mass = 0.1395702 * GeV  # GeV / c^2
+
         for myb in MyB:
 
             b, jpsi, k1, k2, k3 = tuple(myb(i) for i in xrange(5))
@@ -118,16 +119,16 @@ class Bu2JpsiKKK(Algo):
             self.treatMuons(nt, b)
             self.treatTracks(nt, b)
 
-            # particles without misid kaon
-            particles = [myb(i) for i in xrange(1, 4)]
             # particles with misid kaon
             all_particles = [myb(i) for i in xrange(1, 5)]
+
+            # ==========================================
+            # Calculate first kaon misid combination
+            # ==========================================
+            particles = [myb(i) for i in xrange(1, 4)] # particles w/o misid kaon
             kaon = myb(4)
 
-            pion_mass = 0.1395702 * GeV  # GeV / c^2
-
             E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
-            # GeV/c^2 + (GeV / c)^2
             E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
 
             total_PX = reduce(
@@ -140,9 +141,28 @@ class Bu2JpsiKKK(Algo):
             total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
 
             misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
+            nt.column("m_b_misid1",  misid_Bu_M / GeV)
 
+            # ==========================================
+            # Calculate second kaon misid combination
+            # ==========================================
+            particles = [myb(0), myb(1), myb(3), myb(4)]
+            kaon = myb(2)
 
-            nt.column("m_b_misid", misid_Bu_M / GeV)
+            E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
+            E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
+
+            total_PX = reduce(
+                lambda x, y: x + y, [PX(p) for p in all_particles])
+            total_PY = reduce(
+                lambda x, y: x + y, [PY(p) for p in all_particles])
+            total_PZ = reduce(
+                lambda x, y: x + y, [PZ(p) for p in all_particles])
+
+            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
+
+            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
+            nt.column("m_b_misid2",  misid_Bu_M / GeV)
 
 
             # add DTF-applied information

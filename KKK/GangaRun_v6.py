@@ -45,7 +45,7 @@ j2012 = Job(
 
 j2012.splitter.ignoremissing = True
 
-j2012.inputdata = DaVinci(version='v33r9').readInputData('$ANALYSIS/selections/selection7-2012.py)
+j2012.inputdata = DaVinci(version='v33r9').readInputData('$ANALYSIS/selections/selection7-2012.py')
 j2012.application.params = {'year': '2012'}
 
 

@@ -10,9 +10,11 @@
 *.svn-base
 .svn
 *.py~
+*.shelve
 
 # C extensions
 *.so
+
 
 # Packages
 *.egg

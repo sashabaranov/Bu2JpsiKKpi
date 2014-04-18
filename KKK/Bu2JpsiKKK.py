@@ -257,7 +257,7 @@ if __name__ == '__main__':
     print ' Date    : %s ' % __date__
     print '*' * 120
     
-    inputdata = ['/lhcb/LHCb/Collision12/PSIX.MDST/00033675/0000/00033675_00000001_1.psix.mdst']
-    params = {'year' : '2012'}
+    inputdata = ['/lhcb/LHCb/Collision11/PSIX.MDST/00035294/0000/00035294_00000064_1.psix.mdst']
+    params = {'year' : '2011'}
     configure(inputdata, params=params, castor=True)
     run(200)

@@ -23,7 +23,7 @@ j2011 = Job(
 
 j2011.splitter.ignoremissing = False
 
-j2011.inputdata = DaVinci().readInputData('selection6-2011.py')
+j2011.inputdata = DaVinci().readInputData('$ANALYSIS/selections/selection7-2011.py')
 j2011.application.params = {'year': '2011'}
 
 j2011.submit()
@@ -43,7 +43,7 @@ j2012 = Job(
 
 j2012.splitter.ignoremissing = False
 
-j2012.inputdata = DaVinci().readInputData('selection6-2012.py')
+j2012.inputdata = DaVinci().readInputData('$ANALYSIS/selections/selection7-2012.py')
 j2012.application.params = {'year': '2012'}
 
 

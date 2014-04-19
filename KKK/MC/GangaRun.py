@@ -6,11 +6,6 @@ my_area = '/afs/cern.ch/user/a/albarano/cmtuser'
 mode = 'B+ -> J/psi K+ K+ K-'
 
 config = {
-    "KKK-MC11a" : [
-        ('/MC/MC11a/Beam3500GeV-2011-MagUp-Nu2-EmNoCuts/Sim05d/Trig0x40760037Flagged/Reco12a/Stripping17NoPrescalingFlagged/12245001/ALLSTREAMS.DST', 'MC2011-20120727', 'MC2011-20120727-vc-mu100'),
-        ('/MC/MC11a/Beam3500GeV-2011-MagDown-Nu2-EmNoCuts/Sim05d/Trig0x40760037Flagged/Reco12a/Stripping17NoPrescalingFlagged/12245001/ALLSTREAMS.DST', 'MC2011-20120727', 'MC2011-20120727-vc-md100'),
-    ],
-
     "KKK-2012-Pythia6": [
         ('/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pythia6/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245001/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-md100'),
         ('/MC/2012/Beam4000GeV-2012-MagUp-Nu2.5-Pythia6/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245001/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-mu100'),
@@ -65,7 +60,7 @@ for job_prefix, job_configs in config.items():
         if j.status != 'new':
             j = j.copy()
 
-        j.name = job_prefix + mag,
+        j.name = job_prefix + mag
         j.splitter.ignoremissing = False
 
         j.application.params = {

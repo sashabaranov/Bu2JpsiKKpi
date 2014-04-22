@@ -16,8 +16,8 @@ logger.info('Import models/PDFs')
 from model import model_Bu
 
 logger.info('Import data (for the first time it could take some time)')
-from data_Bc import tSelection5 as tBu
-from data_Bc import tBu_mc, tBu_mc_p6, tBu_mc_p8
+from data import tSelection5 as tBu
+from data import tBu_mc, tBu_mc_p6, tBu_mc_p8
 
 
 logger.info('DATA chain name is %s ' % (tBu.GetName()))
@@ -37,9 +37,13 @@ with rooSilent():
     r, f = model_Bu.fitHisto(h1)
 
 
-from Selectors import SBT
+from PyPAW.Selectors import SelectorWithVars
+from Variables import selector_variables
 
-sel_Bu = SBT(m_Bu, cuts_Bu)
+sel_Bu = SelectorWithVars(
+    variables=selector_variables,
+    selection=cuts_Bu
+)
 
 
 logger.info(
@@ -76,21 +80,21 @@ print 'FIT#2 precision:', ru("SBu")[0].prec()
 
 
 
-logger.info('running sPlot')
-model_Bu.sPlot(ds_Bu)
+# logger.info('running sPlot')
+# model_Bu.sPlot(ds_Bu)
 
-h = ROOT.TH1F("h", '',  30, 5.16, 5.45)
-h.Sumw2()
+# h = ROOT.TH1F("h", '',  30, 5.16, 5.45)
+# h.Sumw2()
 
-ds_Bu.project(h, "m_b_misid", "SBu_sw")
-h.Draw()
+# ds_Bu.project(h, "m_b_misid", "SBu_sw")
+# h.Draw()
 
-d = shelve.open('$KKpidir/fit/histos.shelve')
+# d = shelve.open('$KKpidir/fit/histos.shelve')
 
-d['KKK_30bin_sel5'] = h
+# d['KKK_30bin_sel5'] = h
 
 
-d.close()
+# d.close()
 
 # logger.info('running sPlot')
 # model_Bu.sPlot(ds_Bu)

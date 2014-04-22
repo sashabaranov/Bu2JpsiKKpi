@@ -7,7 +7,7 @@ from AnalysisPython.Logger import getLogger
 
 logger = getLogger(__name__)
 
-import DiCharm.Analysis.Models as Models
+import PyPAW.FitModels as Models
 
 from cuts import m_Bu
 
@@ -19,10 +19,10 @@ s1_Bu = Models.CB2_pdf(
     m_Bu.getMax(),
     fixMass=5.2792e+0,
     fixSigma=0.008499e+0,
-    fixAlphaL=0.45575,
-    fixAlphaR=0.446336,
-    fixNL=4.999,
-    fixNR=9.92,
+    fixAlphaL=2.14,
+    fixAlphaR=2.04,
+    fixNL=0.79,
+    fixNR=1.33,
     mass=m_Bu
 )
 # s1_Bu = Models.Gauss_pdf(
@@ -40,7 +40,7 @@ s1_Bu = Models.CB2_pdf(
 alist = ROOT.RooArgList(m_Bu)
 
 
-model_Bu = Models.Charm3_pdf(
+model_Bu = Models.Fit1D(
     signal=s1_Bu,
     # signal2=KKK_pdf,
     # signal3=Kpipi_pdf,

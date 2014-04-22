@@ -16,7 +16,7 @@ logger.info('Import models/PDFs')
 from model import model_Bu
 
 logger.info('Import data (for the first time it could take some time)')
-from data import tSelection6 as tBu
+from data import tSelection7 as tBu
 
 
 cuts_s6 = " && MIPCHI2DV_k1 > 9 && MIPCHI2DV_k2 > 9 && MIPCHI2DV_k3 > 9"
@@ -61,37 +61,39 @@ ds_Bu.Print('v')
 
 
 
-with rooSilent():
-    logger.info('Make unbinned fit for B+')
-    #
-    model_Bu.s.setMax(1.2 * len(ds_Bu))
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-    model_Bu.signal.sigma.release()
-    model_Bu.signal.mean.release()
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+logger.info('Make unbinned fit for B+')
+#
+model_Bu.s.setMax(1.2 * len(ds_Bu))
+ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-    model_Bu.signal.aR.release()
-    model_Bu.signal.aL.release()
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+model_Bu.signal.sigma.release()
+model_Bu.signal.mean.release()
+ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-    model_Bu.signal.nR.release()
-    model_Bu.signal.nL.release()
+# model_Bu.signal.aR.release()
+# model_Bu.signal.aL.release()
+# ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-    ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+# model_Bu.signal.nR.release()
+# model_Bu.signal.nL.release()
 
-print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
-print 'FIT#2 precision:', ru("SBu")[0].prec()
+# ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
 
-# logger.info('running sPlot')
-# model_Bu.sPlot(ds_Bu)
 
-# h = ROOT.TH1F("h", '',  30, 5.16, 5.45)
-# h.Sumw2()
+# print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
+# print 'FIT#2 precision:', ru("SBu")[0].prec()
 
-# ds_Bu.project(h, "m_b_misid", "SBu_sw")
-# # h.Draw()
+
+logger.info('running sPlot')
+model_Bu.sPlot(ds_Bu)
+
+h = ROOT.TH1F("h", '',  30, 5.16, 5.45)
+h.Sumw2()
+
+ds_Bu.project(h, "m_b_misid1", "SBu_sw")
+h.Draw()
 
 # d = shelve.open('$KKpidir/fit/histos.shelve')
 

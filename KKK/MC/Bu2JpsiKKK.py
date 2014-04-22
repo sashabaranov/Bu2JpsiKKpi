@@ -137,8 +137,9 @@ class MCBu2JpsiKKK(AlgoMC):
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
         dtffun_chi2 = DTF_CHI2NDOF(True, "J/psi(1S)")
+        dtffun_m234 = DTF_FUN(MASS(2, 3, 4), True, "J/psi(1S)")
         dtffun_m = DTF_FUN(M, True, "J/psi(1S)")
-
+        MIPCHI2DVfun = MIPCHI2DV()
 
         nt = self.nTuple("t")
         pion_mass = 0.1395702 * GeV  # GeV / c^2
@@ -147,17 +148,20 @@ class MCBu2JpsiKKK(AlgoMC):
             if not all([myb(i) for i in xrange(0, 5)]):
                 continue
 
-
-            b = myb
-            jpsi = myb.child(1)
-
-            # add DTF-applied information
-            nt.column('DTFm_b', dtffun_m(myb) / GeV)
-            nt.column('DTFctau', dtffun_ctau(myb))
-            nt.column('DTFchi2ndof', dtffun_chi2(myb))
+            b, jpsi, k1, k2, k3 = tuple(myb(i) for i in xrange(5))
 
             self.treatKine(nt, b, '_b')
             self.treatKine(nt, jpsi, '_jpsi')
+
+            # add DTF-applied information
+            nt.column('DTFctau', dtffun_ctau(myb))
+            nt.column('DTFchi2ndof', dtffun_chi2(myb))
+            nt.column('DTFm_b', dtffun_m(myb) / GeV)
+            nt.column('DTFm_KKK', dtffun_m234(myb) / GeV)
+
+            nt.column('MIPCHI2DV_k1', MIPCHI2DVfun(k1))
+            nt.column('MIPCHI2DV_k2', MIPCHI2DVfun(k2))
+            nt.column('MIPCHI2DV_k3', MIPCHI2DVfun(k3))
 
 
             # add the information for Pid efficiency correction

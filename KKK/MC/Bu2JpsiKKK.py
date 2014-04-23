@@ -197,7 +197,7 @@ class MCBu2JpsiKKK(AlgoMC):
             # ==========================================
             # Calculate second kaon misid combination
             # ==========================================
-            particles = [myb(0), myb(1), myb(3), myb(4)]
+            particles = [myb(1), myb(3), myb(4)]
             kaon = myb(2)
 
             E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])

@@ -89,11 +89,42 @@ ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
 
-h = ROOT.TH1F("h", '',  30, 5.16, 5.45)
-h.Sumw2()
+h_1 = ROOT.TH1F("h_1", '',  30, 5.16, 5.25)
+h_1.Sumw2()
+h_2 = ROOT.TH1F("h_2", '',  30, 5.16, 5.25)
+h_2.Sumw2()
 
-ds_Bu.project(h, "m_b_misid1", "SBu_sw")
-h.Draw()
+
+h_1.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) with misid, GeV/c^2')
+h_2.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) with misid, GeV/c^2')
+
+ds_Bu.project(h_1, "m_b_misid1", "SBu_sw && ann_kaon_PI_2 > 0.05") #&& ann_kaon0 > 0.3")
+ds_Bu.project(h_2, "m_b_misid2", "SBu_sw && ann_kaon_PI_0 > 0.05") # && ann_kaon2 > 0.3")
+
+h_1.red()
+h_2.blue()
+
+for j in xrange(0, h_1.GetNbinsX()):
+    if h_1.GetBinContent(j) < 0:
+        h_1.SetBinContent(j, 0)
+
+for j in xrange(0, h_2.GetNbinsX()):
+    if h_2.GetBinContent(j) < 0:
+        h_2.SetBinContent(j, 0)
+
+
+h_1.Scale(1.0/h_1.Integral())
+h_2.Scale(1.0/h_2.Integral())
+
+
+h_2.Draw("")
+h_1.Draw("same")
+
+
+
+
+
+# h.Draw()
 
 # d = shelve.open('$KKpidir/fit/histos.shelve')
 

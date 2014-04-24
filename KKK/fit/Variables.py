@@ -12,9 +12,13 @@ comparison_variables = [
     # ("m_jpsi", "", 2.5, 3.5),
 
     # ("minann_K", "", -0.5, 1.5),
-    # # ("ann_kaon1", "", -0.5, 1.5),
-    # # ("ann_kaon2", "", -0.5, 1.5),
-    # # ("ann_kaon3", "", -0.5, 1.5),
+    ("ann_kaon0", "", -0.5, 1.5, lambda s: s.ann_kaon[0]),
+    ("ann_kaon1", "", -0.5, 1.5, lambda s: s.ann_kaon[1]),
+    ("ann_kaon2", "", -0.5, 1.5, lambda s: s.ann_kaon[2]),
+
+    ("ann_kaon_PI_0", "", -0.5, 1.5, lambda s: s.ann_kaon_PI[0]),
+    ("ann_kaon_PI_1", "", -0.5, 1.5, lambda s: s.ann_kaon_PI[1]),
+    ("ann_kaon_PI_2", "", -0.5, 1.5, lambda s: s.ann_kaon_PI[2]),
 
     # ("minann_mu", "", -0.5, 1.5),
 
@@ -33,8 +37,8 @@ comparison_variables = [
     # ("DTFm_KKK", "", -0.5, 40.0),
 
     # ("minPt_track", "", -0.5, 20.0),
-    ("m_b_misid1", "", -10.0, 100.0),
-    ("m_b_misid2", "", -10.0, 100.0),
+    ("m_b_misid1", "", -0.5, 10.0),
+    ("m_b_misid2", "", -0.5, 10.0),
 ]
 
 

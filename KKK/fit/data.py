@@ -105,38 +105,39 @@ def from_ganga(job_id):
 
 
 # =============================================================================
-files5 = append_dir(OUTPUT_DIR, ['RD-2011.root',  'RD-2012.root'])
-files6 = append_dir(OUTPUT_DIR, ['RD-2011-sel6.root',  'RD-2012-sel6.root'])
-files7 = from_ganga(80) + from_ganga(81)
+# files5 = append_dir(OUTPUT_DIR, ['RD-2011.root',  'RD-2012.root'])
+# files6 = append_dir(OUTPUT_DIR, ['RD-2011-sel6.root',  'RD-2012-sel6.root'])
+files7 = from_ganga(132) + from_ganga(133)
 
 
-selection5 = DataAndLumi(branch='JpsiKKK/t', files=files5)
-selection6 = DataAndLumi(branch='JpsiKKK/t', files=files6)
+# selection5 = DataAndLumi(branch='JpsiKKK/t', files=files5)
+# selection6 = DataAndLumi(branch='JpsiKKK/t', files=files6)
 selection7 = DataAndLumi(branch='JpsiKKK/t', files=files7)
 
 
-logger.info("Selection 5: %s" % selection5)
-logger.info("Selection 6: %s" % selection6)
+# logger.info("Selection 5: %s" % selection5)
+# logger.info("Selection 6: %s" % selection6)
 logger.info("Selection 7: %s" % selection7)
 
 
-tSelection5 = selection5.data
-tSelection6 = selection6.data
+# tSelection5 = selection5.data
+# tSelection6 = selection6.data
 tSelection7 = selection7.data
 
 
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(114) + from_ganga(115),
-        'Pythia8': from_ganga(116) + from_ganga(117),
+        'Pythia6': from_ganga(125) + from_ganga(126),
+        'Pythia8': from_ganga(127) + from_ganga(128),
     },
 
     '2012': {
-        'Pythia6': from_ganga(112) + from_ganga(113),
-        'Pythia8': from_ganga(118) + from_ganga(119),
+        'Pythia6': from_ganga(123) + from_ganga(124),
+        'Pythia8': from_ganga(129) + from_ganga(130),
     }
 }
+
 
 mc_Pythia6 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
 mc_Pythia8 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])

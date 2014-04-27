@@ -6,6 +6,12 @@ __date__ = "  "
 __version__ = "  "
 #=============================================================================
 
+
+import __builtin__
+
+from math import *
+
+
 # import everything from BENDER
 from Bender.All import *
 from Gaudi.Configuration import *
@@ -17,7 +23,6 @@ import BenderTools.TisTos
 # import of the useful units from Gaudi
 from GaudiKernel.SystemOfUnits import GeV, MeV, mm, micrometer
 from GaudiKernel.PhysicalConstants import c_light
-from math import *
 from LoKiTracks.decorators import *  # needed for TrKEY work
 
 
@@ -27,7 +32,6 @@ from   Gaudi.Configuration import *   ## needed for job configuration
 from   GaudiKernel.SystemOfUnits     import GeV, MeV, mm
 from   GaudiKernel.PhysicalConstants import c_light
 
-import math
 from LoKiCore.basic import cpp
 
 #=============================================================================
@@ -37,6 +41,22 @@ AlgoMC.trgDecs           = BenderTools.TisTos. trgDecs
 AlgoMC.tisTos            = BenderTools.TisTos. tisTos
 AlgoMC.tisTos_initialize = BenderTools.TisTos._tisTosInit
 AlgoMC.tisTos_finalize   = BenderTools.TisTos._tisTosFini
+
+
+class fakePi ( object ) :
+
+    def __init__ ( self , p , pid ) :
+        self.particle = p
+        self.old_pid  = LHCb.ParticleID ( p.particleID() )
+        self.new_pid  = pid
+
+    def __enter__  ( self ) :
+        self.particle.setParticleID ( self.new_pid )
+
+    def __exit__   ( self , *_ ) :
+
+        self.particle.setParticleID ( self.old_pid )
+        self.particle = None
 
 
 class MCBu2JpsiKKK(AlgoMC):
@@ -99,6 +119,8 @@ class MCBu2JpsiKKK(AlgoMC):
         sc = self.tisTos_initialize ( triggers , lines )
         if sc.isFailure () :
             return sc
+
+        self._mass = DTF_FUN ( M , True , 'J/psi(1S)' )
 
         return SUCCESS
 
@@ -170,8 +192,19 @@ class MCBu2JpsiKKK(AlgoMC):
             self.treatMuons(nt, b)
             self.treatTracks(nt, b)
 
-            all_particles = [myb(i) for i in xrange(1, 5)] # particles w/ misid kaon
+            nt.column('mass', self._mass ( b )  / GeV )
 
+            ## try with k1->pi
+            with fakePi ( k1 , pid = LHCb.ParticleID( int(Q(k1)) * 211 )):
+                nt.column ( 'mass_k1aspi' , self._mass ( b ) / GeV )
+
+            ## try with k3->pi
+            with fakePi ( k3 , pid = LHCb.ParticleID( int(Q(k3)) * 211 )):
+                nt.column ( 'mass_k3aspi' , self._mass ( b ) / GeV )
+
+
+            # particles with misid kaon
+            all_particles = [myb(i) for i in xrange(1, 5)]
 
             # ==========================================
             # Calculate first kaon misid combination
@@ -179,15 +212,12 @@ class MCBu2JpsiKKK(AlgoMC):
             particles = [myb(i) for i in xrange(1, 4)] # particles w/o misid kaon
             kaon = myb(4)
 
-            E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
+            E_wo_misid = __builtin__.sum([E(p) for p in particles])
             E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
 
-            total_PX = reduce(
-                lambda x, y: x + y, [PX(p) for p in all_particles])
-            total_PY = reduce(
-                lambda x, y: x + y, [PY(p) for p in all_particles])
-            total_PZ = reduce(
-                lambda x, y: x + y, [PZ(p) for p in all_particles])
+            total_PX = __builtin__.sum([PX(p) for p in all_particles])
+            total_PY = __builtin__.sum([PY(p) for p in all_particles])
+            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
 
             total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
 
@@ -200,15 +230,12 @@ class MCBu2JpsiKKK(AlgoMC):
             particles = [myb(1), myb(3), myb(4)]
             kaon = myb(2)
 
-            E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
+            E_wo_misid = __builtin__.sum([E(p) for p in particles])
             E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
 
-            total_PX = reduce(
-                lambda x, y: x + y, [PX(p) for p in all_particles])
-            total_PY = reduce(
-                lambda x, y: x + y, [PY(p) for p in all_particles])
-            total_PZ = reduce(
-                lambda x, y: x + y, [PZ(p) for p in all_particles])
+            total_PX = __builtin__.sum([PX(p) for p in all_particles])
+            total_PY = __builtin__.sum([PY(p) for p in all_particles])
+            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
 
             total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
 
@@ -255,6 +282,8 @@ class MCBu2JpsiKKK(AlgoMC):
     def finalize(self):
         self.fill_finalize()
         self.tisTos_finalize ()
+        self._mass = None
+
         return AlgoMC.finalize(self)
 
 # =============================================================================

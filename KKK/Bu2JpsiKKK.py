@@ -17,23 +17,22 @@ from LoKiTracks.decorators import *  # needed for TrKEY work
 import BenderTools.Fill
 import BenderTools.TisTos
 
-PionID = LHCb.ParticleID ( 211 ) 
-
 
 class fakePi ( object ) :
-    
-    def __init__ ( self , p , pid = PionID ) :
+
+    def __init__(self, p, pid) :
         self.particle = p
         self.old_pid  = LHCb.ParticleID ( p.particleID() )
         self.new_pid  = pid
 
     def __enter__  ( self ) :
         self.particle.setParticleID ( self.new_pid )
-        
+
     def __exit__   ( self , *_ ) :
-        
-        self.particle.setParticleID ( self.old_pid ) 
-        self.particle = None 
+
+        self.particle.setParticleID ( self.old_pid )
+        self.particle = None
+
 
 
 
@@ -131,6 +130,7 @@ class Bu2JpsiKKK(Algo):
         nt = self.nTuple("t")
 
         pion_mass = 0.1395702 * GeV  # GeV / c^2
+        kaon_mass = 0.493677 * GeV
 
         for myb in MyB:
 
@@ -145,14 +145,16 @@ class Bu2JpsiKKK(Algo):
             self.treatTracks(nt, b)
 
 
-            nt.column('mass', self._mass ( b )  / GeV ) 
- 
+            nt.column('mass', self._mass ( b )  / GeV )
+
             ## try with k1->pi
-            with fakePi ( k1 ) :
+            misid1 = 0.0
+
+            with fakePi ( k1 , pid = LHCb.ParticleID( int(Q(k1)) * 211 )):
                 nt.column ( 'mass_k1aspi' , self._mass ( b ) / GeV )
 
             ## try with k3->pi
-            with fakePi ( k3 ) :
+            with fakePi ( k3 , pid = LHCb.ParticleID( int(Q(k3)) * 211 )):
                 nt.column ( 'mass_k3aspi' , self._mass ( b ) / GeV )
 
 
@@ -196,6 +198,7 @@ class Bu2JpsiKKK(Algo):
             nt.column("m_b_misid2",  misid_Bu_M / GeV)
 
 
+
             # add DTF-applied information
             nt.column('DTFctau', dtffun_ctau(myb))
             nt.column('DTFchi2ndof', dtffun_chi2(myb))
@@ -232,21 +235,21 @@ class Bu2JpsiKKK(Algo):
 
 
 def configure(datafiles, catalogs=[], params={}, castor=False):
-    
+
     from Configurables import DaVinci
     from Configurables import EventSelector
-    
+
     from PhysConf.Filters import LoKi_Filters
 
     fltrs = LoKi_Filters(
         VOID_Code="""
-        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KForPsiX/Particles') 
+        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KForPsiX/Particles')
         """
     )
     filters = fltrs.filters('Filters')
 
     the_year = '2011'
-    
+
     daVinci = DaVinci(
         #
         EventPreFilters = filters ,
@@ -260,12 +263,12 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         #
         TupleFile='Bu2JpsiKKK.root',
         #
-        Lumi=True 
+        Lumi=True
         #
         )
-    
+
     daVinci.UserAlgorithms = [ 'JpsiKKK' ]
-    
+
     from Configurables import CondDB
     CondDB ( LatestGlobalTagByDataType = the_year )
 
@@ -273,13 +276,13 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
     ## define input data
     #
     setData(datafiles, catalogs, castor)
-    
+
     #
     ## suppress some extra printput
     #
     from BenderTools.Utils import silence
     silence()
-    
+
     #
     ## get the actual application manager (create if needed)
     #
@@ -294,7 +297,7 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         RootInTES='/Event/PSIX',
         Inputs=['Phys/SelPsi3KForPsiX/Particles']
         )
-    
+
     return SUCCESS
 
 # =============================================================================
@@ -307,8 +310,8 @@ if __name__ == '__main__':
     print ' Version : %s ' % __version__
     print ' Date    : %s ' % __date__
     print '*' * 120
-    
+
     inputdata = ['/lhcb/LHCb/Collision11/PSIX.MDST/00035294/0000/00035294_00000064_1.psix.mdst']
     params = {'year' : '2011'}
     configure(inputdata, params=params, castor=True)
-    run(-1)
+    run(4000)

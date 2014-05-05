@@ -37,8 +37,8 @@ comparison_variables = [
     # ("DTFm_KKK", "", -0.5, 40.0),
 
     # ("minPt_track", "", -0.5, 20.0),
-    ("m_b_misid1", "", -0.5, 10.0),
-    ("m_b_misid2", "", -0.5, 10.0),
+    ("mass_k1aspi", "", -0.5, 10.0),
+    ("mass_k3aspi", "", -0.5, 10.0),
 ]
 
 

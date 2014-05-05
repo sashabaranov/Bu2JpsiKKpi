@@ -2,8 +2,8 @@ import ROOT
 import os
 import glob
 from AnalysisPython.PyRoUts import *
-from AnalysisPython.GetLumi import getLumi
 import AnalysisPython.ZipShelve as ZipShelve
+from ostap.data import Data, DataAndLumi
 from AnalysisPython.Logger import getLogger
 
 
@@ -26,71 +26,6 @@ def _draw_(self, *args, **kwargs):
 ROOT.RooDataSet.Draw = _draw_
 
 
-
-
-# =============================================================================
-class Data(object):
-    """
-    Contains data info inside.
-    """
-
-    def __init__(self, 
-                branch, 
-                files=[]):
-        self.data = ROOT.TChain(branch)
-        self.filelist = []
-
-        if files:
-            self.add_files(files)
-    
-    def add_files(self, files):
-        self.filelist += files
-
-        for f in files:
-            self.data.Add(f)
-
-    def __str__(self):
-        ret = "<#files: {}; Entries: {}>".format(len(self.filelist), len(self.data))
-
-        return ret
-
-
-class DataAndLumi(object):
-    """
-    Contains data and luminosity info inside.
-    """
-
-    def __init__(self, 
-                branch, 
-                lumi_branch='GetIntegratedLuminosity/LumiTuple',
-                files=[]):
-        self.data = ROOT.TChain(branch)
-        self.lumi = ROOT.TChain(lumi_branch)
-        self.filelist = []
-
-        if files:
-            self.add_files(files)
-    
-    def add_files(self, files):
-        self.filelist += files
-
-        for f in files:
-            self.data.Add(f)
-            self.lumi.Add(f)
-
-    def get_luminosity(self):
-        return getLumi(self.lumi)
-
-    def __str__(self):
-        ret = "<"
-        ret += "Luminosity: {}; #files: {}; ".format(self.get_luminosity(), len(self.filelist))
-        ret += "Entries: {}>".format(len(self.data))
-
-        return ret
-
-
-
-
 # =============================================================================
 OUTPUT_DIR = '$KKKdir/output/'
 
@@ -107,7 +42,7 @@ def from_ganga(job_id):
 # =============================================================================
 # files5 = append_dir(OUTPUT_DIR, ['RD-2011.root',  'RD-2012.root'])
 # files6 = append_dir(OUTPUT_DIR, ['RD-2011-sel6.root',  'RD-2012-sel6.root'])
-files7 = from_ganga(132) + from_ganga(133)
+files7 = from_ganga(157) + from_ganga(158)
 
 
 # selection5 = DataAndLumi(branch='JpsiKKK/t', files=files5)
@@ -128,13 +63,13 @@ tSelection7 = selection7.data
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(125) + from_ganga(126),
-        'Pythia8': from_ganga(127) + from_ganga(128),
+        'Pythia6': from_ganga(161) + from_ganga(162),
+        'Pythia8': from_ganga(163) + from_ganga(164),
     },
 
     '2012': {
-        'Pythia6': from_ganga(123) + from_ganga(124),
-        'Pythia8': from_ganga(129) + from_ganga(130),
+        'Pythia6': from_ganga(159) + from_ganga(160),
+        'Pythia8': from_ganga(165) + from_ganga(166),
     }
 }
 

@@ -31,6 +31,7 @@ cuts_ += "&& pt_pion[0] > 0.3 && pt_pion[1] > 0.3"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
 cuts_ += "&& minann_K  > 0.2"
 cuts_ += "&& ((psi_l0tos & 2) == 2)"
+cuts_ += "&& ann_pion > 0.15 && MIPCHI2DV_k > 9 && MIPCHI2DV_pi1 > 9 && MIPCHI2DV_pi2 > 9" # selection6+
 # cuts_ += "&& ((psi_l1tos & 2) == 2)"
 # cuts_ += "&& ((psi_l2tos & 2) == 2)"
 # # cuts_ += "&& minann_pi  > 0.4"

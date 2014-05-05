@@ -19,12 +19,14 @@ s1_Bu = Models.CB2_pdf(
     m_Bu.getMax(),
     fixMass=5.2792e+0,
     fixSigma=0.008499e+0,
-    fixAlphaL=2.14,
-    fixAlphaR=2.04,
-    fixNL=0.79,
-    fixNR=1.33,
+    fixAlphaL=2.1005,
+    fixAlphaR=1.8805,
+    fixNL=1.215,
+    fixNR=2.765,
     mass=m_Bu
 )
+
+
 # s1_Bu = Models.Gauss_pdf(
 #     name='Bu1',
 #     mn=m_Bu.getMin(),

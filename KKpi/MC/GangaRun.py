@@ -2,89 +2,78 @@
 
 my_area = '/afs/cern.ch/user/a/albarano/cmtuser'
 
+mode = 'B+ -> J/psi K+ K- pi+'
+
+
+
+config = {
+    "KKpi-MC-2012-Pythia6": [
+        ('/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pythia6/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-md100'),
+        ('/MC/2012/Beam4000GeV-2012-MagUp-Nu2.5-Pythia6/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-mu100'),
+    ],
+
+    "KKpi-MC-2012-Pythia8": [
+        ('/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pythia8/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-md100'),
+        ('/MC/2012/Beam4000GeV-2012-MagUp-Nu2.5-Pythia8/Sim08b/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503-1', 'Sim08-20130503-1-vc-mu100'),
+    ],
+
+    "KKpi-MC-2011-Pythia6": [
+        ('/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia6/Sim08b/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503', 'Sim08-20130503-vc-md100'),
+        ('/MC/2011/Beam3500GeV-2011-MagUp-Nu2-Pythia6/Sim08b/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503', 'Sim08-20130503-vc-mu100'),
+    ],
+
+    "KKpi-MC-2011-Pythia8": [
+        ('/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia8/Sim08b/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503', 'Sim08-20130503-vc-md100'),
+        ('/MC/2011/Beam3500GeV-2011-MagUp-Nu2-Pythia8/Sim08b/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12245003/ALLSTREAMS.DST', 'Sim08-20130503', 'Sim08-20130503-vc-mu100'),
+    ],
+}
+
+
+output =  [ DiracFile("*.mdst") ,
+            SandboxFile("*.xml") ,
+            SandboxFile("*db") ,
+            SandboxFile("*.txt") ,
+            SandboxFile("*.root")
+]
+
 
 j = Job(
-    name='MC_B2JpsiKKpi',
     application=Bender(
         events=-1,
-        version='v22r8',
+        version='v23r4',
         user_release_area=my_area,
-        module=my_area +
-        '/Bender_v22r8/Scripts/testing/MC/Bu2JpsiKKpi.py'
+        module='$KKpidir/MC/Bu2JpsiKKpi.py'
     ),
-    outputdata=['DVNtuples.root'],
+    outputfiles=output,
     backend=Dirac(),
-    splitter=SplitByFiles(filesPerJob=3, maxFiles=-1),
+    splitter=SplitByFiles(filesPerJob=1, maxFiles=-1, bulksubmit = True)
 )
 
 
-# Bu -> J/psi K K pi
-bu_entries = getBKInfo(12245003)
+for job_prefix, job_configs in config.items():
+    year = "2011"
+    if "2012" in job_prefix:
+        year = "2012"
 
-tasks = bu_entries
+    for path, dddb, cond in job_configs:
+        mag = "-U"
+        if "Down" in path:
+            mag = "-D"
 
-keys = tasks.keys()
-keys.sort()
+        if j.status != 'new':
+            j = j.copy()
 
-for key in keys:
-    if 'new' != j.status:
-        j = j.copy()
+        j.name = job_prefix + mag
+        j.splitter.ignoremissing = False
 
-    j.name = 'MC-Kpipi'
+        j.application.params = {
+            'Mode': mode,
+            'Year': year,
+            'DDDB': dddb,
+            'SIMCOND': cond,
+        }
 
-    task = tasks[key]
+        j.inputdata = BKQuery(path).getDataset()
 
-    num_files = task[2]
-    num_events = task[3]
-
-    if num_files < 1:
-        continue
-    if num_events < 1:
-        continue
-
-    path = key
-
-    
-    mode = 'B+ -> J/psi K+ K- pi+'
-
-    year = '2011'
-
-    if 0 <= path.find('/MC/2012'):
-        year = '2012'
-
-    j.name = 'KKpi/MC/' + year
-
-    dddb = task[0]
-    cond = task[1]
-
-    if not dddb:
-        print 'INVALID DDDB-tag', task
-        continue
-
-    if not cond:
-        print 'INVALID CONDDB-tag', task
-        continue
-
-    params = {
-        'Mode': mode,
-        'Year': year,
-        'DDDB': dddb,
-        'SIMCOND': cond,
-    }
-
-    j.application.params = params
-
-    query = BKQuery(path)
-    j.inputdata = query.getDataset()
-
-    print  key, task, len(j.inputdata)
-
-    j.comment = str([path] + list(task))
-    print 'COMMENT:', j.comment
-    j.submit()
-
-jobs
-
-# =============================================================================
-# The END
-# =============================================================================
+        j.comment = str((path, dddb, cond))
+        j.submit()

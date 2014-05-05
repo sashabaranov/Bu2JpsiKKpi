@@ -6,29 +6,45 @@ __date__ = "  "
 __version__ = "  "
 #=============================================================================
 
+import __builtin__
+
+from math import *
+
 # import everything from BENDER
 from Bender.All import *
-from Gaudi.Configuration import *
 import BenderTools.Fill
 import BenderTools.TisTos
+
+from Gaudi.Configuration import *
 
 # needed for job configuration
 
 # import of the useful units from Gaudi
 from GaudiKernel.SystemOfUnits import GeV, MeV, mm, micrometer
 from GaudiKernel.PhysicalConstants import c_light
-from math import *
 from LoKiTracks.decorators import *  # needed for TrKEY work
 
+import LHCbMath.Types                 ## easy access to various geometry routines
 
-import LHCbMath.Types                 ## easy access to various geometry routines 
-from   Gaudi.Configuration import *   ## needed for job configuration
-
-from   GaudiKernel.SystemOfUnits     import GeV, MeV, mm
-from   GaudiKernel.PhysicalConstants import c_light
-
-import math
 from LoKiCore.basic import cpp
+
+
+class fakeK ( object ) :
+
+    def __init__(self, p, pid) :
+        self.particle = p
+        self.old_pid  = LHCb.ParticleID ( p.particleID() )
+        self.new_pid  = pid
+
+    def __enter__  ( self ) :
+        self.particle.setParticleID ( self.new_pid )
+
+    def __exit__   ( self , *_ ) :
+
+        self.particle.setParticleID ( self.old_pid )
+        self.particle = None
+
+
 
 #=============================================================================
 
@@ -97,8 +113,10 @@ class MCAnalysisAlgorithm(AlgoMC):
             return sc
 
         sc = self.tisTos_initialize ( triggers , lines )
-        if sc.isFailure () : 
+        if sc.isFailure () :
             return sc
+
+        self._mass = DTF_FUN ( M , True , 'J/psi(1S)' )
 
         return SUCCESS
 
@@ -114,13 +132,13 @@ class MCAnalysisAlgorithm(AlgoMC):
             return SUCCESS
 
         mcK = self.mcselect(
-            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  pi+ pi- )]CC")
+            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  pi- pi+ )]CC")
         mcPi = self.mcselect(
-            "mcPi",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  ^pi+ ^pi- )]CC")
+            "mcPi",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  ^pi- ^pi+ )]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  pi+ pi- )]CC")
+            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  pi- pi+ )]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  pi+ pi- )]CC")
+            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  pi- pi+ )]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
@@ -133,9 +151,8 @@ class MCAnalysisAlgorithm(AlgoMC):
         trueMu = MCTRUTH(match, mcMu)
 
 
-        # myB = self.select('Bu' , '[( Beauty ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K-)]CC' )
         myB = self.select('Bu' , '[( Beauty ->  J/psi(1S)  K+  pi+  pi-)]CC' )
-        
+
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
         dtffun_chi2 = DTF_CHI2NDOF(True, "J/psi(1S)")
@@ -149,13 +166,14 @@ class MCAnalysisAlgorithm(AlgoMC):
                 continue
 
 
-            b = myb
-            jpsi = myb.child(1)
-            
+            b, jpsi, k, pi1, pi2 = tuple(myb(i) for i in xrange(5))
+
             # add DTF-applied information
             nt.column('DTFm_b', dtffun_m(myb) / GeV)
             nt.column('DTFctau', dtffun_ctau(myb))
             nt.column('DTFchi2ndof', dtffun_chi2(myb))
+
+            MIPCHI2DVfun = MIPCHI2DV()
 
             self.treatKine(nt, b, '_b')
             self.treatKine(nt, jpsi, '_jpsi')
@@ -166,24 +184,31 @@ class MCAnalysisAlgorithm(AlgoMC):
             self.treatMuons(nt, b)
             self.treatTracks(nt, b)
 
+
+            # ==========================================
+            # Do fake
+            # ==========================================
+            nt.column('mass', self._mass ( b )  / GeV )
+
+            ## try with pi1->K
+            with fakeK ( pi1, pid = LHCb.ParticleID( int(Q(pi1)) * 321 ) ) :
+                nt.column ( 'mass_pi1ask' , self._mass ( b ) / GeV )
+
             # particles without misid pion
-            particles = [myb(i) for i in xrange(1, 4)]
+            particles = [myb(1), myb(2), myb(4)]
             # particles with misid pion
             all_particles = [myb(i) for i in xrange(1, 5)]
-            pion = myb(4)
+            pion = myb(3)
 
             kaon_mass = 493.667 * MeV  # GeV / c^2
 
-            E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
+            E_wo_misid = __builtin__.sum([E(p) for p in particles])
             # GeV/c^2 + (GeV / c)^2
             E_misid = sqrt(kaon_mass ** 2 + (P(pion)) ** 2)
 
-            total_PX = reduce(
-                lambda x, y: x + y, [PX(p) for p in all_particles])
-            total_PY = reduce(
-                lambda x, y: x + y, [PY(p) for p in all_particles])
-            total_PZ = reduce(
-                lambda x, y: x + y, [PZ(p) for p in all_particles])
+            total_PX = __builtin__.sum([PX(p) for p in all_particles])
+            total_PY = __builtin__.sum([PY(p) for p in all_particles])
+            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
 
             total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
 
@@ -191,7 +216,11 @@ class MCAnalysisAlgorithm(AlgoMC):
 
             nt.column("m_b_misid", misid_Bu_M / GeV)
 
-            
+
+            nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))
+            nt.column('MIPCHI2DV_pi1', MIPCHI2DVfun(pi1))
+            nt.column('MIPCHI2DV_pi2', MIPCHI2DVfun(pi2))
+
             nt.column ( 'mcTrueB'    , trueB(b)          )
             nt.column ( 'mcTruePsi' , truePsi(jpsi(0)    ))
             nt.column ( 'mcTrueK'    , trueK(myb(2))     )
@@ -205,16 +234,16 @@ class MCAnalysisAlgorithm(AlgoMC):
 
             # add the information needed for TisTos
             self.tisTos ( jpsi  , nt  , 'psi_' ,
-                          self.lines [ 'psi' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi1_' ,
-                          self.lines [ 'psi1' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi1' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi2_' ,
-                          self.lines [ 'psi2' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi2' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             self.tisTos ( jpsi  , nt  , 'psi3_' ,
-                          self.lines [ 'psi3' ] , self.l0tistos , self.tistos  )
+                          self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
             nt.write()
 
@@ -224,6 +253,8 @@ class MCAnalysisAlgorithm(AlgoMC):
     def finalize(self):
         self.fill_finalize()
         self.tisTos_finalize ()
+
+        self._mass = None
         return AlgoMC.finalize(self)
 
 # =============================================================================
@@ -235,122 +266,113 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
     Configure the job
     """
     from Configurables           import DaVinci       ## needed for job configuration
-    from Configurables           import EventSelector ## needed for job configuration
-    
-    from Configurables import MessageSvc
-    msg = MessageSvc()
-    msg.setError += [ 'HcalDet.Quality'   ,
-                      'EcalDet.Quality'   ,
-                      'MagneticFieldSvc'  ,
-                      'PropertyConfigSvc' ]
+
+    ## get the builder
+    from StrippingSelections.StrippingPsiXForBandQ  import PsiX_BQ_Conf as  PSIX
+
+    ## for MC it is better to exclude PID/DLL/PROBNN cuts
+    builder_configuration = {
+        'PionCut'   : """
+        ( PT          > 200 * MeV ) &
+        ( CLONEDIST   > 5000      ) &
+        ( TRGHOSTPROB < 0.5       ) &
+        ( TRCHI2DOF   < 4         ) &
+        in_range ( 2          , ETA , 5         ) &
+        in_range ( 3.2 * GeV  , P   , 150 * GeV ) &
+        HASRICH                     &
+        ( PROBNNpi     > 0.1      ) &
+        ( MIPCHI2DV()  > 4        )
+        """
+        ### ( PROBNNpi     > 0.1      ) &
+        ,
+        'KaonCut'   : """
+        ( PT          > 200 * MeV ) &
+        ( CLONEDIST   > 5000      ) &
+        ( TRGHOSTPROB < 0.5       ) &
+        ( TRCHI2DOF   < 4         ) &
+        in_range ( 2          , ETA , 5         ) &
+        in_range ( 3.2 * GeV  , P   , 150 * GeV ) &
+        HASRICH                     &
+        ( PROBNNk      > 0.1      ) &
+        ( MIPCHI2DV()  > 4        )
+        """
+        ### ( PROBNNk      > 0.1      ) &
+    }
+
+
+    def _kaons_     ( self ) :
+        """
+        Kaons for   B -> psi X lines
+        """
+        from GaudiConfUtils.ConfigurableGenerators import FilterDesktop
+        ## from StandardParticles                     import StdAllLooseKaons as inpts
+        from StandardParticles                     import StdNoPIDsKaons   as inpts
+        ##
+        return self.make_selection (
+            'Kaon'                 ,
+            FilterDesktop          ,
+            [ inpts ]              ,
+            Code = self['KaonCut'] ,
+        )
+
+
+    def _pions_    ( self ) :
+        """
+        Pions for   B -> psi X lines
+        """
+        from GaudiConfUtils.ConfigurableGenerators import FilterDesktop
+        ## from StandardParticles                     import StdAllLoosePions as inpts
+        from StandardParticles                     import StdNoPIDsPions   as inpts
+        ##
+        return self.make_selection (
+            'Pion'                 ,
+            FilterDesktop          ,
+            [ inpts ]              ,
+            Code = self['PionCut'] ,
+        )
+
+    jpsi_name = 'FullDSTDiMuonJpsi2MuMuDetachedLine'
+    psi2_name = 'FullDSTDiMuonPsi2MuMuDetachedLine'
 
     from PhysSelPython.Wrappers import AutomaticData
-    jpsi_location = 'FullDSTDiMuonJpsi2MuMuDetachedLine'
-    jpsi = AutomaticData(
-        Location='/Event/AllStreams/Phys/%s/Particles' % jpsi_location)
+    jpsi  = AutomaticData ( '/Event/AllStreams/Phys/%s/Particles' % jpsi_name )
+    psi2s = AutomaticData ( '/Event/AllStreams/Phys/%s/Particles' % psi2_name )
+    #
+    ## merged selectoon for J/psi & psi'
+    #
+    from PhysSelPython.Wrappers import MergedSelection
+    psis = MergedSelection (
+        'SelDetachedPsisForBandQ' ,
+        RequiredSelections = [ jpsi ]
+    )
 
-    
-    # =============================================================================
-    from StrippingSelections.StrippingPsiXForBandQ import PsiX_BQ_Conf as PsiX
-
-    ## 1) redefine stripping configurations
-    def _psi_(self):
+    def _psi_ ( self ) :
         """
         psi(') -> mu+ mu-
         """
-        return jpsi
+        return psis
 
-    PsiX.psi = _psi_
 
-    logger.warning("Redefine PsiX .psi")
+    PSIX.pions = _pions_
+    PSIX.kaons = _kaons_
+    PSIX.psi   = _psi_
 
-    ## 2) unify the pion& kaon  selections
-    # =============================================================================
-    _PionCut_ = """
-    ( CLONEDIST   > 5000   ) &
-    ( TRCHI2DOF   < 4      ) &
-    ( TRGHOSTPROB < 0.4    ) &
-    ( PT          > 200 * MeV               ) &
-    in_range ( 2          , ETA , 4.9       ) &
-    in_range ( 3.2 * GeV  , P   , 150 * GeV ) &
-    HASRICH                  &
-    ( PROBNNpi     > 0.15  ) &
-    ( MIPCHI2DV()  > 9.    )
-    """
-    _KaonCut_ = """
-    ( CLONEDIST   > 5000   ) &
-    ( TRCHI2DOF   < 4      ) &
-    ( TRGHOSTPROB < 0.4    ) &
-    ( PT          > 200 * MeV               ) &
-    in_range ( 2          , ETA , 4.9       ) &
-    in_range ( 3.2 * GeV  , P   , 150 * GeV ) &
-    HASRICH                  &
-    ( PROBNNk      > 0.15  ) &
-    ( MIPCHI2DV()  > 9.    )
-    """
+    ## use builder
+    builder = PSIX ( 'PsiX' , builder_configuration  )
 
-    from GaudiConfUtils.ConfigurableGenerators import FilterDesktop
-    _alg_pi = FilterDesktop(
-        ##
-        Code=_PionCut_,
-        ##
-    )
 
-    from PhysSelPython.Wrappers import Selection
-    from StandardParticles import StdAllNoPIDsPions as input_pions
-    pions = Selection(
-        "SelPiForBQ",
-        Algorithm=_alg_pi,
-        RequiredSelections=[input_pions]
-    )
-
-    from GaudiConfUtils.ConfigurableGenerators import FilterDesktop
-    _alg_k = FilterDesktop(
-        ##
-        Code=_KaonCut_,
-        ##
-    )
-
-    from PhysSelPython.Wrappers import Selection
-    from StandardParticles import StdAllNoPIDsKaons as input_kaons
-    kaons = Selection(
-        "SelKForBQ",
-        Algorithm=_alg_k,
-        RequiredSelections=[input_kaons]
-    )
-
-    def _kaons_(self):
-        return kaons
-
-    def _pions_(self):
-        return pions
-
-    #
-    ## get the selections
-    #
-
-    for s in [PsiX]:
-        s.pions = _pions_
-        s.kaons = _kaons_
-
-    logger.warning("Redefine PsiX.kaons          ")
-    logger.warning("Redefine PsiX.kaons          ")
-
-    psix = PsiX('PsiX', {})
-
-    for s in [psix.psi_3Kpi()]:
-        a = s.algorithm()
-        a.ParticleCombiners = {'': 'LoKi::VertexFitter:PUBLIC'}
 
     from PhysSelPython.Wrappers import SelectionSequence
-    sel_seq = SelectionSequence('B2Psi3Kpi', psix . psi_3Kpi())
+
+    psi3k      = SelectionSequence ( 'Psi3K'       , builder.psi_3K   () )
+    psi3kpi    = SelectionSequence ( 'Psi3Kpi'     , builder.psi_3Kpi () )
 
 
     davinci = DaVinci(
         InputType     = 'DST'    ,
         Simulation    = True     ,
         PrintFreq     = 1000     ,
-        EvtMax        = -1       , 
+        EvtMax        = -1       ,
         Lumi          = True     ,
         DataType = params['Year'],
         DDDBtag = params['DDDB'],
@@ -358,23 +380,26 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         # HistogramFile = 'DVHistos.root' ,
         TupleFile     = 'DVNtuples.root' ,
     )
-    
+
+    from Configurables import GaudiSequencer
+    # seq   = GaudiSequencer('SEQ1', Members=[psi3k.sequence()])
+    seq   = GaudiSequencer('SEQ2', Members=[psi3kpi.sequence()])
+
 
     my_name = "Bplus"
-    from Configurables import GaudiSequencer
-    
-    davinci.UserAlgorithms = [ sel_seq.sequence() , my_name ] 
-    
+
+
+    davinci.UserAlgorithms = [ seq , my_name ]
+
     setData ( datafiles , catalogs , castor )
-    
+
     gaudi = appMgr()
 
-    print 'seq.outputLocation()= ', sel_seq.outputLocation()    # Phys/SelPsi3KPiForPsiX/Particles
     # create local algorithm:
     alg = MCAnalysisAlgorithm(
         my_name,
         Inputs = [
-        sel_seq.outputLocation()
+            psi3kpi.outputLocation()
         ] ,
         PP2MCs = [ 'Relations/Rec/ProtoP/Charged' ]
     )
@@ -403,8 +428,8 @@ if __name__ == '__main__':
     configure(inputdata, params=test_params, castor=True)
 
     # run the job
-    run(-1)
+    run(1000)
 
     gaudi = appMgr()
-    
+
     myalg2 = gaudi.algorithm ( 'Bplus' )

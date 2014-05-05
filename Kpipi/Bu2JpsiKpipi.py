@@ -4,15 +4,37 @@ __author__ = "Alexander Baranov a.baranov@cern.ch"
 __date__ = "Summer'13"
 __version__ = " "
 
+import __builtin__
+
+from math import *
+
 from Bender.All import *
 from Gaudi.Configuration import *
 from GaudiKernel.SystemOfUnits import GeV, MeV, mm, micrometer
 from GaudiKernel.PhysicalConstants import c_light
-from math import *
 from LoKiTracks.decorators import *  # needed for TrKEY work
 
 import BenderTools.Fill
 import BenderTools.TisTos
+
+
+
+class fakeK ( object ) :
+
+    def __init__(self, p, pid) :
+        self.particle = p
+        self.old_pid  = LHCb.ParticleID ( p.particleID() )
+        self.new_pid  = pid
+
+    def __enter__  ( self ) :
+        self.particle.setParticleID ( self.new_pid )
+
+    def __exit__   ( self , *_ ) :
+
+        self.particle.setParticleID ( self.old_pid )
+        self.particle = None
+
+
 
 
 class Bu2JpsiKpipi(Algo):
@@ -77,12 +99,17 @@ class Bu2JpsiKpipi(Algo):
         sc = self.tisTos_initialize ( triggers , lines )
         if sc.isFailure () : return sc
 
+        self._mass = DTF_FUN ( M , True , 'J/psi(1S)' )
+
         return SUCCESS
 
     # finalize & print histos
     def finalize(self):
         self.fill_finalize()
         self.tisTos_finalize ()
+
+        self._mass = None
+
         return Algo.finalize(self)
 
     def analyse(self):
@@ -99,7 +126,7 @@ class Bu2JpsiKpipi(Algo):
         dtffun_ctau = DTF_CTAU(0, True)
         dtffun_chi2 = DTF_CHI2NDOF(True, "J/psi(1S)")
         dtffun_m = DTF_FUN(M, True, "J/psi(1S)")
-        
+
         MIPCHI2DVfun = MIPCHI2DV()
 
 
@@ -123,6 +150,21 @@ class Bu2JpsiKpipi(Algo):
             nt.column('DTFchi2ndof', dtffun_chi2(myb))
             nt.column('DTFm_b', dtffun_m(myb) / GeV)
 
+
+
+            # ==========================================
+            # Do fake
+            # ==========================================
+            nt.column('mass', self._mass ( b )  / GeV )
+
+            ## try with pi1->K
+            with fakeK ( pi1, pid = LHCb.ParticleID( int(Q(pi1)) * 321 ) ) :
+                nt.column ( 'mass_pi1ask' , self._mass ( b ) / GeV )
+
+
+            # ==========================================
+            # Calculate pion misid combination
+            # ==========================================
             # particles without misid pion
             particles = [myb(i) for i in xrange(1, 4)]
             # particles with misid pion
@@ -131,22 +173,20 @@ class Bu2JpsiKpipi(Algo):
 
             kaon_mass = 493.667 * MeV  # GeV / c^2
 
-            E_wo_misid = reduce(lambda x, y: x + y, [E(p) for p in particles])
+            E_wo_misid = __builtin__.sum([E(p) for p in particles])
             # GeV/c^2 + (GeV / c)^2
             E_misid = sqrt(kaon_mass ** 2 + (P(pion)) ** 2)
 
-            total_PX = reduce(
-                lambda x, y: x + y, [PX(p) for p in all_particles])
-            total_PY = reduce(
-                lambda x, y: x + y, [PY(p) for p in all_particles])
-            total_PZ = reduce(
-                lambda x, y: x + y, [PZ(p) for p in all_particles])
+            total_PX = __builtin__.sum([PX(p) for p in all_particles])
+            total_PY = __builtin__.sum([PY(p) for p in all_particles])
+            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
 
             total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
 
             misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
 
             nt.column("m_b_misid", misid_Bu_M / GeV)
+
 
 
             nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))
@@ -185,7 +225,7 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
 
     fltrs = LoKi_Filters(
         VOID_Code="""
-        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KPiForPsiX/Particles') 
+        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KPiForPsiX/Particles')
         """
     )
     filters = fltrs.filters('Filters')
@@ -245,4 +285,4 @@ if __name__ == '__main__':
     params = {'year' : '2011'}
 
     configure(inputdata, params=params, castor=True)
-    run(200)
+    run(-1)

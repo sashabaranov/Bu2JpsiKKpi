@@ -202,14 +202,14 @@ class MCAnalysisAlgorithm(AlgoMC):
                           self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
 
-            nt.column ( 'mcTrueB'    , trueB(b)          )
-            nt.column ( 'mcTruePsi' , truePsi(jpsi(0)    ))
-            nt.column ( 'mcTrueK'    , trueK(myb(2))     )
-            nt.column ( 'mcTruePi1'  , truePi(myb(3))    )
-            nt.column ( 'mcTruePi2'  , truePi(myb(4))    )
+            nt.column('mcTrueB', trueB(b))
+            nt.column('mcTruePsi', truePsi(jpsi))
+            nt.column('mcTrueK1', trueK(k1))
+            nt.column('mcTrueK2', trueK(k2))
+            nt.column('mcTruePi', truePi(pi))
 
-            nt.column ( 'mcTrueMu1'  , trueMu(jpsi(1))    )
-            nt.column ( 'mcTrueMu2'  , trueMu(jpsi(2))    )
+            nt.column('mcTrueMu1', trueMu(jpsi(1)))
+            nt.column('mcTrueMu2', trueMu(jpsi(2)))
 
 
             nt.write()
@@ -366,7 +366,8 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         Inputs = [
             psi3kpi.outputLocation()
         ] ,
-        PP2MCs = [ 'Relations/Rec/ProtoP/Charged' ]
+        PP2MCs = [ 'Relations/Rec/ProtoP/Charged' ],
+        ReFitPVs = True
     )
 
     return SUCCESS

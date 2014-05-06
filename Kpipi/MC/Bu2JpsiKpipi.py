@@ -401,7 +401,8 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         Inputs = [
             psi3kpi.outputLocation()
         ] ,
-        PP2MCs = [ 'Relations/Rec/ProtoP/Charged' ]
+        PP2MCs = [ 'Relations/Rec/ProtoP/Charged' ],
+        ReFitPVs = True
     )
 
     return SUCCESS

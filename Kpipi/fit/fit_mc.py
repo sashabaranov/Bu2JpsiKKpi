@@ -16,7 +16,7 @@ from data import mc_Pythia6, mc_Pythia8, mc_total
 
 
 
-tBu = mc_Pythia6.data
+tBu = mc_Pythia8.data
 
 
 logger.info('DATA chain name is %s ' % (tBu.GetName()))
@@ -78,6 +78,12 @@ ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 model_Bu.signal.nL.release()
 ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
+
+fu.SetXTitle('#Inv.\,mass(J/\psi\,K\pi\pi), GeV/c^2')
+fu.SetYTitle('Events / (%d MeV/c^2)' % 4)
+
+fu.Draw()
+
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
 
@@ -87,40 +93,38 @@ model_Bu.sPlot(ds_Bu)
 
 
 
-# hists = [
-#     ("p6_pi1", "mass_pi1ask", "SBu_sw"),
-#     ("p6_pi1_cuts", "mass_pi1ask", "SBu_sw && ann_pion_K > 0.1"),
-# ]
+hists = [
+    ("p8_pi1", "mass_pi1ask", "SBu_sw"),
+    ("p8_pi1_cuts", "mass_pi1ask", "SBu_sw && ann_pion_K > 0.1"),
+]
 
 
 
-# logger.info('Writing histos')
-# db = shelve.open('$KKpidir/fit/histos.shelve')
+logger.info('Writing histos')
+db = shelve.open('$KKpidir/fit/histos.shelve')
 
-# d = db['Kpipi']
-# d['MC'] = {param[0]: make_hist(*param) for param in hists}
-# db['Kpipi'] = d
-
-# db.sync()
-# db.close()
+d = db['Kpipi']
+d['MC'] = {param[0]: make_hist(ds_Bu, *param) for param in hists}
+db['Kpipi'] = d
 
 
 
-# h_1 = ROOT.TH1F("h_1", '',  30, 5.16, 5.45)
-# h_1.Sumw2()
-
-# h_1.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,\pi^-\,\pi^+) \,\, with \,\, misid, GeV/c^2')
-
-# ds_Bu.project(h_1, "mass_pi1ask", "SBu_sw") # && ann_kaon_PI_2 > 0.1")# && ann_kaon0 > 0.3")
-
-# h_1.red()
-
-# for j in xrange(0, h_1.GetNbinsX()):
-#     if h_1.GetBinContent(j) < 0:
-#         h_1.SetBinContent(j, 0)
-
-# h_1.Scale(1.0/h_1.Integral())
 
 
 
-# h_1.Draw("")
+h1, h2 = db['Kpipi']['MC']['p8_pi1'], db['Kpipi']['MC']['p8_pi1_cuts']
+
+
+title = '#Inv.\,mass(J/\psi\,K^+\,\pi^-\,\pi^+) \,\, with \,\, misid, GeV/c^2'
+h1.SetXTitle(title)
+h2.SetXTitle(title)
+
+h1.red()
+h2.blue()
+
+h2.Draw()
+h1.Draw('same')
+
+
+db.sync()
+db.close()

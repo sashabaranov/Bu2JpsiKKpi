@@ -52,6 +52,11 @@ model_Bu.signal.mean.release()
 ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
 
+fu.SetXTitle('#Inv.\,mass(J/\psi\,K\pi\pi), GeV/c^2')
+fu.SetYTitle('Events / (%d MeV/c^2)' % 4)
+
+fu.Draw()
+
 
 print ru
 # print 'FIT results for B+  ', ru(model_Bu.s_name)[0]
@@ -75,7 +80,7 @@ logger.info('Writing histos')
 db = shelve.open('$KKpidir/fit/histos.shelve')
 
 db['Kpipi'] = {
-    'RD': {param[0]: make_hist(*param) for param in hists}
+    'RD': {param[0]: make_hist(ds_Bu, *param) for param in hists}
 }
 
 
@@ -96,9 +101,6 @@ h2.blue()
 h1.Draw()
 h2.Draw('same')
 
-
-
-
-
+db.sync()
 db.close()
 

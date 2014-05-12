@@ -18,10 +18,10 @@ s1_Bu = Models.CB2_pdf(
     m_Bu.getMax(),
     fixMass=5.2792e+0,
     fixSigma=0.008499e+0,
-    fixAlphaL=1.9103,
-    fixAlphaR=1.8001,
-    fixNL=0.5667,
-    fixNR=2.9913,
+    fixAlphaL=1.89,
+    fixAlphaR=1.94,
+    fixNL=0.8,
+    fixNR=2.4,
     mass=m_Bu
 )
 

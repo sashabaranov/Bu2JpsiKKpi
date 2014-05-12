@@ -1,11 +1,4 @@
-import ROOT
-from AnalysisPython.PyRoot import *
-from AnalysisPython.PyRoUts import *
-from AnalysisPython.Utils import timing
-from AnalysisPython.Utils import rooSilent
-from AnalysisPython.Logger import getLogger
-logger = getLogger(__name__)
-
+from tools import *
 
 from Variables import m_Bu, nbin_Bu
 from cuts import cuts_Bu, prntCuts
@@ -61,8 +54,8 @@ ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
 
 print ru
-print 'FIT results for B+  ', ru(model_Bu.s_name)[0]
-print 'FIT precision:', ru("SBu")[0].prec()
+# print 'FIT results for B+  ', ru(model_Bu.s_name)[0]
+# print 'FIT precision:', ru("SBu")[0].prec()
 
 # print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
 # print 'FIT#2 precision:', ru("SBu")[0].prec()
@@ -70,19 +63,6 @@ print 'FIT precision:', ru("SBu")[0].prec()
 
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
-
-
-def make_hist(name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.16, 5.45)
-    h.Sumw2()
-
-    ds_Bu.project(h, variable, cuts)
-
-    for j in xrange(0, h.GetNbinsX()):
-        if h.GetBinContent(j) < 0:
-            h.SetBinContent(j, 0)
-
-    return h
 
 
 
@@ -97,6 +77,28 @@ db = shelve.open('$KKpidir/fit/histos.shelve')
 db['Kpipi'] = {
     'RD': {param[0]: make_hist(*param) for param in hists}
 }
+
+
+
+
+
+
+h1, h2 = db['Kpipi']['RD']['pi1'], db['Kpipi']['RD']['pi1_cuts']
+
+
+title = '#Inv.\,mass(J/\psi\,K^+\,\pi^-\,\pi^+) \,\, with \,\, misid, GeV/c^2'
+h1.SetXTitle(title)
+h2.SetXTitle(title)
+
+h1.red()
+h2.blue()
+
+h1.Draw()
+h2.Draw('same')
+
+
+
+
 
 db.close()
 

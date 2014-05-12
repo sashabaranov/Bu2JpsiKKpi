@@ -34,10 +34,11 @@ def append_dir(directory, files):
 
 
 def from_ganga(job_id):
+    import os
     from glob import glob
-    prefix = "/afs/cern.ch/user/a/albarano/gangadir/workspace/albarano/LocalXML/"
+    prefix = "$HOME/gangadir/workspace/albarano/LocalXML/"
     pattern = prefix + str(job_id) + "/*/output/*.root"
-    return glob(pattern)
+    return glob(os.path.expandvars(pattern))
 
 
 
@@ -53,15 +54,16 @@ logger.info("Selection 7: %s" % selection7)
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(182) + from_ganga(183),
-        'Pythia8': from_ganga(180) + from_ganga(181),
+        'Pythia6': from_ganga(213) + from_ganga(214),
+        'Pythia8': from_ganga(211) + from_ganga(212),
     },
 
     '2012': {
-        'Pythia6': from_ganga(184) + from_ganga(185),
-        'Pythia8': from_ganga(178) + from_ganga(179),
+        'Pythia6': from_ganga(215) + from_ganga(216),
+        'Pythia8': from_ganga(209) + from_ganga(210),
     }
 }
+
 
 mc_Pythia6 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
 mc_Pythia8 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])

@@ -7,9 +7,9 @@ from AnalysisPython.Logger import getLogger
 
 logger = getLogger(__name__)
 
-import DiCharm.Analysis.Models as Models
+import PyPAW.FitModels as Models
 
-from cuts import m_Bu
+from Variables import m_Bu
 
 
 s1_Bu = Models.CB2_pdf(
@@ -39,7 +39,7 @@ s1_Bu = Models.CB2_pdf(
 alist = ROOT.RooArgList(m_Bu)
 
 
-model_Bu = Models.Charm3_pdf(
+model_Bu = Models.Fit1D(
     signal=s1_Bu,
     background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
 )

@@ -1,11 +1,4 @@
-import ROOT
-from AnalysisPython.PyRoot import *
-from AnalysisPython.PyRoUts import *
-from AnalysisPython.Utils import timing
-from AnalysisPython.Utils import rooSilent
-from AnalysisPython.Logger import getLogger
-logger = getLogger(__name__)
-
+from tools import *
 
 from cuts import m_Bu, nbin_Bu
 from cuts import cuts_Bu, prntCuts, mctrue
@@ -39,7 +32,6 @@ with rooSilent():
     r, f = model_Bu.fitHisto(h1)
 
 
-from PyPAW.Selectors import SelectorWithVars
 from Variables import selector_variables
 
 sel_Bu = SelectorWithVars(
@@ -83,18 +75,6 @@ model_Bu.sPlot(ds_Bu)
 # Write histos
 # ===============================================
 
-def make_hist(name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.16, 5.45)
-    h.Sumw2()
-
-    ds_Bu.project(h, variable, cuts)
-
-    for j in xrange(0, h.GetNbinsX()):
-        if h.GetBinContent(j) < 0:
-            h.SetBinContent(j, 0)
-
-    return h
-
 
 hists = [
     ("p8_k1", "mass_k1aspi", "SBu_sw"),
@@ -112,9 +92,25 @@ db = shelve.open('$KKpidir/fit/histos.shelve')
 d = db['KKK']
 
 for param in hists:
-    d['MC'][param[0]] = make_hist(*param)
+    d['MC'][param[0]] = make_hist(ds_Bu, *param)
 
 db['KKK'] = d
+
+
+h1, h2 = db['KKK']['MC']['p8_k1_cuts'], db['KKK']['MC']['p8_k3_cuts']
+
+
+title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
+h1.SetXTitle(title)
+h2.SetXTitle(title)
+
+h1.red()
+h2.blue()
+
+h1.Draw()
+h2.Draw('same')
+
+
 
 db.sync()
 db.close()

@@ -14,6 +14,24 @@ from LoKiTracks.decorators import *  # needed for TrKEY work
 import BenderTools.Fill
 import BenderTools.TisTos
 
+KAON_ID = 321
+PION_ID = 211
+
+class fake ( object ) :
+
+    def __init__(self, p, pid) :
+        self.particle = p
+        self.old_pid  = LHCb.ParticleID ( p.particleID() )
+        self.new_pid  = pid
+
+    def __enter__  ( self ) :
+        self.particle.setParticleID ( self.new_pid )
+
+    def __exit__   ( self , *_ ) :
+
+        self.particle.setParticleID ( self.old_pid )
+        self.particle = None
+
 
 class B2JpsiKKpi(Algo):
 
@@ -77,12 +95,15 @@ class B2JpsiKKpi(Algo):
         sc = self.tisTos_initialize ( triggers , lines )
         if sc.isFailure () : return sc
 
+        self._mass = DTF_FUN ( M , True , 'J/psi(1S)' )
+
         return SUCCESS
 
     # finalize & print histos
     def finalize(self):
         self.fill_finalize()
         self.tisTos_finalize ()
+        self._mass = None
         return Algo.finalize(self)
 
     def analyse(self):
@@ -124,11 +145,6 @@ class B2JpsiKKpi(Algo):
         for myb in MyB:
 
             b, jpsi, k1, k2, pi = tuple(myb(i) for i in xrange(5))
-            #b    = myb(0)
-            #jpsi = myb(1)
-            #k1   = myb(2)
-            #k2   = myb(3)
-            #pi   = myb(4)
 
             self.treatKine(nt, b, '_b')
             self.treatKine(nt, jpsi, '_jpsi')
@@ -166,6 +182,12 @@ class B2JpsiKKpi(Algo):
             self.tisTos ( jpsi  , nt  , 'psi3_' ,
                           self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
+            with fake ( pi , pid = LHCb.ParticleID( int(Q(pi)) * KAON_ID )):
+                nt.column ( 'mass_PI_as_K' , self._mass ( b ) / GeV )
+
+            with fake ( k2 , pid = LHCb.ParticleID( int(Q(k2)) * PION_ID )):
+                nt.column ( 'mass_K_as_PI' , self._mass ( b ) / GeV )
+
 
             nt.write()
 
@@ -185,7 +207,7 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
 
     fltrs = LoKi_Filters(
         VOID_Code="""
-        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KPiForPsiX/Particles') 
+        0 < CONTAINS ('/Event/PSIX/Phys/SelPsi3KPiForPsiX/Particles')
         """
     )
     filters = fltrs.filters('Filters')
@@ -245,4 +267,4 @@ if __name__ == '__main__':
     params = {'year' : '2011'}
 
     configure(inputdata, params=params, castor=True)
-    run(200)
+    run(1000)

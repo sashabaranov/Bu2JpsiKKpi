@@ -14,8 +14,7 @@ j2011 = Job(
         events=-1,
         version='v23r3',
         user_release_area=my_area,
-        module=my_area +
-        '/Bender_v22r8/Scripts/testing/B2JpsiKKpi.py'
+        module='$KKpidir/B2JpsiKKpi.py'
     ),
     outputfiles=output,
     backend=Dirac(),
@@ -36,8 +35,7 @@ j2012 = Job(
         events=-1,
         version='v23r3',
         user_release_area=my_area,
-        module=my_area +
-        '/Bender_v22r8/Scripts/testing/B2JpsiKKpi.py'
+        module='$KKpidir/B2JpsiKKpi.py'
     ),
     outputfiles=output,
     backend=Dirac(),

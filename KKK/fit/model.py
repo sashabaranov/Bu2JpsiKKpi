@@ -1,15 +1,8 @@
 import ROOT
-from AnalysisPython.PyRoot import *
-from AnalysisPython.PyRoUts import *
-from AnalysisPython.Utils import timing
-from AnalysisPython.Utils import rooSilent
-from AnalysisPython.Logger import getLogger
-
-logger = getLogger(__name__)
-
 import PyPAW.FitModels as Models
 
-from cuts import m_Bu
+
+from variables import m_Bu
 
 
 # B+ -> J/psi K+ K- K+
@@ -46,6 +39,15 @@ model_Bu = Models.Fit1D(
     signal=s1_Bu,
     # signal2=KKK_pdf,
     # signal3=Kpipi_pdf,
+    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=2), suffix='Bu'
+)
+
+model_Bu_mc = Models.Fit1D(
+    signal=s1_Bu,
+    # signal2=KKK_pdf,
+    # signal3=Kpipi_pdf,
     background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
 )
 
+model_Bu_mc.b.fix(0)
+model_Bu_mc.background.tau.fix(0)

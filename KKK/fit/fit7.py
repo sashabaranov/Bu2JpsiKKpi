@@ -1,15 +1,8 @@
 from tools import *
 
-
-from cuts import m_Bu, nbin_Bu
+from variables import *
 from cuts import cuts_Bu, prntCuts
-from cuts import h1, h2
-
-
-logger.info('Import models/PDFs')
 from model import model_Bu
-
-logger.info('Import data (for the first time it could take some time)')
 from data import tSelection7 as tBu
 
 
@@ -19,16 +12,17 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
     logger.info(i)
 
 
-logger.info('Fill control B+  histogram (takes some time)')
-with timing():
-    tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
+# Fit histo
+# logger.info('Fill control B+  histogram (takes some time)')
+# with timing():
+#     tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
 
-with rooSilent():
-    logger.info('Fit Bc+ & B+ histogram (check the model)')
-    r, f = model_Bu.fitHisto(h1)
+# with rooSilent():
+#     logger.info('Fit Bc+ & B+ histogram (check the model)')
+#     r, f = model_Bu.fitHisto(h1)
 
 
-from Variables import selector_variables
+
 
 sel_Bu = SelectorWithVars(
     variables=selector_variables,
@@ -36,8 +30,7 @@ sel_Bu = SelectorWithVars(
 )
 
 
-logger.info(
-    'Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
+logger.info('Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
 
 tBu.process(sel_Bu)
 
@@ -72,8 +65,23 @@ ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
 
 
+fu.SetXTitle('#Inv.\,mass(J/\psi\,KKK), GeV/c^2')
+fu.SetYTitle('Events / (%d \, MeV/c^{2})' % events_binning)
+
+fu.Draw()
+
+
+
+
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
+
+
+
+# ===============================================
+# Write histos
+# ===============================================
+
 
 
 hists = [
@@ -94,7 +102,14 @@ db['KKK'] = {
 }
 
 
-h1, h2 = db['KKK']['RD']['k1_cuts'], db['KKK']['RD']['k3_cuts']
+
+# ===============================================
+# Drawing
+# ===============================================
+
+
+h1, h2 = db['KKK']['RD']['k1'], db['KKK']['RD']['k3']
+#h1, h2 = db['KKK']['RD']['k1_cuts'], db['KKK']['RD']['k3_cuts']
 
 
 title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
@@ -106,8 +121,5 @@ h2.blue()
 
 h1.Draw()
 h2.Draw('same')
-
-# compare()
-
 
 db.close()

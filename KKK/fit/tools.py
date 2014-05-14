@@ -15,9 +15,9 @@ def make_hist(ds, name, variable, cuts):
 
     ds.project(h, variable, cuts)
 
-    for j in xrange(0, h.GetNbinsX()):
-        if h.GetBinContent(j) < 0:
-            h.SetBinContent(j, 0)
+    # for j in xrange(0, h.GetNbinsX()):
+    #     if h.GetBinContent(j) < 0:
+    #         h.SetBinContent(j, 0)
 
     h.Scale(1.0/h.Integral())
 

@@ -1,9 +1,10 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.16, 5.45)
-nbin_Bu = 75
+m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.2, 5.35)
+nbin_Bu = 100
 
+events_binning = int(m_Bu.getBinWidth(nbin_Bu) * 1000)
 
 comparison_variables = [
     # ("DTFchi2ndof", "", -0.5, 20.0),

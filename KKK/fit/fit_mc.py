@@ -1,17 +1,13 @@
 from tools import *
 
-from cuts import m_Bu, nbin_Bu
 from cuts import cuts_Bu, prntCuts, mctrue
-from cuts import h1, h2
 
-
-
-from model import model_Bu
+from model import model_Bu_mc as model_Bu
 from data import mc_Pythia6, mc_Pythia8, mc_total
 
 
 cuts_Bu += mctrue
-tBu = mc_Pythia8.data
+tBu = mc_Pythia6.data
 
 
 logger.info('DATA chain name is %s ' % (tBu.GetName()))
@@ -21,32 +17,31 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
     logger.info(i)
 
 
-logger.info('Fill control B+  histogram (takes some time)')
-with timing():
-    tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
-
-model_Bu.b.fix(0)
-
-with rooSilent():
-    logger.info('Fit Bc+ & B+ histogram (check the model)')
-    r, f = model_Bu.fitHisto(h1)
+# logger.info('Fill control B+  histogram (takes some time)')
+# with timing():
+#     tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
 
 
-from Variables import selector_variables
+
+# with rooSilent():
+#     logger.info('Fit Bc+ & B+ histogram (check the model)')
+#     r, f = model_Bu.fitHisto(h1)
+
+
+
+from variables import *
 
 sel_Bu = SelectorWithVars(
     variables=selector_variables,
     selection=cuts_Bu
 )
 
-logger.info(
-    'Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
+logger.info('Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
 
 tBu.process(sel_Bu)
 
 ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')
-
 
 
 logger.info('Make unbinned fit for B+')
@@ -67,6 +62,13 @@ model_Bu.signal.nL.release()
 
 ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
+
+fu.SetXTitle('#Inv.\,mass(J/\psi\,KKK), GeV/c^2')
+fu.SetYTitle('Events / (%d \, MeV/c^{2})' % events_binning)
+
+fu.Draw()
+
+
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
 
@@ -76,45 +78,25 @@ model_Bu.sPlot(ds_Bu)
 # ===============================================
 
 
-hists = [
-    ("p8_k1", "mass_k1aspi", "SBu_sw"),
-    ("p8_k3", "mass_k3aspi", "SBu_sw"),
-    ("p8_k1_cuts", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1"),
-    ("p8_k3_cuts", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1"),
-    ("p8_k1_cuts_strong", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1 && ann_kaon0 > 0.3"),
-    ("p8_k3_cuts_strong", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1 && ann_kaon2 > 0.3"),
-]
+# hists = [
+#     ("p8_k1", "mass_k1aspi", "SBu_sw"),
+#     ("p8_k3", "mass_k3aspi", "SBu_sw"),
+#     ("p8_k1_cuts", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1"),
+#     ("p8_k3_cuts", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1"),
+#     ("p8_k1_cuts_strong", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1 && ann_kaon0 > 0.3"),
+#     ("p8_k3_cuts_strong", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1 && ann_kaon2 > 0.3"),
+# ]
 
 
-logger.info('Writing histos')
-db = shelve.open('$KKpidir/fit/histos.shelve')
+# logger.info('Writing histos')
+# db = shelve.open('$KKpidir/fit/histos.shelve')
 
-d = db['KKK']
+# d = db['KKK']
 
-for param in hists:
-    d['MC'][param[0]] = make_hist(ds_Bu, *param)
+# for param in hists:
+#     d['MC'][param[0]] = make_hist(ds_Bu, *param)
 
-db['KKK'] = d
-
-
-h1, h2 = db['KKK']['MC']['p8_k1_cuts'], db['KKK']['MC']['p8_k3_cuts']
-
-
-title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
-h1.SetXTitle(title)
-h2.SetXTitle(title)
-
-h1.red()
-h2.blue()
-
-h1.Draw()
-h2.Draw('same')
-
-
-
-db.sync()
-db.close()
-
+# db['KKK'] = d
 
 
 
@@ -124,34 +106,22 @@ db.close()
 # ===============================================
 
 
-# h_1 = ROOT.TH1F("h_1", '',  30, 5.16, 5.45)
-# h_1.Sumw2()
-# h_2 = ROOT.TH1F("h_2", '',  30, 5.16, 5.45)
-# h_2.Sumw2()
+
+# h1, h2 = db['KKK']['MC']['p8_k1_cuts'], db['KKK']['MC']['p8_k3_cuts']
 
 
-# h_1.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2')
-# h_2.SetXTitle('#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2')
+# title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
+# h1.SetXTitle(title)
+# h2.SetXTitle(title)
 
-# ds_Bu.project(h_1, "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1")# && ann_kaon0 > 0.3")
-# ds_Bu.project(h_2, "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1")# && ann_kaon2 > 0.3")
+# h1.red()
+# h2.blue()
 
-# h_1.red()
-# h_2.blue()
-
-# for j in xrange(0, h_1.GetNbinsX()):
-#     if h_1.GetBinContent(j) < 0:
-#         h_1.SetBinContent(j, 0)
-
-# for j in xrange(0, h_2.GetNbinsX()):
-#     if h_2.GetBinContent(j) < 0:
-#         h_2.SetBinContent(j, 0)
-
-
-# h_1.Scale(1.0/h_1.Integral())
-# h_2.Scale(1.0/h_2.Integral())
+# h1.Draw()
+# h2.Draw('same')
 
 
 
-# h_1.Draw("")
-# h_2.Draw("same")
+# db.sync()
+# db.close()
+

@@ -1,22 +1,3 @@
-import ROOT
-from AnalysisPython.PyRoUts import *
-import AnalysisPython.ZipShelve as ZipShelve
-# ========================================================================
-from AnalysisPython.Logger import getLogger
-logger = getLogger(__name__)
-
-
-# Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKK)', 5.16, 5.45)
-nbin_Bu = 75
-
-# Histograms
-h1 = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
-h1.Sumw2()
-
-
-h2 = ROOT.TH1F(hID(), '', nbin_Bu, 0.0, 3.0)
-h2.Sumw2()
 
 
 mctrue = " && mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTrueK3 && mcTrueMu1 && mcTrueMu2"

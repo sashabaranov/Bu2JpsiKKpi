@@ -7,10 +7,9 @@ from data import mc_Pythia6, mc_Pythia8, mc_total
 
 
 cuts_Bu += mctrue
-tBu = mc_Pythia8.data
 
 
-logger.info('DATA chain name is %s ' % (tBu.GetName()))
+# logger.info('DATA chain name is %s ' % (tBu.GetName()))
 
 
 for i in prntCuts(cuts_Bu, "  CUTS B+  "):
@@ -79,10 +78,10 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 
 hists = [
-    ("p8_k1", "mass_k1aspi", ""),
-    ("p8_k3", "mass_k3aspi", ""),
-    ("p8_k1_cuts", "mass_k1aspi", "ann_kaon_PI[2] > 0.1"),
-    ("p8_k3_cuts", "mass_k3aspi", "ann_kaon_PI[0] > 0.1"),
+    ["k1", "mass_k1aspi", ""],
+    ["k3", "mass_k3aspi", ""],
+    ["k1_cuts", "mass_k1aspi", "ann_kaon_PI[2] > 0.1"],
+    ["k3_cuts", "mass_k3aspi", "ann_kaon_PI[0] > 0.1"],
 ]
 
 
@@ -92,7 +91,13 @@ db = shelve.open('$KKpidir/fit/histos.shelve')
 d = db['KKK']
 
 for param in hists:
-    d['MC'][param[0]] = make_hist_mc(tBu, *param)
+    default = param[0]
+
+    param[0] = "p6_" + default
+    d['MC']['p6_' + param[0]] = make_hist_mc(mc_Pythia6.data, *param)
+
+    param[0] = "p8_" + default
+    d['MC']['p8_' + param[0]] = make_hist_mc(mc_Pythia8.data, *param)
 
 db['KKK'] = d
 
@@ -103,22 +108,29 @@ db['KKK'] = d
 # Drawing
 # ===============================================
 
-
-
-h1, h2 = db['KKK']['MC']['p8_k1'], db['KKK']['MC']['p8_k3']
-
+histos = sorted([h for h in d['MC'].values() if 'p8' in h.GetName()], key=lambda h: -h.GetMaximum())
 
 title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
-h1.SetXTitle(title)
-h2.SetXTitle(title)
-
-h1.red()
-h2.blue()
-
-h1.Draw()
-h2.Draw('same')
 
 
+legend = ROOT.TLegend(0.55, 0.65, 0.86, 0.9);
+legend.SetFillColor(ROOT.kWhite)
+
+
+
+for i, h in enumerate(histos):
+    col = i + 1
+
+    h.SetLineColor(col)
+    h.SetFillColor(col)
+    h.SetMarkerColor(col)
+
+    h.SetXTitle(title)
+    h.Draw('same')
+
+    legend.AddEntry(h.GetName(), make_legend(h.GetName()), "P")
+
+legend.Draw()
 
 db.sync()
 db.close()

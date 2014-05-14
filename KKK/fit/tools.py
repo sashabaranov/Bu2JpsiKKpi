@@ -10,7 +10,7 @@ from PyPAW.Selectors import SelectorWithVars
 logger = getLogger(__name__)
 
 def make_hist(ds, name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.16, 5.45)
+    h = ROOT.TH1F(name, '', 30, 5.2, 5.4)
     h.Sumw2()
 
     ds.project(h, variable, cuts)
@@ -24,7 +24,7 @@ def make_hist(ds, name, variable, cuts):
     return h
 
 def make_hist_mc(tBu, name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.16, 5.45)
+    h = ROOT.TH1F(name, '', 30, 5.2, 5.4)
     h.Sumw2()
 
     tBu.Project(h.GetName(), variable, cuts)
@@ -37,3 +37,11 @@ def make_hist_mc(tBu, name, variable, cuts):
 
     return h
 
+def make_legend(title):
+    "p6_k1_cuts -> misid K1 + cuts(Pythia6)"
+
+    vals = title.split('_')
+    if len(vals) == 2:
+        return "misid " + vals[1] + "(Pythia{})".format(vals[0][1])
+    if len(vals) == 3:
+        return "misid " + vals[1] + " + cut (Pythia{})".format(vals[0][1])

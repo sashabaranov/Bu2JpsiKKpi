@@ -1,14 +1,10 @@
 from tools import *
 
-from Variables import m_Bu, nbin_Bu
+from variables import *
 from cuts import cuts_Bu, prntCuts
-from cuts import h1
-
-
 from model import model_Bu
-
-
 from data import selection7
+
 tBu = selection7.data
 
 
@@ -25,7 +21,6 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 
 from PyPAW.Selectors import SelectorWithVars
-from Variables import selector_variables
 
 sel_Bu = SelectorWithVars(
     variables=selector_variables,
@@ -68,39 +63,3 @@ print ru
 
 logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
-
-
-
-hists = [
-    ("pi1", "mass_pi1ask", "SBu_sw"),
-    ("pi1_cuts", "mass_pi1ask", "SBu_sw && ann_pion_K > 0.1"),
-]
-
-logger.info('Writing histos')
-db = shelve.open('$KKpidir/fit/histos.shelve')
-
-db['Kpipi'] = {
-    'RD': {param[0]: make_hist(ds_Bu, *param) for param in hists}
-}
-
-
-
-
-
-
-h1, h2 = db['Kpipi']['RD']['pi1'], db['Kpipi']['RD']['pi1_cuts']
-
-
-title = '#Inv.\,mass(J/\psi\,K^+\,\pi^-\,\pi^+) \,\, with \,\, misid, GeV/c^2'
-h1.SetXTitle(title)
-h2.SetXTitle(title)
-
-h1.red()
-h2.blue()
-
-h1.Draw()
-h2.Draw('same')
-
-db.sync()
-db.close()
-

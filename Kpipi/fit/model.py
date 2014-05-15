@@ -9,7 +9,7 @@ logger = getLogger(__name__)
 
 import PyPAW.FitModels as Models
 
-from Variables import m_Bu
+from variables import m_Bu
 
 
 s1_Bu = Models.CB2_pdf(

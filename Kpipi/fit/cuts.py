@@ -6,20 +6,6 @@ from AnalysisPython.Logger import getLogger
 logger = getLogger(__name__)
 
 
-# Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKpipi)', 5.18, 5.45)
-nbin_Bu = 75
-
-
-
-# Histograms
-h1 = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
-h1.Sumw2()
-
-h_mc = ROOT.TH1F(hID(), '', nbin_Bu, m_Bu.getMin(), m_Bu.getMax())
-h_mc.Sumw2()
-
-
 mctrue = " && mcTrueB && mcTruePsi && mcTruePi1 && mcTruePi2 && mcTrueK && mcTrueMu1 && mcTrueMu2"
 
 # Cuts

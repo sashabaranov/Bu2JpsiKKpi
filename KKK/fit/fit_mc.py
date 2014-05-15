@@ -73,38 +73,6 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 
 # ===============================================
-# Write histos
-# ===============================================
-
-
-hists = [
-    ["k1", "mass_k1aspi", ""],
-    ["k3", "mass_k3aspi", ""],
-    ["k1_cuts", "mass_k1aspi", "ann_kaon_PI[2] > 0.1"],
-    ["k3_cuts", "mass_k3aspi", "ann_kaon_PI[0] > 0.1"],
-]
-
-
-logger.info('Writing histos')
-db = shelve.open('$KKpidir/fit/histos.shelve')
-
-d = db['KKK']
-
-for param in hists:
-    default = param[0]
-
-    param[0] = "p6_" + default
-    d['MC']['p6_' + param[0]] = make_hist_mc(mc_Pythia6.data, *param)
-
-    param[0] = "p8_" + default
-    d['MC']['p8_' + param[0]] = make_hist_mc(mc_Pythia8.data, *param)
-
-db['KKK'] = d
-
-
-
-
-# ===============================================
 # Drawing
 # ===============================================
 

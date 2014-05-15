@@ -10,7 +10,7 @@ from PyPAW.Selectors import SelectorWithVars
 logger = getLogger(__name__)
 
 def make_hist(ds, name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.2, 5.4)
+    h = ROOT.TH1F(name, '', 100, 5.2, 5.4)
     h.Sumw2()
 
     ds.project(h, variable, cuts)

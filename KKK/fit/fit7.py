@@ -77,49 +77,25 @@ logger.info('running sPlot')
 model_Bu.sPlot(ds_Bu)
 
 
-
-# ===============================================
-# Write histos
-# ===============================================
-
-
-
-hists = [
-    ("k1", "mass_k1aspi", "SBu_sw"),
-    ("k3", "mass_k3aspi", "SBu_sw"),
-    ("k1_cuts", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1"),
-    ("k3_cuts", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1"),
-    ("k1_cuts_strong", "mass_k1aspi", "SBu_sw && ann_kaon_PI_2 > 0.1 && ann_kaon0 > 0.3"),
-    ("k3_cuts_strong", "mass_k3aspi", "SBu_sw && ann_kaon_PI_0 > 0.1 && ann_kaon2 > 0.3"),
-]
-
-
-db = shelve.open('$KKpidir/fit/histos.shelve')
-
-db['KKK'] = {
-    'RD': {param[0]: make_hist(ds_Bu, *param) for param in hists},
-    'MC': {}
-}
-
-
-
 # ===============================================
 # Drawing
 # ===============================================
 
 
-h1, h2 = db['KKK']['RD']['k1'], db['KKK']['RD']['k3']
-#h1, h2 = db['KKK']['RD']['k1_cuts'], db['KKK']['RD']['k3_cuts']
+# h1, h2 = db['KKK']['RD']['k3_cuts'], db['KKK']['RD']['k3_precuts']
+# # h1, h2 = db['KKK']['RD']['k1_cuts'], db['KKK']['RD']['k3_cuts']
 
 
-title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
-h1.SetXTitle(title)
-h2.SetXTitle(title)
+# title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
+# h1.SetXTitle(title)
+# h2.SetXTitle(title)
 
-h1.red()
-h2.blue()
+# h1.red()
+# h2.blue()
 
-h1.Draw()
-h2.Draw('same')
+# h2.Draw()
+# h1.Draw('same')
 
-db.close()
+
+# db.sync()
+# db.close()

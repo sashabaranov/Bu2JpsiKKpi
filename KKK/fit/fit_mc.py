@@ -70,36 +70,3 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 # logger.info('running sPlot')
 # model_Bu.sPlot(ds_Bu)
-
-
-# ===============================================
-# Drawing
-# ===============================================
-
-histos = sorted([h for h in d['MC'].values() if 'p8' in h.GetName()], key=lambda h: -h.GetMaximum())
-
-title = '#Inv.\,mass(J/\psi\,K^+\,K^-\,K^+) \,\, with \,\, misid, GeV/c^2'
-
-
-legend = ROOT.TLegend(0.55, 0.65, 0.86, 0.9);
-legend.SetFillColor(ROOT.kWhite)
-
-
-
-for i, h in enumerate(histos):
-    col = i + 1
-
-    h.SetLineColor(col)
-    h.SetFillColor(col)
-    h.SetMarkerColor(col)
-
-    h.SetXTitle(title)
-    h.Draw('same')
-
-    legend.AddEntry(h.GetName(), make_legend(h.GetName()), "P")
-
-legend.Draw()
-
-db.sync()
-db.close()
-

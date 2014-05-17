@@ -20,7 +20,7 @@ export PYTHONPATH=$PYTHONPATH:$ANALYSIS/Ostap # Needed for some scripts
 In order to use data nTuples, you should set `$WORKDIR` variable, for afs it could be:
 
 ```
-export WORKDIR=/afs/cern.ch/work/a/albarano
+export WORKDIR=/afs/cern.ch/work/a/albarano/public
 ```
 
 

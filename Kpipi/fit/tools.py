@@ -10,7 +10,7 @@ from PyPAW.Selectors import SelectorWithVars
 logger = getLogger(__name__)
 
 def make_hist(ds, name, variable, cuts):
-    h = ROOT.TH1F(name, '', 30, 5.16, 5.45)
+    h = ROOT.TH1F(name, '', 30, 5.2, 5.4)
     h.Sumw2()
 
     ds.project(h, variable, cuts)
@@ -19,7 +19,7 @@ def make_hist(ds, name, variable, cuts):
     #     if h.GetBinContent(j) < 0:
     #         h.SetBinContent(j, 0)
 
-    h.Scale(1.0/h.Integral())
+    # h.Scale(1.0/h.Integral())
 
     return h
 
@@ -33,7 +33,7 @@ def make_hist_mc(tBu, name, variable, cuts):
     #     if h.GetBinContent(j) < 0:
     #         h.SetBinContent(j, 0)
 
-    h.Scale(1.0/h.Integral())
+    # h.Scale(1.0/h.Integral())
 
     return h
 

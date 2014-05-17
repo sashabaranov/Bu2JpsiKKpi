@@ -1,11 +1,11 @@
 my_area = '/afs/cern.ch/user/a/albarano/cmtuser'
 
 
-output =  [ DiracFile("*.mdst") , 
-            SandboxFile("*.xml") , 
-            SandboxFile("*db") , 
-            SandboxFile("*.txt") , 
-            SandboxFile("*.root") 
+output =  [ DiracFile("*.mdst") ,
+            SandboxFile("*.xml") ,
+            SandboxFile("*db") ,
+            SandboxFile("*.txt") ,
+            SandboxFile("*.root")
 ]
 
 j2011 = Job(

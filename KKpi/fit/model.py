@@ -1,17 +1,11 @@
-import ROOT
-from AnalysisPython.PyRoot import *
-from AnalysisPython.PyRoUts import *
-from AnalysisPython.Utils import timing
-from AnalysisPython.Utils import rooSilent
-from AnalysisPython.Logger import getLogger
-
-logger = getLogger(__name__)
-
+from tools import *
 import PyPAW.FitModels as Models
 
 from variables import m_Bu
 from variables import m_Kstar, mm_Kstar, width_Kstar, low_kpi, high_kpi
 from variables import m_Phi, mm_Phi, width_Phi, low_kk, high_kk
+
+from MyFitModels import Charm3_pdf
 
 
 db = shelve.open("$KKpidir/fit/histos.shelve")
@@ -23,10 +17,10 @@ s1_Bu = Models.CB2_pdf(
     m_Bu.getMax(),
     fixMass=5.2792e+0,
     fixSigma=0.008499e+0,
-    fixAlphaL=0.45575,
-    fixAlphaR=0.446336,
-    fixNL=4.999,
-    fixNR=9.92,
+    fixAlphaL=2.1018e+00,
+    fixAlphaR=1.9818e+00,
+    fixNL=6.1464e-01,
+    fixNR=2.1291e+00,
     mass=m_Bu
 )
 
@@ -41,43 +35,24 @@ s1_Bu = Models.CB2_pdf(
 # )
 
 
-alist = ROOT.RooArgList(m_Bu)
 
-KKK_h = db['KKK']['RD']['k1_cuts']
+kkk = Models.H1D_pdf(name=db['KKK']['MC']['p8_k1'].GetName(), mass=m_Bu, histo=smear_kkk(db['KKK']['MC']['p8_k1']))
+kpipi = Models.H1D_pdf(name=db['Kpipi']['MC']['p8_pi1'].GetName(), mass=m_Bu, histo=smear_kpipi(db['Kpipi']['MC']['p8_pi1']))
 
-KKK_h2 = ROOT.TH1F('KKK_h2', '', 1000, *KKK_h.xminmax())
-KKK_h2 += KKK_h
-
-KKK_h3 = ROOT.TH1F('KKK_h3', '', 100, *KKK_h.xminmax())
-KKK_h3 += KKK_h2
-
-# KKK_h.smear(0.003)
-
-
-Kpipi_h = db['Kpipi']['RD']['pi1_cuts']
-
-Kpipi_h2 = ROOT.TH1F('Kpipi_h2', '', 1000, *Kpipi_h.xminmax())
-Kpipi_h2 += Kpipi_h
-
-# # Kpipi_h3 = ROOT.TH1F('Kpipi_h3', '', 100, *Kpipi_h.xminmax())
-# # Kpipi_h3 += Kpipi_h
-# #Kpipi_h.smear(0.003)
-
-KKK_hist   = ROOT.RooDataHist("KKK_hist", "KKK_hist", alist, KKK_h2)
-Kpipi_hist = ROOT.RooDataHist("Kpipi_hist", "Kpipi_hist", alist, Kpipi_h2)
-
-
-KKK_pdf = ROOT.RooHistPdf("KKK_pdf", "Kpipi_pdf", alist, alist, KKK_hist)
-Kpipi_pdf = ROOT.RooHistPdf("Kpipi_pdf", "Kpipi_pdf", alist, alist, Kpipi_hist)
-
-kkk = Models.H1D_pdf(name="KKK", mass=m_Bu, histo=db['KKK']['RD']['k1'])
-kpipi = Models.H1D_pdf(name="Kpipi", mass=m_Bu, histo=db['Kpipi']['RD']['pi1'])
-
-model_Bu = Models.Fit1D(
+model_Bu = Charm3_pdf(
     signal=s1_Bu,
-    components=[kkk, kpipi],
+    signal2=kkk,
+    signal3=kpipi,
+    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=3), suffix='Bu'
+)
+
+model_Bu_mc = Charm3_pdf(
+    signal=s1_Bu,
     background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
 )
+
+model_Bu_mc.b.fix(0)
+model_Bu_mc.background.tau.fix(0)
 
 # model_Bu = Models.Fit1D(
 #     signal=s1_Bu,

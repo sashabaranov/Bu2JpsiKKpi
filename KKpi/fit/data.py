@@ -11,21 +11,22 @@ def append_dir(directory, files):
     return [os.path.join(directory, f) for f in files]
 
 def from_ganga(job_id):
+    import os
     from glob import glob
-    prefix = "/afs/cern.ch/user/a/albarano/gangadir/workspace/albarano/LocalXML/"
+    prefix = "$HOME/gangadir/workspace/albarano/LocalXML/"
     pattern = prefix + str(job_id) + "/*/output/*.root"
-    return glob(pattern)
+    return glob(os.path.expandvars(pattern))
 
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(202) + from_ganga(203),
-        'Pythia8': from_ganga(200) + from_ganga(201),
+        'Pythia6': from_ganga(237) + from_ganga(238),
+        'Pythia8': from_ganga(235) + from_ganga(236),
     },
 
     '2012': {
-        'Pythia6': from_ganga(204) + from_ganga(205),
-        'Pythia8': from_ganga(198) + from_ganga(199),
+        'Pythia6': from_ganga(239) + from_ganga(240),
+        'Pythia8': from_ganga(233) + from_ganga(234),
     }
 }
 
@@ -60,10 +61,12 @@ ROOT.RooDataSet.Draw = _draw_
 
 
 # =============================================================================
-files7 = from_ganga(83) + from_ganga(84)
+files7 = from_ganga(243) + from_ganga(244)
 
 selection7 = DataAndLumi(branch='JpsiKKpi/t', files=files7)
 
 logger.info("Selection 7: %s" % selection7)
+logger.info("MC Pythia 6: %s" % mc_Pythia6)
+logger.info("MC Pythia 8: %s" % mc_Pythia8)
 
 tSelection7 = selection7.data

@@ -17,6 +17,15 @@ cuts_ += "&& minann_K  > 0.2"
 cuts_ += "&& ((psi_l0tos & 2) == 2)"
 cuts_ += "&& ann_pion > 0.15 && minann_K > 0.15 && MIPCHI2DV_k1 > 9 && MIPCHI2DV_k2 > 9 && MIPCHI2DV_pi > 9"
 
+mctrue = "&& mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTruePi && mcTrueMu1 && mcTrueMu2"
+
+Nsigma = 5
+
+
+reflection1 = " && (mass_PI_as_K < {} || mass_PI_as_K > {}) ".format(5.28 - Nsigma*0.005, 5.28 + Nsigma*0.005)
+reflection2 = " && (mass_K_as_PI < {} || mass_K_as_PI > {}) ".format(5.28 - Nsigma*0.007, 5.28 + Nsigma*0.007)
+
+
 # cuts_ += "&& ((psi_l1tos & 2) == 2)"
 # cuts_ += "&& ((psi_l2tos & 2) == 2)"
 

@@ -169,6 +169,10 @@ class B2JpsiKKpi(Algo):
             nt.column('MIPCHI2DV_k2', MIPCHI2DVfun(k2))
             nt.column('MIPCHI2DV_pi', MIPCHI2DVfun(pi))
 
+            self.fillMasses(nt, myb, "")
+            self.fillMasses(nt, myb, "c1", True)
+            self.fillMasses(nt, myb, "c2", True, "J/psi(1S)")
+
             # add the information needed for TisTos
             self.tisTos ( jpsi  , nt  , 'psi_' ,
                           self.lines [ 'psi' ] , self.l0tistos , self.l1tistos , self.l2tistos )

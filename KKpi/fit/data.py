@@ -13,7 +13,7 @@ def append_dir(directory, files):
 def from_ganga(job_id):
     import os
     from glob import glob
-    prefix = "$HOME/gangadir/workspace/albarano/LocalXML/"
+    prefix = "$WORKDIR/gangadir/workspace/albarano/LocalXML/"
     pattern = prefix + str(job_id) + "/*/output/*.root"
     return glob(os.path.expandvars(pattern))
 

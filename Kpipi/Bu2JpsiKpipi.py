@@ -187,7 +187,7 @@ class Bu2JpsiKpipi(Algo):
 
             nt.column("m_b_misid", misid_Bu_M / GeV)
 
-
+            self.fillMasses(nt, myb, "c2", True, "J/psi(1S)")
 
             nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))
             nt.column('MIPCHI2DV_pi1', MIPCHI2DVfun(pi1))
@@ -285,4 +285,4 @@ if __name__ == '__main__':
     params = {'year' : '2011'}
 
     configure(inputdata, params=params, castor=True)
-    run(-1)
+    run(1000)

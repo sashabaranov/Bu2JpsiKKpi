@@ -81,6 +81,9 @@ def count_significance(model_Bu, ds_Bu, nbin_Bu):
 
 print len(all_KKK) + len(all_Kpipi)
 
+var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "phi2_BBu", "phi3_BBu", "sigma_Bu1", "tau_BBu"]
+ntuple = ROOT.TNtuple("ntuple","ntuple", ":".join(var_names))
+
 
 for kkk_hist in all_KKK:
     for kpipi_hist in all_Kpipi:
@@ -108,4 +111,9 @@ for kkk_hist in all_KKK:
         )
 
         ru, fu = perform_fit(model_Bu, ds_Bu, nbin_Bu)
+
+        ntuple.Fill(*[float(ru(v)[0]) for v in var_names])
+
         canvas.SaveAs('pics/{}_{}.png'.format(kkk_hist.GetName(), kpipi_hist.GetName()))
+
+ntuple.SaveAs("fits.root")

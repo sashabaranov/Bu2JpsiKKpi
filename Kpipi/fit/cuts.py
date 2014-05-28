@@ -11,27 +11,16 @@ mctrue = " && mcTrueB && mcTruePsi && mcTruePi1 && mcTruePi2 && mcTrueK && mcTru
 # Cuts
 cuts_ = " DTFchi2ndof > 0"
 cuts_ += "&& DTFchi2ndof < 5"
-cuts_ += "&& DTFctau > 0.2"
-cuts_ += "&& pt_kaon > 0.6"
+cuts_ += "&& DTFctau > 0.25"
+cuts_ += "&& pt_b > 4."
 cuts_ += "&& pt_pion[0] > 0.3 && pt_pion[1] > 0.3"
+cuts_ += "&& pt_kaon > 0.7"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
-cuts_ += "&& minann_K  > 0.2"
+cuts_ += "&& minann_K  > 0.3 && minann_pi > 0.3"
 cuts_ += "&& ((psi_l0tos & 2) == 2)"
-cuts_ += "&& minann_pi > 0.15 && MIPCHI2DV_k > 9 && MIPCHI2DV_pi1 > 9 && MIPCHI2DV_pi2 > 9" # selection6+
-# cuts_ += "&& ((psi_l1tos & 2) == 2)"
-# cuts_ += "&& ((psi_l2tos & 2) == 2)"
-# # cuts_ += "&& minann_pi  > 0.4"
-# cuts_ += "&& ((psi3_l0tos & 2) == 2)"
-
-
-# Victors fancy cuts
-
-# cuts_ = " DTFchi2ndof > 0"
-# cuts_ += "&& DTFchi2ndof < 5"
-# cuts_ += "&& DTFctau > 0.15"
-# cuts_ += "&& minann_pi  > 0.4"
-# cuts_ += "&& ((psi3_l0tos & 2) == 2)"
-# cuts_ += "&& mcTrueB == 1"
+cuts_ += "&& ((psi_l1tos & 2) == 2)"
+cuts_ += "&& ((psi_l2tos & 2) == 2)"
+cuts_ += "&& MIPCHI2DV_k > 16. && MIPCHI2DV_pi1 > 16. && MIPCHI2DV_pi2 > 16."
 
 # cuts_ += "&& pt_pion[0] > 0.2 && pt_pion[0] < 2.2"
 # cuts_ += "&& pt_pion[1] > 0.2 && pt_pion[1] < 2.2"

@@ -8,7 +8,7 @@ from data import mc_Pythia6, mc_Pythia8, mc_total
 
 
 # Preparation
-tBu = mc_Pythia8.data
+tBu = mc_total.data
 cuts_Bu += mctrue
 
 model_Bu.b.fix(0)
@@ -81,8 +81,3 @@ fu.Draw()
 
 # print 'FIT#2 results for B+  ', ru(model_Bu.s_name)[0]
 # print 'FIT#2 precision:', ru("SBu")[0].prec()
-
-
-db.sync()
-db.close()
-

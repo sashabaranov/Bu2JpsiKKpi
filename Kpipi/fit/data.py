@@ -27,8 +27,6 @@ ROOT.RooDataSet.Draw = _draw_
 
 
 # =============================================================================
-OUTPUT_DIR = '$Kpipidir/output/'
-
 def append_dir(directory, files):
     return [os.path.join(directory, f) for f in files]
 
@@ -43,7 +41,7 @@ def from_ganga(job_id):
 
 
 # =============================================================================
-files7 = from_ganga(227) + from_ganga(188)
+files7 = from_ganga(285) + from_ganga(286)
 
 selection7 = DataAndLumi(branch='JpsiKpipi/t', files=files7)
 

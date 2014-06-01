@@ -1,8 +1,12 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.2, 5.4)
+m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.2, 5.4)
 nbin_Bu = 75
+
+# Resonanse
+m_R = ROOT.RooRealVar('m_R', 'mass(J/\psi \pi \pi)', 0.0, 10.0)
+nbin_R = 75
 
 events_binning = int(m_Bu.getBinWidth(nbin_Bu) * 1000)
 
@@ -36,8 +40,20 @@ comparison_variables = [
 
     # # ("minPt_track", "", -0.5, 20.0),
     ("mass_pi1ask", "", -0.5, 10.0),
+    ('m1234c2', "", 0.0, 10.0),
+    ('m123c2', "", 0.0, 10.0),
+    ('m124c2', "", 0.0, 10.0),
+    ('m12c2', "", 0.0, 10.0),
+    ('m134c2', "", 0.0, 10.0),
+    ('m13c2', "", 0.0, 10.0),
+    ('m14c2', "", 0.0, 10.0),
+    ('m1c2', "", 0.0, 10.0),
+    ('m234c2', "", 0.0, 10.0),
+    ('m23c2', "", 0.0, 10.0),
+    ('m24c2', "", 0.0, 10.0),
+    ('m34c2', "", 0.0, 10.0),
 ]
 
 
 
-selector_variables = [(m_Bu, lambda s: s.DTFm_b )] + comparison_variables
+selector_variables = [(m_Bu, lambda s: s.DTFm_b ), (m_R, lambda s: s.m134c2 )] + comparison_variables

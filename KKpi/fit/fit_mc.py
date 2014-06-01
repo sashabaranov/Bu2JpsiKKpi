@@ -11,7 +11,7 @@ from data import mc_Pythia6, mc_Pythia8, mc_total
 
 
 cuts_Bu += mctrue
-tBu = mc_Pythia8.data
+tBu = mc_total.data
 
 logger.info('DATA chain name is %s ' % (tBu.GetName()))
 

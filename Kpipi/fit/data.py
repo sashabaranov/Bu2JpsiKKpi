@@ -41,7 +41,7 @@ def from_ganga(job_id):
 
 
 # =============================================================================
-files7 = from_ganga(285) + from_ganga(286)
+files7 = from_ganga(284) + from_ganga(285)
 
 selection7 = DataAndLumi(branch='JpsiKpipi/t', files=files7)
 

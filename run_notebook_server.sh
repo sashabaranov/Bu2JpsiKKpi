@@ -22,5 +22,6 @@ source $ENV4MU/bin/activate
 
 # Dirty hack to make things work
 export PYTHONPATH=$ENV4MU/lib64/python2.7/site-packages/:$PYTHONPATH
+export PYTHONPATH=$ANALYSIS/Ostap:$PYTHONPATH
 
 ipython notebook --ip='*' --pylab inline --no-browser --port=$PORT

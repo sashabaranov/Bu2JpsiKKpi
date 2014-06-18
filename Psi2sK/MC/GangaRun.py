@@ -31,7 +31,7 @@ j = Job(
         events=-1,
         version='v23r4',
         user_release_area=MY_AREA,
-        module='$ANALYSIS/Psi2sK/MC/Bu2JpsiKpipi.py'
+        module='$ANALYSIS/Psi2sK/MC/mc.py'
     ),
     outputfiles=output,
     backend=Dirac(),

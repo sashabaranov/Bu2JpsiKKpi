@@ -1,11 +1,11 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.2, 5.4)
+m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.1, 5.4)
 nbin_Bu = 75
 
 # Resonanse
-m_R = ROOT.RooRealVar('m_R', 'mass(J/\psi \pi \pi)', 3.6, 3.8)
+m_R = ROOT.RooRealVar('m_R', 'mass(J/\psi \pi \pi)', 3.65, 3.75)
 nbin_R = 75
 
 events_binning = int(m_Bu.getBinWidth(nbin_Bu) * 1000)

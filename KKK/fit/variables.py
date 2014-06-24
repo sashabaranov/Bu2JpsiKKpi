@@ -1,7 +1,7 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.2, 5.35)
+m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.15, 5.45)
 nbin_Bu = 100
 
 events_binning = int(m_Bu.getBinWidth(nbin_Bu) * 1000)

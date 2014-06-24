@@ -18,30 +18,17 @@ s1_Bu = Models.CB2_pdf(
     m_Bu.getMax(),
     fixMass=5.2792e+0,
     fixSigma=0.008499e+0,
-    fixAlphaL=1.89,
-    fixAlphaR=1.94,
-    fixNL=0.8,
-    fixNR=2.4,
+    fixAlphaL=1.935,
+    fixAlphaR=1.84,
+    fixNL=0.695,
+    fixNR=3.345,
     mass=m_Bu
 )
 
-# s1_Bu = Models.Gauss_pdf(
-#     name='Bu1',
-#     mn=m_Bu.getMin(),
-#     mx=m_Bu.getMax(),
-#     fixMass=5.2792e+0,
-#     fixSigma=0.008499e+0,
-#     mass=m_Bu,
-#     mean=None,
-#     sigma=None
-# )
-
-alist = ROOT.RooArgList(m_Bu)
-
-
 model_Bu = Models.Fit1D(
     signal=s1_Bu,
-    background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
+    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=1), 
+    suffix='Bu'
 )
 
 # model_Bu.b.fix(0)

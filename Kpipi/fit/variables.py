@@ -1,7 +1,7 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.1, 5.4)
+m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.15, 5.45)
 nbin_Bu = 75
 
 # Resonanse
@@ -21,7 +21,7 @@ comparison_variables = [
     # ("ann_pion1", "", -0.5, 1.5, lambda s: s.ann_pion[0]),
     # ("ann_pion2", "", -0.5, 1.5, lambda s: s.ann_pion[1]),
 
-    # ("ann_pion_K", "", -0.5, 1.5, lambda s: s.ann_pion_K[0]),
+    ("ann_pion_K", "", -0.5, 1.5, lambda s: s.ann_pion_K[0]),
     # # ("minann_mu", "", -0.5, 1.5),
 
     # # # Interesting variables
@@ -39,7 +39,7 @@ comparison_variables = [
     # # ("DTFm_KKK", "", -0.5, 40.0),
 
     # # ("minPt_track", "", -0.5, 20.0),
-    # ("mass_pi1ask", "", -0.5, 10.0),
+    ("mass_pi1ask", "", -0.5, 10.0),
     # ('m1234c2', "", 0.0, 10.0),
     # ('m123c2', "", 0.0, 10.0),
     # ('m124c2', "", 0.0, 10.0),

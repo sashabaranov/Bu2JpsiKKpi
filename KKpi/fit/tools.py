@@ -9,23 +9,30 @@ from PyPAW.Selectors import SelectorWithVars
 logger = getLogger(__name__)
 
 
+interval = (5.2, 5.4)
+
+
 def smear_kkk(h):
-    h2 = ROOT.TH1F('h2', '', 10, *h.xminmax())
+    h2 = ROOT.TH1F('h2', '', 20, *interval)
     h2 += h
 
-    h3 = ROOT.TH1F('h3', '', 700, *h.xminmax())
+    h3 = ROOT.TH1F('h3', '', 700, *interval)
     h3 += h2
 
-    return h3
+    # return h3
+    h.Smooth(50000)
+    return h
 
 def smear_kpipi(h):
-    h2 = ROOT.TH1F('h2', '', 50, *h.xminmax())
+    h2 = ROOT.TH1F('h2', '', 30, *interval)
     h2 += h
 
-    h3 = ROOT.TH1F('h3', '', 700, *h.xminmax())
+    h3 = ROOT.TH1F('h3', '', 700, *interval)
     h3 += h2
 
-    return h3
+    # return h3
+    h.Smooth(50000)
+    return h
 
 
 

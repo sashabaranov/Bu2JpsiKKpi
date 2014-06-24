@@ -34,17 +34,21 @@ s1_Bu = Models.CB2_pdf(
 #     mass=m_Bu,
 # )
 
+kkk_hist = db['KKK']['RD']['k3']
+kpipi_hist = db['Kpipi']['MC']['p8_pi1']
 
-
-kkk = Models.H1D_pdf(name=db['KKK']['MC']['p8_k1'].GetName(), mass=m_Bu, histo=smear_kkk(db['KKK']['MC']['p8_k1']))
-kpipi = Models.H1D_pdf(name=db['Kpipi']['MC']['p8_pi1'].GetName(), mass=m_Bu, histo=smear_kpipi(db['Kpipi']['MC']['p8_pi1']))
+kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
+kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
 
 model_Bu = Charm3_pdf(
     signal=s1_Bu,
     signal2=kkk,
     signal3=kpipi,
-    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=3), suffix='Bu'
+    background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
 )
+
+model_Bu.background.tau.setMax(-2.0)
+model_Bu.background.tau.setVal(-1.0)
 
 model_Bu_mc = Charm3_pdf(
     signal=s1_Bu,

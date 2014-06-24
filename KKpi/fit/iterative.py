@@ -81,9 +81,9 @@ def count_significance(model_Bu, ds_Bu, nbin_Bu):
 
 print len(all_KKK) + len(all_Kpipi)
 
-var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "phi2_BBu", "phi3_BBu", "sigma_Bu1", "tau_BBu"]
+#var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "sigma_Bu1", "tau_BBu", "covqual"]
+var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual"]
 ntuple = ROOT.TNtuple("ntuple","ntuple", ":".join(var_names))
-
 
 for kkk_hist in all_KKK:
     for kpipi_hist in all_Kpipi:
@@ -93,27 +93,29 @@ for kkk_hist in all_KKK:
             m_Bu.getMax(),
             fixMass=5.2792e+0,
             fixSigma=0.008499e+0,
-            fixAlphaL=2.1018e+00,
-            fixAlphaR=1.9818e+00,
-            fixNL=6.1464e-01,
-            fixNR=2.1291e+00,
+            fixAlphaL=2.0266,
+            fixAlphaR=2.00875,
+            fixNL=0.839,
+            fixNR=2.34195,
             mass=m_Bu
         )
 
-        kkk = Models.H1D_pdf(name="KKK", mass=m_Bu, histo=smear_kkk(kkk_hist))
-        kpipi = Models.H1D_pdf(name="Kpipi", mass=m_Bu, histo=smear_kpipi(kpipi_hist))
+        kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
+        kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
 
         model_Bu = Charm3_pdf(
             signal=s1_Bu,
             signal2=kkk,
             signal3=kpipi,
-            background=Models.Bkg_pdf('BBu', mass=m_Bu, power=3), suffix='Bu'
+            background=Models.Bkg_pdf('BBu', mass=m_Bu, power=0), suffix='Bu'
         )
+
+        model_Bu.background.tau.setMax(-2.0)
+        model_Bu.background.tau.setVal(-1.0)
 
         ru, fu = perform_fit(model_Bu, ds_Bu, nbin_Bu)
 
-        ntuple.Fill(*[float(ru(v)[0]) for v in var_names])
+        ntuple.Fill(* ([float(ru(v)[0]) for v in var_names[:-1]] + [ru.covQual()]) )
 
         canvas.SaveAs('pics/{}_{}.png'.format(kkk_hist.GetName(), kpipi_hist.GetName()))
-
 ntuple.SaveAs("fits.root")

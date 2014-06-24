@@ -12,6 +12,32 @@ from AnalysisPython.Logger import getLogger
 
 logger = getLogger(__name__)
 
+# =============================================================================
+_nemax = 80000  ## number of events per CPU-core
+_ncmax =     6  ## maximal number of CPUs: there are some problems with >= 7
+                ## @see https://sft.its.cern.ch/jira/browse/ROOT-4897
+#
+_ncpus = []
+
+def ncpu (  events ) :
+    #
+    #
+    ### return  ROOT.RooFit.Save()
+    #
+    n  = events // _nemax
+    if n       <= 1 : return ROOT.RooFit.Save() ## fake!!!
+    #
+    import multiprocessing
+    n_cores = multiprocessing.cpu_count()
+    if n_cores <= 1 : return ROOT.RooFit.Save () ## fake!!!
+    #
+    num = min ( n , n_cores , _ncmax )
+    if not _ncpus :
+        _ncpus.append ( num )
+    #
+    return ROOT.RooFit.NumCPU ( num )
+
+
 class Charm3_pdf (object):
 
     """
@@ -94,13 +120,13 @@ class Charm3_pdf (object):
 
         result = self.pdf.fitTo(dataset,
                                 ROOT.RooFit.Save(),
-                                ## ncpu ( len ( dataset ) ) ,
+                                ##ncpu ( len ( dataset ) ) ,
                                 *args)
 
         if 0 != result.status():
             result = self.pdf.fitTo(dataset,
                                     ROOT.RooFit.Save(),
-                                    ## ncpu ( len ( dataset ) ) ,
+                                    ncpu ( len ( dataset ) ) ,
                                     *args)
 
         if draw:

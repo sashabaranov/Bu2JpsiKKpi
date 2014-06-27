@@ -17,7 +17,7 @@ free -m
 
 export ENV4MU=/afs/cern.ch/work/a/albarano/public/4mu_env
 
-source /afs/cern.ch/lhcb/software/releases/LBSCRIPTS/LBSCRIPTS_v7r9p1/InstallArea/scripts/SetupProject.sh Bender v24r0
+source /afs/cern.ch/lhcb/software/releases/LBSCRIPTS/LBSCRIPTS_v7r9p1/InstallArea/scripts/SetupProject.sh Bender v24r1
 source $ENV4MU/bin/activate
 
 # Dirty hack to make things work

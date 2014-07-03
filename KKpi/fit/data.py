@@ -1,9 +1,9 @@
 import ROOT
 import glob
-from AnalysisPython.PyRoUts import *
-from AnalysisPython.GetLumi import getLumi
+from Ostap.PyRoUts import *
+from Ostap.GetLumi import getLumi
 from AnalysisPython.Logger import getLogger
-from ostap.data import Data, DataAndLumi
+from Ostap.Data import Data, DataAndLumi
 
 # =============================================================================
 def append_dir(directory, files):
@@ -30,15 +30,15 @@ mc_files = {
 }
 
 
-mc_Pythia6 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
-mc_Pythia8 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
+mc_Pythia6 = Data('Bplus/t', mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
+mc_Pythia8 = Data('Bplus/t', mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
 
 mc_all_files = []
 for year, pythias in mc_files.items():
     for pythia, files in pythias.items():
         mc_all_files += files
 
-mc_total = Data(branch='Bplus/t', files=mc_all_files)
+mc_total = Data('Bplus/t', mc_all_files)
 
 # =============================================================================
 logger = getLogger(__name__)
@@ -62,10 +62,10 @@ ROOT.RooDataSet.Draw = _draw_
 # =============================================================================
 files7 = from_ganga(243) + from_ganga(244)
 
-selection7 = DataAndLumi(branch='JpsiKKpi/t', files=files7)
+selection7 = DataAndLumi('JpsiKKpi/t', files7)
 
 logger.info("Selection 7: %s" % selection7)
 logger.info("MC Pythia 6: %s" % mc_Pythia6)
 logger.info("MC Pythia 8: %s" % mc_Pythia8)
 
-tSelection7 = selection7.data
+tSelection7 = selection7.chain

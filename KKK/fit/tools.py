@@ -10,8 +10,8 @@ from PyPAW.Selectors import SelectorWithVars
 
 logger = getLogger(__name__)
 
-interval = (5.2, 5.4)
-binning = 200
+interval = (4.5, 5.5)
+binning = 100
 
 def make_hist(ds, name, variable, cuts):
     h = ROOT.TH1F(name, '', binning, *interval)

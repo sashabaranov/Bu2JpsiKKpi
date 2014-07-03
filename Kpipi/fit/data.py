@@ -3,7 +3,6 @@ import os
 import ROOT
 from AnalysisPython.PyRoUts import *
 from ostap.data import Data, DataAndLumi
-import AnalysisPython.ZipShelve as ZipShelve
 from AnalysisPython.Logger import getLogger
 
 # =============================================================================

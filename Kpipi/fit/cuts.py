@@ -1,6 +1,5 @@
 import ROOT
 from AnalysisPython.PyRoUts import *
-import AnalysisPython.ZipShelve as ZipShelve
 # ========================================================================
 from AnalysisPython.Logger import getLogger
 logger = getLogger(__name__)

@@ -9,13 +9,13 @@ db = shelve.open('$KKpidir/fit/histos.shelve')
 # Write RD
 ###############
 
-hists = [
-    ("pi1", "mass_pi1ask", "SBu_sw"),
-    ("pi1_cuts", "mass_pi1ask", "SBu_sw && ann_pion_K > 0.1"),
-]
+# hists = [
+#     ("pi1", "mass_pi1ask", "SBu_sw"),
+#     # ("pi1_cuts", "mass_pi1ask", "SBu_sw && ann_pion_K > 0.1"),
+# ]
 
 d = {
-    'RD': {param[0]: make_hist(ds_Bu, *param) for param in hists}
+    # 'RD': {param[0]: make_hist(ds_Bu, *param) for param in hists}
 }
 
 

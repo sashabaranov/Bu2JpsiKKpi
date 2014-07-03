@@ -4,7 +4,7 @@ from histograms import h1
 from variables import *
 from cuts import *
 from model import model_Bu
-from data import tSelection7 as tBu
+from data import *
 
 
 # cuts_Bu += reflection1 + reflection2
@@ -15,21 +15,23 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 
 # Fill control B+  histogram (takes some time)
-with timing():
-    tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
+#with timing():
+#    tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
 
 
 # Fit Bc+ & B+ histogram (check the model)
-r, f = model_Bu.fitHisto(h1)
+#r, f = model_Bu.fitHisto(h1)
 
 
-sel_Bu = SelectorWithVars(
+sel_Bu = SelectorWithVarsCached(
     variables=selector_variables,
-    selection=cuts_Bu
+    selection=cuts_Bu,
+    files=selection7.files
 )
 
 # Build RooFit dataset for B+ , it could take as long as 3-5 minutes
-tBu.process(sel_Bu)
+if not sel_Bu._loaded_from_cache:
+    selection7.chain.process(sel_Bu)
 
 ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')

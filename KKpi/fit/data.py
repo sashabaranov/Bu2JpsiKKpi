@@ -2,7 +2,6 @@ import ROOT
 import glob
 from AnalysisPython.PyRoUts import *
 from AnalysisPython.GetLumi import getLumi
-import AnalysisPython.ZipShelve as ZipShelve
 from AnalysisPython.Logger import getLogger
 from ostap.data import Data, DataAndLumi
 

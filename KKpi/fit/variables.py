@@ -2,9 +2,9 @@ import ROOT
 
 # Bu meson
 m_Bu = ROOT.RooRealVar('DTFm_b', 'mass(J/psiKKpi)', 5.2, 5.4)
-nbin_Bu = 75
+nbin_Bu = 80
 
-events_binning = int(m_Bu.getBinWidth(nbin_Bu) * 1000)
+events_binning = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
 
 m_Bu_a = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.16, 5.45)
 
@@ -83,6 +83,8 @@ comparison_variables = [
     # ("p_kaon[1]", "p(K2)",  3.0, 20.0),
     ( 'mass_PI_as_K' , "Inv.mass(misid\,\pi), GeV/c^2", 0.0, 10.0),
     ( 'mass_K_as_PI' , "Inv.mass(misid\,\pi), GeV/c^2", 0.0, 10.0),
+    ( 'DTFm_kk', "Inv. \, Mass(KK), GeV/c^2", 0.0, 20.0),
+    ( 'DTFm_kpi', "Inv. \, Mass(K\pi), GeV/c^2", 0.0, 20.0),
 ]
 
-selector_variables = [(m_Bu, lambda s: s.DTFm_b )]
+selector_variables = comparison_variables + [(m_Bu, lambda s: s.DTFm_b )]

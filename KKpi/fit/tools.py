@@ -13,26 +13,28 @@ interval = (5.2, 5.4)
 
 
 def smear_kkk(h):
-    h2 = ROOT.TH1F('h2', '', 20, *interval)
+    h2 = ROOT.TH1F('h2', '', 50, *interval)
     h2 += h
 
-    h3 = ROOT.TH1F('h3', '', 700, *interval)
+    h3 = ROOT.TH1F('h3', '', 300, *interval)
     h3 += h2
+    h3.Smooth(20)
 
-    # return h3
-    h.Smooth(50000)
-    return h
+    return h3
+    # h2.Smooth(20000)
+    # return h2
 
 def smear_kpipi(h):
-    h2 = ROOT.TH1F('h2', '', 30, *interval)
+    h2 = ROOT.TH1F('h2', '', 50, *interval)
     h2 += h
 
-    h3 = ROOT.TH1F('h3', '', 700, *interval)
+    h3 = ROOT.TH1F('h3', '', 300, *interval)
     h3 += h2
 
-    # return h3
-    h.Smooth(50000)
-    return h
+    h3.Smooth(20)
+    return h3
+    # h2.Smooth(20000)
+    # return h2
 
 
 

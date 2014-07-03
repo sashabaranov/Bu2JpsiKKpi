@@ -50,6 +50,9 @@ model_Bu = Charm3_pdf(
 model_Bu.background.tau.setMax(-2.0)
 model_Bu.background.tau.setVal(-1.0)
 
+model_Bu.s.setMin(100)
+model_Bu.s.setVal(101)
+
 model_Bu_mc = Charm3_pdf(
     signal=s1_Bu,
     background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
@@ -92,7 +95,7 @@ model_Bu_mc.background.tau.fix(0)
 # model_Kstar.signal.width.fix(0.051)
 
 
-# phi(1020) -> KK
+# # phi(1020) -> KK
 # s1_Phi = Models.BreitWigner_pdf(
 #     'Phi1',
 #     x=m_Phi,
@@ -116,19 +119,6 @@ model_Bu_mc.background.tau.fix(0)
 # model_Phi.signal.mean.fix(1.020)
 # model_Phi.signal.width.fix(4.26e-3)
 
-# # model_Phi.signal.mean.release()
-# # model_Phi.signal.width.release()
+# model_Phi.signal.mean.release()
+# model_Phi.signal.width.release()
 
-
-
-# model2_Kpi =  Models.Charm2_pdf(
-#     sig_1=s1_Bu,
-#     sig_2=s1_Kstar,
-#     suffix='2D-Kpi'
-# )
-
-# model2_KK =  Models.Charm2_pdf(
-#     sig_1=s1_Bu,
-#     sig_2=s1_Phi,
-#     suffix='KK'
-# )

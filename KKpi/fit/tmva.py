@@ -18,7 +18,7 @@ from data import mc_Pythia6, mc_Pythia8, selection7
 m_ins = " && (DTFm_b > 5.24 && DTFm_b < 5.36)"
 m_out = " && (DTFm_b > 5.6 || DTFm_b < 5.0) && DTFm_b < 6.0"
 #
-from PyPAW.PyTMVA import Trainer
+from Ostap.PyTMVA import Trainer
 
 t = Trainer( [
     ##  type                 name    configuration 
@@ -64,5 +64,5 @@ t.train ( var_list,
           background_cuts = local_cuts + m_out ,
           spectators      = []              ) 
 
-from PyPAW.PyTMVA import tmvaGUI
+from Ostap.PyTMVA import tmvaGUI
 tmvaGUI ( 'tmva.root' )

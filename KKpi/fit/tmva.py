@@ -16,7 +16,7 @@ from data import mc_Pythia6, mc_Pythia8, selection7
 
 #
 m_ins = " && (DTFm_b > 5.24 && DTFm_b < 5.36)"
-m_out = " && (DTFm_b > 5.6 || DTFm_b < 5.0)"
+m_out = " && (DTFm_b > 5.6 || DTFm_b < 5.0) && DTFm_b < 6.0"
 #
 from PyPAW.PyTMVA import Trainer
 

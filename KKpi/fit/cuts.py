@@ -5,6 +5,10 @@ from AnalysisPython.Logger import getLogger
 logger = getLogger(__name__)
 
 
+# Trigger
+cuts_trg =  "((psi_l0tos & 2) == 2)"
+cuts_trg += "&& ((psi_l1tos & 2) == 2)"
+cuts_trg += "&& ((psi_l2tos & 2) == 2)"
 
 # Cuts
 cuts_ = " DTFchi2ndof > 0"
@@ -15,7 +19,8 @@ cuts_ += "&& pt_kaon[0] > 0.7 && pt_kaon[1] > 0.7"
 cuts_ += "&& pt_pion > 0.3"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
 cuts_ += "&& minann_K  > 0.3 && minann_pi > 0.3"
-cuts_ += "&& ((psi_l0tos & 2) == 2)"
+
+cuts_ += "&& " + cuts_trg
 cuts_ += "&& ((psi_l1tos & 2) == 2)"
 cuts_ += "&& ((psi_l2tos & 2) == 2)"
 cuts_ += "&& ann_pion > 0.15 && minann_K > 0.15 && MIPCHI2DV_k1 > 16. && MIPCHI2DV_k2 > 16. && MIPCHI2DV_pi > 16."

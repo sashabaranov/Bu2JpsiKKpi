@@ -10,6 +10,8 @@ import PyPAW.FitModels as Models
 
 from AnalysisPython.Logger import getLogger
 
+from variables import events_binning
+
 logger = getLogger(__name__)
 
 # =============================================================================
@@ -36,6 +38,38 @@ def ncpu (  events ) :
         _ncpus.append ( num )
     #
     return ROOT.RooFit.NumCPU ( num )
+
+
+def legend_kkk(title):
+    "p6_k1_cuts -> misid K1 + cuts(Pythia6)"
+
+    vals = title.split('_')
+    if 'p6' in title or 'p8' in title:
+        if len(vals) == 2:
+            return "KKK \, misid \, of \, \, " + vals[1].upper() + " \, (Pythia{})".format(vals[0][1])
+        if len(vals) == 3:
+            return "KKK \, misid \, of \,  \, " + vals[1].upper() + " \, + \, cut \, (Pythia{})".format(vals[0][1])
+    else:
+        if len(vals) == 1:
+            return "KKK \, misid \, of \, \, " + vals[0].upper() + "\,(RD)"
+        if len(vals) == 2:
+            return "KKK \, misid \, of \, \, " + vals[0].upper() + " \, + \, cut \, (RD)"
+
+
+def legend_kpipi(title):
+    "p6_k1_cuts -> misid K1 + cuts(Pythia6)"
+
+    vals = title.split('_')
+    if 'p6' in title or 'p8' in title:
+        if len(vals) == 2:
+            return "K\\pi\\pi \, misid \, (Pythia{})".format(vals[0][1])
+        if len(vals) == 3:
+            return "K\\pi\\pi \, misid \, + \, cut \, (Pythia{})".format(vals[0][1])
+    else:
+        if len(vals) == 1:
+            return "K\\pi\\pi \, misid \, (RD)"
+        if len(vals) == 2:
+            return "K\\pi\\pi \, misid \, + \, cut \, (RD)"
 
 
 class Charm3_pdf (object):
@@ -72,14 +106,14 @@ class Charm3_pdf (object):
         else:
             self.signal2 = signal2
             self.s2 = ROOT.RooRealVar(
-                "S2" + suffix, "Signal(2)", 1000,  0,  1.e+9)
+                "S2" + suffix, "Signal(2)", 0.1,  0,  220)
 
             if not signal3:
                 self.alist1 = ROOT.RooArgList(self.signal.pdf, self.signal2.pdf, self.background.pdf)
                 self.alist2 = ROOT.RooArgList(self.s, self.s2, self.b)
             else:
                 self.signal3 = signal3
-                self.s3 = ROOT.RooRealVar("S3" + suffix, "Signal(3)", 1000, 0, 1.e+9)
+                self.s3 = ROOT.RooRealVar("S3" + suffix, "Signal(3)", 0.1, 0, 1.e+9)
 
                 self.alist1 = ROOT.RooArgList(
                     self.signal.pdf,
@@ -118,6 +152,16 @@ class Charm3_pdf (object):
             s.setMin(0.0)
             s.setMax(nmax)
 
+        self.b.setMax(1e+9)
+
+        self.s2.setMin(100)
+        self.s2.setMax(230 * 20 * 0.05)
+        self.s2.setVal(101)
+
+        self.s3.setMin(100)
+        self.s3.setMax(230 * 20 * 3 * 0.12)
+        self.s3.setVal(101)
+
         result = self.pdf.fitTo(dataset,
                                 ROOT.RooFit.Save(),
                                 ##ncpu ( len ( dataset ) ) ,
@@ -130,12 +174,13 @@ class Charm3_pdf (object):
                                     *args)
 
         if draw:
-            self.legend = ROOT.TLegend(0.55, 0.65, 0.86, 0.9)
+            self.legend = ROOT.TLegend(0.55, 0.65, 0.95, 0.9)
             self.legend.SetFillColor(ROOT.kWhite)
+            self.legend.SetTextSize(0.023)
 
             frame = self.mass.frame(nbins)
             dataset  .plotOn(frame, ROOT.RooFit.Name("data"))
-            self.legend.AddEntry("data", "Data", "P")
+            self.legend.AddEntry("data", "Data \,", "P")
 
             self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
@@ -143,7 +188,7 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("background"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kBlue))
-            self.legend.AddEntry("background", "Exponential background", "L")
+            self.legend.AddEntry("background", "Exponential \, \, background", "L")
 
 
             self.pdf .plotOn(frame,
@@ -152,7 +197,7 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("signal"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kGreen))
-            self.legend.AddEntry("signal", "Signal", "L")
+            self.legend.AddEntry("signal", "Signal \,", "L")
 
             if hasattr(self, 'signal2'):
                 self.pdf .plotOn(frame,
@@ -161,7 +206,7 @@ class Charm3_pdf (object):
                                  ROOT.RooFit.Name("signal2"),
                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
                                  ROOT.RooFit.LineColor(ROOT.kCyan))
-                self.legend.AddEntry("signal2", self.signal2.pdf.GetName(), "L")
+                self.legend.AddEntry("signal2", legend_kkk(self.signal2.pdf.GetName()[5:]), "L")
 
             if hasattr(self, 'signal3'):
                 self.pdf .plotOn(frame,
@@ -170,17 +215,16 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("signal3"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kMagenta))
-                self.legend.AddEntry("signal3", self.signal3.pdf.GetName(), "L")
+                self.legend.AddEntry("signal3", legend_kpipi(self.signal3.pdf.GetName()[5:]), "L")
 
 
             self.pdf.plotOn(frame, ROOT.RooFit.Name("total"), ROOT.RooFit.LineColor(ROOT.kRed))
 
-            self.legend.AddEntry("total", "Total", "L")
+            self.legend.AddEntry("total", "Total \,", "L")
 
-            evt_binning = int(self.mass.getBinWidth(nbins) * 1000)
 
             frame.SetXTitle('#Inv.\,mass(J/\psi\,K K \pi), GeV/c^{2}')
-            frame.SetYTitle('Events / (%d \, MeV/c^{2})' % evt_binning)
+            frame.SetYTitle('Events / (%d \, MeV/c^{2})' % events_binning)
             frame.SetZTitle('')
 
             frame.Draw()

@@ -2,7 +2,7 @@ import ROOT
 import os
 import glob
 from AnalysisPython.PyRoUts import *
-from ostap.data import Data, DataAndLumi
+from Ostap.Data import Data, DataAndLumi
 from AnalysisPython.Logger import getLogger
 
 
@@ -41,24 +41,10 @@ def from_ganga(job_id):
 
 
 # =============================================================================
-# files5 = append_dir(OUTPUT_DIR, ['RD-2011.root',  'RD-2012.root'])
-# files6 = append_dir(OUTPUT_DIR, ['RD-2011-sel6.root',  'RD-2012-sel6.root'])
 files7 = from_ganga(157) + from_ganga(158)
+selection7 = DataAndLumi('JpsiKKK/t', files7)
 
-
-# selection5 = DataAndLumi(branch='JpsiKKK/t', files=files5)
-# selection6 = DataAndLumi(branch='JpsiKKK/t', files=files6)
-selection7 = DataAndLumi(branch='JpsiKKK/t', files=files7)
-
-
-# logger.info("Selection 5: %s" % selection5)
-# logger.info("Selection 6: %s" % selection6)
 logger.info("Selection 7: %s" % selection7)
-
-
-# tSelection5 = selection5.data
-# tSelection6 = selection6.data
-tSelection7 = selection7.data
 
 
 # =============================================================================
@@ -75,15 +61,15 @@ mc_files = {
 }
 
 
-mc_Pythia6 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
-mc_Pythia8 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
+mc_Pythia6 = Data('Bplus/t', mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
+mc_Pythia8 = Data('Bplus/t', mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
 
 mc_all_files = []
 for year, pythias in mc_files.items():
     for pythia, files in pythias.items():
         mc_all_files += files
 
-mc_total = Data(branch='Bplus/t', files=mc_all_files)
+mc_total = Data('Bplus/t', mc_all_files)
 
 
 # =============================================================================

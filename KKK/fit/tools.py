@@ -10,7 +10,7 @@ from PyPAW.Selectors import SelectorWithVars
 
 logger = getLogger(__name__)
 
-interval = (4.5, 5.5)
+interval = (5.1, 5.5)
 binning = 100
 
 def make_hist(ds, name, variable, cuts):

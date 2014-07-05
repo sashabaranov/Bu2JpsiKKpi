@@ -41,10 +41,10 @@ for param in hists:
     default = param[0]
 
     param[0] = "p6_" + default
-    d['MC'][param[0]] = make_hist_mc(mc_Pythia6.data, *param)
+    d['MC'][param[0]] = make_hist_mc(mc_Pythia6.chain, *param)
 
     param[0] = "p8_" + default
-    d['MC'][param[0]] = make_hist_mc(mc_Pythia8.data, *param)
+    d['MC'][param[0]] = make_hist_mc(mc_Pythia8.chain, *param)
 
 
 

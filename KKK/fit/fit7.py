@@ -3,14 +3,7 @@ from tools import *
 from variables import *
 from cuts import cuts_Bu, prntCuts
 from model import model_Bu
-from data import tSelection7 as tBu
-
-
-logger.info('DATA chain name is %s ' % (tBu.GetName()))
-
-for i in prntCuts(cuts_Bu, "  CUTS B+  "):
-    logger.info(i)
-
+from data import selection7
 
 # Fit histo
 # logger.info('Fill control B+  histogram (takes some time)')
@@ -29,10 +22,7 @@ sel_Bu = SelectorWithVars(
     selection=cuts_Bu
 )
 
-
-logger.info('Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
-
-tBu.process(sel_Bu)
+selection7.chain.process(sel_Bu)
 
 ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')

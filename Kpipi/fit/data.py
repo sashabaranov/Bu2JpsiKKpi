@@ -1,8 +1,8 @@
 import os
 
 import ROOT
-from AnalysisPython.PyRoUts import *
-from ostap.data import Data, DataAndLumi
+from Ostap.PyRoUts import *
+from Ostap.Data import Data, DataAndLumi
 from AnalysisPython.Logger import getLogger
 
 # =============================================================================
@@ -42,7 +42,7 @@ def from_ganga(job_id):
 # =============================================================================
 files7 = from_ganga(284) + from_ganga(285)
 
-selection7 = DataAndLumi(branch='JpsiKpipi/t', files=files7)
+selection7 = DataAndLumi('JpsiKpipi/t', files7)
 
 logger.info("Selection 7: %s" % selection7)
 
@@ -62,15 +62,15 @@ mc_files = {
 }
 
 
-mc_Pythia6 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
-mc_Pythia8 = Data(branch='Bplus/t', files=mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
+mc_Pythia6 = Data('Bplus/t', mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
+mc_Pythia8 = Data('Bplus/t', mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])
 
 mc_all_files = []
 for year, pythias in mc_files.items():
     for pythia, files in pythias.items():
         mc_all_files += files
 
-mc_total = Data(branch='Bplus/t', files=mc_all_files)
+mc_total = Data('Bplus/t', mc_all_files)
 
 
 

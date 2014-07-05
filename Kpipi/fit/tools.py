@@ -1,8 +1,7 @@
 import ROOT
-from AnalysisPython.PyRoot import *
-from PyPAW.PyRoUts import *
-from PyPAW.Utils import timing
-from PyPAW.Utils import rooSilent
+from Ostap.PyRoUts import *
+from Ostap.Utils import timing
+from Ostap.Utils import rooSilent
 from AnalysisPython.Logger import getLogger
 
 from PyPAW.Selectors import SelectorWithVars

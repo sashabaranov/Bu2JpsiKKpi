@@ -5,10 +5,8 @@ from cuts import cuts_Bu, prntCuts
 from model import model_Bu
 from data import selection7
 
-tBu = selection7.data
 
-
-logger.info('DATA chain name is %s ' % (tBu.GetName()))
+logger.info('DATA chain name is %s ' % (selection7.chain.GetName()))
 
 
 for i in prntCuts(cuts_Bu, "  CUTS B+  "):
@@ -17,19 +15,21 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 # logger.info('Fill control B+ histogram (takes some time)')
 # with timing():
-#     tBu.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
+#     selection7.chain.Project(h1.GetName(), 'DTFm_b', cuts_Bu)
 
 
-from PyPAW.Selectors import SelectorWithVars
+from Ostap.Selectors import SelectorWithVarsCached
 
-sel_Bu = SelectorWithVars(
+sel_Bu = SelectorWithVarsCached(
     variables=selector_variables,
-    selection=cuts_Bu
+    selection=cuts_Bu,
+    files=selection7.files
 )
 
 logger.info('Build RooFit dataset for B+ , it could take as long as 3-5 minutes')
 
-tBu.process(sel_Bu)
+if not sel_Bu._loaded_from_cache:
+    selection7.chain.process(sel_Bu)
 
 
 ds_Bu = sel_Bu.dataset()

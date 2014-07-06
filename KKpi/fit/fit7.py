@@ -25,16 +25,16 @@ for i in prntCuts(cuts_Bu, "  CUTS B+  "):
 
 sel_Bu = SelectorWithVarsCached(
     variables=selector_variables,
-    selection=cuts_Bu,
+    selection=cuts_,
     files=selection7.files
 )
 
-# Build RooFit dataset for B+ , it could take as long as 3-5 minutes
 if not sel_Bu._loaded_from_cache:
     selection7.chain.process(sel_Bu)
 
 ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')
+
 
 # frame = m_Bu.frame(nbin_Bu)
 # frame.SetXTitle('#Inv.\,mass(J/\psi \, KK\pi), GeV/c^2')
@@ -42,27 +42,21 @@ ds_Bu.Print('v')
 
 # ds_Bu.plotOn(frame)
 # frame.Draw()
-
-
-
-logger.info('Make unbinned fit for B+')
-
-model_Bu.s.setMax(1.2 * len(ds_Bu))
+    
 ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-model_Bu.signal.mean.release()
-ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+# model_Bu.signal.mean.release()
+# model_Bu.signal.sigma.release()
 
-# model_Bu.signal.aR.release()
-# model_Bu.signal.nR.release()
 # ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-# model_Bu.signal.aL.release()
-# model_Bu.signal.nL.release()
-# ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 
-model_Bu.signal.sigma.release()
-ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
+
+fu.SetXTitle("Inv.\,mass(J/\psi\,KK\pi), GeV/c^{2}}")
+fu.SetYTitle("Events / %.1f MeV/c^{2}" % binning_b)
+
+fu.Draw()
+
 
 # ru, fu = model_Bu.fitTo(ds_Bu, draw=True, nbins=nbin_Bu)
 

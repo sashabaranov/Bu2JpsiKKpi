@@ -1,15 +1,15 @@
 import ROOT
 from AnalysisPython.PyRoot import *
 from PyPAW.PyRoUts import *
-from PyPAW.Utils import timing
-from PyPAW.Utils import rooSilent
+from Ostap.Utils import timing
+from Ostap.Utils import rooSilent
 from AnalysisPython.Logger import getLogger
-from PyPAW.Selectors import SelectorWithVars
+from Ostap.Selectors import SelectorWithVarsCached
 
 logger = getLogger(__name__)
 
 
-interval = (5.2, 5.4)
+interval = (5.15, 5.5)
 
 
 def smear_kkk(h):

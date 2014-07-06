@@ -9,21 +9,22 @@ logger = getLogger(__name__)
 cuts_trg =  "((psi_l0tos & 2) == 2)"
 cuts_trg += "&& ((psi_l1tos & 2) == 2)"
 cuts_trg += "&& ((psi_l2tos & 2) == 2)"
-
+    
 # Cuts
 cuts_ = " DTFchi2ndof > 0"
 cuts_ += "&& DTFchi2ndof < 5"
 cuts_ += "&& DTFctau > 0.25"
-cuts_ += "&& pt_b > 4."
-cuts_ += "&& pt_kaon[0] > 0.7 && pt_kaon[1] > 0.7"
+cuts_ += "&& vchi2_b < 20"
+cuts_ += "&& pt_kaon[0] > 0.6 && pt_kaon[1] > 0.6"
 cuts_ += "&& pt_pion > 0.3"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
-cuts_ += "&& minann_K  > 0.3 && minann_pi > 0.3"
+cuts_ += "&& ann_kaon[1]  > 0.3"
+cuts_ += "&& ann_pion[0] > 0.3"
+cuts_ += "&& ann_kaon_PI[1] < 0.3 && ann_pion_K < 0.3"
+cuts_ += "&& MIPCHI2DV_k1 > 12. && MIPCHI2DV_k2 > 12. && MIPCHI2DV_pi > 12."
+
 
 cuts_ += "&& " + cuts_trg
-cuts_ += "&& ((psi_l1tos & 2) == 2)"
-cuts_ += "&& ((psi_l2tos & 2) == 2)"
-cuts_ += "&& ann_pion > 0.15 && minann_K > 0.15 && MIPCHI2DV_k1 > 16. && MIPCHI2DV_k2 > 16. && MIPCHI2DV_pi > 16."
 
 mctrue = "&& mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTruePi && mcTrueMu1 && mcTrueMu2"
 

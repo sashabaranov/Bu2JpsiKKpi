@@ -1,8 +1,12 @@
 import ROOT
 
+
 # Bu meson
-m_Bu = ROOT.RooRealVar('DTFm_b', 'mass(J/psiKKpi)', 5.2, 5.4)
-nbin_Bu = 80
+m_Bu = ROOT.RooRealVar('DTFm_b', 'mass(J/psiKKpi)', 5.22, 5.42)
+nbin_Bu = 100
+binning_b = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
+
+
 
 events_binning = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
 

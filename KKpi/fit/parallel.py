@@ -6,46 +6,35 @@ import base64
 from tools import *
 from variables import *
 from cuts import *
-from data import tSelection7 as tBu
+from data import selection7
 from model import *
-
+import uuid
 
 logger = getLogger(__name__)
 
-sel_Bu = SelectorWithVars(
+sel_Bu = SelectorWithVarsCached(
     variables=selector_variables,
-    selection=cuts_Bu
+    selection=cuts_Bu,
+    files=selection7.files
 )
 
-tBu.process(sel_Bu)
+if not sel_Bu._loaded_from_cache:
+    selection7.chain.process(sel_Bu)
 
 ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')
 
 
-all_KKK = db['KKK']['RD'].values() + db['KKK']['MC'].values()
+all_KKK = db['KKK']['MC'].values() + db['KKK']['RD'].values() 
 all_Kpipi = db['Kpipi']['MC'].values() # + db['Kpipi']['RD'].values()
 
 #var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "sigma_Bu1", "tau_BBu", "covqual"]
-var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll", "i", "correlation"]
+var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll"]
 
-def perform_fit(model, ds, nbin):
-    model.s.setMax(1.2 * len(ds))
-    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
+ROOT.gROOT.SetBatch (True)
 
-    model.signal.mean.release()
-    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
+canvas_size = 1024, 768
 
-    model.signal.sigma.release()
-    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
-
-    model.legend.AddEntry("", "N_{sig} \, = \," + str(ru("SBu")[0]), "")
-    model.legend.Draw()
-
-    fu.Draw()
-    model.legend.Draw()
-
-    return ru, fu
 
 
 def count_significance(model_Bu, ds_Bu, nbin_Bu):
@@ -87,26 +76,44 @@ def count_significance(model_Bu, ds_Bu, nbin_Bu):
             return -1
 
 
-def random_canvas(size=(1024, 768)):
-    """Helper method for creating canvas with random name"""
 
-    import uuid
-    name = str(uuid.uuid4())
+def perform_fit(model, ds, nbin):
+    c = ROOT.TCanvas(str(uuid.uuid4()), '', *canvas_size)
 
-    # Check if icanvas already exists
-    canvas = ROOT.gROOT.FindObject(name)
-    assert len(size) == 2
-    if canvas:
-        raise Exception('uuid found')
-    else:
-        return ROOT.TCanvas(name, name, size[0], size[1])
+    dw = cWidth  - c.GetWw()
+    dh = cHeight - c.GetWh()
+    c.SetWindowSize ( canvas_size[0] + dw , canvas_size[1] + dh )
+
+    model.s.setMax(1.2 * len(ds))
+    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
+
+    model.signal.mean.release()
+    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
+
+    model.signal.sigma.release()
+    ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
+
+    model.legend.AddEntry("", "N_{sig} \, = \," + str(ru("SBu")[0]), "")
+    model.legend.Draw()
+
+    fu.Draw()
+    model.legend.Draw()
+    additional = [ru.covQual(), ru.minNll()]
+
+    output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
+    c.SaveAs('pics/{}.png'.format(base64.b64encode(":".join([str(x) for x in output]))))
+
+    return output
+
+
 
 
 
 def worker(i, kkk_hist, kpipi_hist):
     global ntuple
 
-    c1 = random_canvas()
+    print "fit ", kkk_hist, kpipi_hist
+
     s1_Bu = Models.CB2_pdf(
         'Bu1',
         m_Bu.getMin(),
@@ -123,30 +130,20 @@ def worker(i, kkk_hist, kpipi_hist):
     kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
     kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
 
+    bkg_Bu = Models.Bkg_pdf('BBu', mass=m_Bu, power=1)
+
     model_Bu = Charm3_pdf(
         signal=s1_Bu,
         signal2=kkk,
         signal3=kpipi,
-        background=Models.Bkg_pdf('BBu', mass=m_Bu, power=0), suffix='Bu'
+        background=bkg_Bu,
+        suffix='Bu'
     )
 
-    model_Bu.background.tau.setMax(-2.0)
-    model_Bu.background.tau.setVal(-1.0)
+    # model_Bu.background.tau.setMax(-2.0)
+    # model_Bu.background.tau.setVal(-1.0)
 
-    model_Bu.s.setMin(100)
-    model_Bu.s2.setMax(220)
-    model_Bu.s2.setVal(0.1)
-
-
-    ru, fu = perform_fit(model_Bu, ds_Bu, nbin_Bu)
-
-    additional = [ru.covQual(), ru.minNll(), i, ru.correlationMatrix()[1][6]]
-
-    output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
-
-    c1.SaveAs('pics/{}.png'.format(base64.b64encode(":".join([str(x) for x in output]))))
-
-    return output
+    return perform_fit(model_Bu, ds_Bu, nbin_Bu)
 
 def star(x):
     return worker(*x)
@@ -163,12 +160,19 @@ def main():
             jobs.append((i, kkk_hist, kpipi_hist))
             i += 1
 
+
+    # Parallel:
     workers  = cpu_count()
     p = Pool(processes=workers)
     results = p.map(star, jobs)
-
+    
+    # Iterative:
+    # results = []
+    # for j in jobs:
+    #     results.append(star(j))
 
     ntuple = ROOT.TNtuple("ntuple","ntuple", ":".join(var_names))
+
 
     for r in results:
         ntuple.Fill(*r)
@@ -178,5 +182,4 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
+main()

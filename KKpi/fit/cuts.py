@@ -20,7 +20,6 @@ cuts_ += "&& pt_pion > 0.3"
 cuts_ += "&& m_jpsi    > 3.020 && m_jpsi    < 3.135"
 cuts_ += "&& minann_K  > 0.3"
 cuts_ += "&& ann_pion[0] > 0.3"
-cuts_ += "&& ann_kaon_PI[1] < 0.9 && ann_pion_K < 0.9"
 cuts_ += "&& MIPCHI2DV_k1 > 12. && MIPCHI2DV_k2 > 12. && MIPCHI2DV_pi > 12."
 
 cuts_ += "&& " + cuts_trg

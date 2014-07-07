@@ -1,8 +1,10 @@
 import ROOT
 
 # Bu meson
-m_Bu = ROOT.RooRealVar('m_Bu', 'mass(J/\psi K \pi \pi)', 5.15, 5.45)
-nbin_Bu = 75
+m_Bu = ROOT.RooRealVar('m_Bu', '', 5.15, 5.45)
+nbin_Bu = 100
+binning_b = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
+
 
 # Resonanse
 m_R = ROOT.RooRealVar('m_R', 'mass(J/\psi \pi \pi)', 3.65, 3.75)
@@ -56,4 +58,4 @@ comparison_variables = [
 
 
 
-selector_variables = [(m_Bu, lambda s: s.DTFm_b ), (m_R, lambda s: s.m134c2 )] + comparison_variables
+selector_variables = [(m_Bu, lambda s: s.DTFm_b )]

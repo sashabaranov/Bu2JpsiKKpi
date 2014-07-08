@@ -42,7 +42,7 @@ output =  [ DiracFile("*.mdst") ,
 j = Job(
     application=Bender(
         events=-1,
-        version='v23r4',
+        version='v24r2',
         user_release_area=my_area,
         module='$Kpipidir/MC/Bu2JpsiKpipi.py'
     ),

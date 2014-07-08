@@ -25,11 +25,14 @@ ds_Bu = sel_Bu.dataset()
 ds_Bu.Print('v')
 
 
-all_KKK = db['KKK']['MC'].values() + db['KKK']['RD'].values() 
-all_Kpipi = db['Kpipi']['MC'].values() # + db['Kpipi']['RD'].values()
+# all_KKK = db['KKK']['MC'].values() + db['KKK']['RD'].values() 
+all_Kpipi = db['Kpipi']['MC'].values() + db['Kpipi']['RD'].values()
 
 #var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "sigma_Bu1", "tau_BBu", "covqual"]
-var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll"]
+var_names = ["BBu", "S2Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll"]
+
+
+
 
 ROOT.gROOT.SetBatch (True)
 
@@ -77,7 +80,7 @@ def count_significance(model_Bu, ds_Bu, nbin_Bu):
 
 
 
-def perform_fit(model, ds, nbin):
+def perform_fit(i, model, ds, nbin):
     c = ROOT.TCanvas(str(uuid.uuid4()), '', *canvas_size)
 
     dw = cWidth  - c.GetWw()
@@ -101,7 +104,7 @@ def perform_fit(model, ds, nbin):
     additional = [ru.covQual(), ru.minNll()]
 
     output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
-    c.SaveAs('pics/{}.png'.format(base64.b64encode(":".join([str(x) for x in output]))))
+    c.SaveAs('pics/{}{}.png'.format(i, base64.b64encode(":".join([str(x) for x in output]))))
 
     return output
 
@@ -109,56 +112,52 @@ def perform_fit(model, ds, nbin):
 
 
 
-def worker(i, kkk_hist, kpipi_hist):
+def worker(i, kpipi_hist):
     global ntuple
 
-    print "fit ", kkk_hist, kpipi_hist
+    print "wolverine ", kpipi_hist
 
     s1_Bu = Models.CB2_pdf(
         'Bu1',
         m_Bu.getMin(),
         m_Bu.getMax(),
         fixMass=5.2792e+0,
-        fixSigma=0.008499e+0,
-        fixAlphaL=2.0266,
-        fixAlphaR=2.00875,
-        fixNL=0.839,
-        fixNR=2.34195,
+        fixSigma=0.006,
+        fixAlphaL=2.1018e+00,
+        fixAlphaR=1.9818e+00,
+        fixNL=6.1464e-01,
+        fixNR=2.1291e+00,
         mass=m_Bu
     )
 
-    kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
-    kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
-
     bkg_Bu = Models.Bkg_pdf('BBu', mass=m_Bu, power=1)
-
-    model_Bu = Charm3_pdf(
+    kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
+    
+    model_B = Charm3_pdf(
         signal=s1_Bu,
-        signal2=kkk,
-        signal3=kpipi,
+        signal2=kpipi,
         background=bkg_Bu,
-        suffix='Bu'
+        suffix="Bu"
     )
+
+
 
     # model_Bu.background.tau.setMax(-2.0)
     # model_Bu.background.tau.setVal(-1.0)
 
-    return perform_fit(model_Bu, ds_Bu, nbin_Bu)
+    return perform_fit(i, model_B, ds_Bu, nbin_Bu)
 
 def star(x):
     return worker(*x)
 
 def main():
-    global all_KKK, all_Kpipi, ntuple
+    global all_Kpipi, ntuple
 
 
     jobs = []
 
-    i = 0
-    for kkk_hist in all_KKK:
-        for kpipi_hist in all_Kpipi:
-            jobs.append((i, kkk_hist, kpipi_hist))
-            i += 1
+    for i, kpipi_hist in enumerate(all_Kpipi):
+        jobs.append((i, kpipi_hist))
 
 
     # Parallel:

@@ -10,13 +10,22 @@ from MyFitModels import Charm3_pdf
 
 db = shelve.open("$KKpidir/fit/histos.shelve")
 
-# B+ -> J/psi K+ K- pi+
+
+
+kkk_hist = db['KKK']['RD']['k3']
+kpipi_hist = db['Kpipi']['MC']['p8_pi1']
+kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
+kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
+
+
+
+
 s1_Bu = Models.CB2_pdf(
     'Bu1',
     m_Bu.getMin(),
     m_Bu.getMax(),
     fixMass=5.2792e+0,
-    fixSigma=0.008499e+0,
+    fixSigma=0.006,
     fixAlphaL=2.1018e+00,
     fixAlphaR=1.9818e+00,
     fixNL=6.1464e-01,
@@ -24,38 +33,34 @@ s1_Bu = Models.CB2_pdf(
     mass=m_Bu
 )
 
+bkg_Bu = Models.Bkg_pdf('BBu', mass=m_Bu, power=1)
 
-# s1_Bu = Models.Gauss_pdf(
-#     'Bu1',
-#     m_Bu.getMin(),
-#     m_Bu.getMax(),
-#     fixMass=5.2792e+0,
-#     fixSigma=0.008499e+0,
-#     mass=m_Bu,
+# model_B = Models.Fit1D(
+#     signal=s1_Bu,
+#     background=bkg_Bu,
+#     components=[kkk]
 # )
 
-kkk_hist = db['KKK']['RD']['k3']
-kpipi_hist = db['Kpipi']['MC']['p8_pi1']
-
-kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
-kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
 
 model_Bu = Charm3_pdf(
     signal=s1_Bu,
-    signal2=kkk,
-    signal3=kpipi,
-    background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
+    # signal2=kkk,
+    signal2=kpipi,
+    background=bkg_Bu,
+    suffix="Bu"
 )
 
-model_Bu.background.tau.setMax(-2.0)
-model_Bu.background.tau.setVal(-1.0)
 
-model_Bu.s.setMin(100)
-model_Bu.s.setVal(101)
+
+# model_Bu.background.tau.setMax(-2.0)
+# model_Bu.background.tau.setVal(-1.0)
+
+# model_Bu.s.setMin(100)
+# model_Bu.s.setVal(101)
 
 model_Bu_mc = Charm3_pdf(
     signal=s1_Bu,
-    background=Models.Bkg_pdf('BBu', mass=m_Bu), suffix='Bu'
+    background=Models.Bkg_pdf('BBu', mass=m_Bu, power=1), suffix='Bu'
 )
 
 model_Bu_mc.b.fix(0)

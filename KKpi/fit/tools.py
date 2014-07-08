@@ -9,7 +9,7 @@ from Ostap.Selectors import SelectorWithVarsCached
 logger = getLogger(__name__)
 
 
-interval = (5.15, 5.5)
+interval = (5.22, 5.42)
 
 
 def smear_kkk(h):

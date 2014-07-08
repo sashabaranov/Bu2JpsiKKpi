@@ -58,4 +58,4 @@ comparison_variables = [
 
 
 
-selector_variables = [(m_Bu, lambda s: s.DTFm_b )]
+selector_variables = [(m_Bu, lambda s: s.DTFm_b )] + comparison_variables

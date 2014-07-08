@@ -4,11 +4,11 @@ from Ostap.Utils import timing
 from Ostap.Utils import rooSilent
 from AnalysisPython.Logger import getLogger
 
-from PyPAW.Selectors import SelectorWithVars
+from Ostap.Selectors import SelectorWithVarsCached
 
 logger = getLogger(__name__)
 
-interval = (5.1, 6.5)
+interval = (5.0, 7.2)
 binning = 150
 
 def make_hist(ds, name, variable, cuts):

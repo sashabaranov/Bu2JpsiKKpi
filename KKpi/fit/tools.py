@@ -1,13 +1,4 @@
 import ROOT
-from AnalysisPython.PyRoot import *
-from PyPAW.PyRoUts import *
-from Ostap.Utils import timing
-from Ostap.Utils import rooSilent
-from AnalysisPython.Logger import getLogger
-from Ostap.Selectors import SelectorWithVarsCached
-
-logger = getLogger(__name__)
-
 
 interval = (5.22, 5.42)
 

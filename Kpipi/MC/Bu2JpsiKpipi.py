@@ -191,30 +191,8 @@ class MCAnalysisAlgorithm(AlgoMC):
             nt.column('mass', self._mass ( b )  / GeV )
 
             ## try with pi1->K
-            with fakeK ( pi1, pid = LHCb.ParticleID( int(Q(pi1)) * 321 ) ) :
-                nt.column ( 'mass_pi1ask' , self._mass ( b ) / GeV )
-
-            # particles without misid pion
-            particles = [myb(1), myb(2), myb(4)]
-            # particles with misid pion
-            all_particles = [myb(i) for i in xrange(1, 5)]
-            pion = myb(3)
-
-            kaon_mass = 493.667 * MeV  # GeV / c^2
-
-            E_wo_misid = __builtin__.sum([E(p) for p in particles])
-            # GeV/c^2 + (GeV / c)^2
-            E_misid = sqrt(kaon_mass ** 2 + (P(pion)) ** 2)
-
-            total_PX = __builtin__.sum([PX(p) for p in all_particles])
-            total_PY = __builtin__.sum([PY(p) for p in all_particles])
-            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
-
-            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
-
-            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
-
-            nt.column("m_b_misid", misid_Bu_M / GeV)
+            with fakeK ( pi2, pid = LHCb.ParticleID( int(Q(pi2)) * 321 ) ) :
+                nt.column ( 'mass_pi2ask' , self._mass ( b ) / GeV )
 
 
             nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))

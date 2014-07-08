@@ -110,7 +110,7 @@ class Bu2JpsiKKK(Algo):
         return Algo.finalize(self)
 
     def analyse(self):
-        MyB = self.select('psi', '[( B+ ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K-  K+ )]CC')
+        MyB = self.select('psi', '[( B+ ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K- )]CC')
         if MyB.empty():
             return self.Warning("No B+ are found!", SUCCESS)
 
@@ -133,7 +133,6 @@ class Bu2JpsiKKK(Algo):
         kaon_mass = 0.493677 * GeV
 
         for myb in MyB:
-
             b, jpsi, k1, k2, k3 = tuple(myb(i) for i in xrange(5))
 
             self.treatKine(nt, b, '_b')
@@ -148,56 +147,12 @@ class Bu2JpsiKKK(Algo):
             nt.column('mass', self._mass ( b )  / GeV )
 
             ## try with k1->pi
-            misid1 = 0.0
-
             with fakePi ( k1 , pid = LHCb.ParticleID( int(Q(k1)) * 211 )):
                 nt.column ( 'mass_k1aspi' , self._mass ( b ) / GeV )
 
-            ## try with k3->pi
-            with fakePi ( k3 , pid = LHCb.ParticleID( int(Q(k3)) * 211 )):
-                nt.column ( 'mass_k3aspi' , self._mass ( b ) / GeV )
-
-
-            # particles with misid kaon
-            all_particles = [myb(i) for i in xrange(1, 5)]
-
-            # ==========================================
-            # Calculate first kaon misid combination
-            # ==========================================
-            particles = [myb(i) for i in xrange(1, 4)] # particles w/o misid kaon
-            kaon = myb(4)
-
-            E_wo_misid = __builtin__.sum([E(p) for p in particles])
-            E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
-
-            total_PX = __builtin__.sum([PX(p) for p in all_particles])
-            total_PY = __builtin__.sum([PY(p) for p in all_particles])
-            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
-
-            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
-
-            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
-            nt.column("m_b_misid1",  misid_Bu_M / GeV)
-
-            # ==========================================
-            # Calculate second kaon misid combination
-            # ==========================================
-            particles = [myb(1), myb(3), myb(4)]
-            kaon = myb(2)
-
-            E_wo_misid = __builtin__.sum([E(p) for p in particles])
-            E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
-
-            total_PX = __builtin__.sum([PX(p) for p in all_particles])
-            total_PY = __builtin__.sum([PY(p) for p in all_particles])
-            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
-
-            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
-
-            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
-            nt.column("m_b_misid2",  misid_Bu_M / GeV)
-
-
+            ## try with k2->pi
+            with fakePi ( k2 , pid = LHCb.ParticleID( int(Q(k2)) * 211 )):
+                nt.column ( 'mass_k2aspi' , self._mass ( b ) / GeV )
 
             # add DTF-applied information
             nt.column('DTFctau', dtffun_ctau(myb))

@@ -131,17 +131,17 @@ class MCBu2JpsiKKK(AlgoMC):
             return self.Warning('No primary vertices are found', SUCCESS )
 
         mcB = self.mcselect(
-            'mcB', "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K-  K+ )]CC")
+            'mcB', "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K+  K- )]CC")
 
         if 0 == mcB.size():
             return SUCCESS
 
         mcK = self.mcselect(
-            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K-  ^K+)]CC")
+            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K+  ^K-)]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  K-  K+ )]CC")
+            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  K+  K- )]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  K-  K+ )]CC")
+            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  K+  K- )]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
@@ -154,7 +154,7 @@ class MCBu2JpsiKKK(AlgoMC):
 
 
         # myB = self.select('Bu' , '[( Beauty ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K-)]CC' )
-        myB = self.select('Bu' , '[( Beauty ->  ( J/psi(1S) ->  mu+  mu-  ) K+  K-  K+)]CC' )
+        myB = self.select('Bu' , '[( Beauty ->  ( J/psi(1S) ->  mu+  mu-  ) K+  K+  K-)]CC' )
 
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
@@ -164,7 +164,6 @@ class MCBu2JpsiKKK(AlgoMC):
         MIPCHI2DVfun = MIPCHI2DV()
 
         nt = self.nTuple("t")
-        pion_mass = 0.1395702 * GeV  # GeV / c^2
 
         for myb in myB:
             if not all([myb(i) for i in xrange(0, 5)]):
@@ -200,47 +199,7 @@ class MCBu2JpsiKKK(AlgoMC):
 
             ## try with k3->pi
             with fakePi ( k3 , pid = LHCb.ParticleID( int(Q(k3)) * 211 )):
-                nt.column ( 'mass_k3aspi' , self._mass ( b ) / GeV )
-
-
-            # particles with misid kaon
-            all_particles = [myb(i) for i in xrange(1, 5)]
-
-            # ==========================================
-            # Calculate first kaon misid combination
-            # ==========================================
-            particles = [myb(i) for i in xrange(1, 4)] # particles w/o misid kaon
-            kaon = myb(4)
-
-            E_wo_misid = __builtin__.sum([E(p) for p in particles])
-            E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
-
-            total_PX = __builtin__.sum([PX(p) for p in all_particles])
-            total_PY = __builtin__.sum([PY(p) for p in all_particles])
-            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
-
-            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
-
-            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
-            nt.column("m_b_misid1",  misid_Bu_M / GeV)
-
-            # ==========================================
-            # Calculate second kaon misid combination
-            # ==========================================
-            particles = [myb(1), myb(3), myb(4)]
-            kaon = myb(2)
-
-            E_wo_misid = __builtin__.sum([E(p) for p in particles])
-            E_misid = sqrt(pion_mass ** 2 + (P(kaon)) ** 2)
-
-            total_PX = __builtin__.sum([PX(p) for p in all_particles])
-            total_PY = __builtin__.sum([PY(p) for p in all_particles])
-            total_PZ = __builtin__.sum([PZ(p) for p in all_particles])
-
-            total_P_sq = (total_PX) ** 2 + (total_PY) ** 2 + (total_PZ) ** 2
-
-            misid_Bu_M = sqrt((E_wo_misid + E_misid) ** 2 - total_P_sq)
-            nt.column("m_b_misid2",  misid_Bu_M / GeV)
+                nt.column ( 'mass_k2aspi' , self._mass ( b ) / GeV )
 
 
 

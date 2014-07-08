@@ -12,7 +12,7 @@ j2011 = Job(
     name='RD-KKK-11',
     application=Bender(
         events=-1,
-        version='v23r3',
+        version='v24r2',
         user_release_area=my_area,
         module='$KKKdir/Bu2JpsiKKK.py'
     ),
@@ -32,7 +32,7 @@ j2012 = Job(
     name='RD-KKK-12',
     application=Bender(
         events=-1,
-        version='v23r3',
+        version='v24r2',
         user_release_area=my_area,
         module='$KKKdir/Bu2JpsiKKK.py'
     ),

@@ -37,7 +37,7 @@ output =  [ DiracFile("*.mdst") ,
 j = Job(
     application=Bender(
         events=-1,
-        version='v23r3',
+        version='v24r2',
         user_release_area=my_area,
         module='$KKKdir/MC/Bu2JpsiKKK.py'
     ),

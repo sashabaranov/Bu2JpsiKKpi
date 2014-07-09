@@ -51,13 +51,13 @@ logger.info("Selection 7: %s" % selection7)
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(489) + from_ganga(490),
-        'Pythia8': from_ganga(487) + from_ganga(488),
+        'Pythia6': from_ganga(508) + from_ganga(509),
+        'Pythia8': from_ganga(506) + from_ganga(507),
     },
 
     '2012': {
-        'Pythia6': from_ganga(491) + from_ganga(492),
-        'Pythia8': from_ganga(485) + from_ganga(486),
+        'Pythia6': from_ganga(510) + from_ganga(511),
+        'Pythia8': from_ganga(504) + from_ganga(505),
     }
 }
 

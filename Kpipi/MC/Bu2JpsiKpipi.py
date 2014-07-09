@@ -194,6 +194,8 @@ class MCAnalysisAlgorithm(AlgoMC):
             with fakeK ( pi2, pid = LHCb.ParticleID( int(Q(pi2)) * 321 ) ) :
                 nt.column ( 'mass_pi2ask' , self._mass ( b ) / GeV )
 
+            self.fillMasses(nt, myb, "c2", True, "J/psi(1S)")
+
 
             nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))
             nt.column('MIPCHI2DV_pi1', MIPCHI2DVfun(pi1))

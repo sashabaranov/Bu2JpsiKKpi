@@ -40,7 +40,7 @@ def from_ganga(job_id):
 
 
 # =============================================================================
-files7 = from_ganga(284) + from_ganga(285)
+files7 = from_ganga(483) + from_ganga(484)
 
 selection7 = DataAndLumi('JpsiKpipi/t', files7)
 
@@ -51,13 +51,13 @@ logger.info("Selection 7: %s" % selection7)
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(221) + from_ganga(222),
-        'Pythia8': from_ganga(219) + from_ganga(220),
+        'Pythia6': from_ganga(489) + from_ganga(490),
+        'Pythia8': from_ganga(487) + from_ganga(488),
     },
 
     '2012': {
-        'Pythia6': from_ganga(223) + from_ganga(224),
-        'Pythia8': from_ganga(217) + from_ganga(218),
+        'Pythia6': from_ganga(491) + from_ganga(492),
+        'Pythia8': from_ganga(485) + from_ganga(486),
     }
 }
 

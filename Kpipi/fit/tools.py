@@ -8,7 +8,7 @@ from Ostap.Selectors import SelectorWithVarsCached
 
 logger = getLogger(__name__)
 
-interval = (5.0, 7.2)
+interval = (5.0, 6.4)
 binning = 150
 
 def make_hist(ds, name, variable, cuts):

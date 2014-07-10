@@ -140,6 +140,8 @@ class MCAnalysisAlgorithm(AlgoMC):
             "mcMu", "[( Beauty ==> K+ (psi(2S) => ( J/psi(1S) =>  ^mu+  ^mu-  ) pi+ pi-))]CC")
         mcPsi = self.mcselect(
             "mcPsi", "[( Beauty ==> K+ ^(psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+        mcJPsi = self.mcselect(
+            "mcPsi", "[( Beauty ==> K+ (psi(2S) => ^( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
@@ -149,6 +151,7 @@ class MCAnalysisAlgorithm(AlgoMC):
         trueK = MCTRUTH(match, mcK)
         truePi = MCTRUTH(match, mcPi)
         truePsi = MCTRUTH(match, mcPsi)
+        trueJPsi = MCTRUTH(match, mcJPsi)
         trueMu = MCTRUTH(match, mcMu)
 
 
@@ -163,11 +166,10 @@ class MCAnalysisAlgorithm(AlgoMC):
         nt = self.nTuple("t")
 
         for myb in myB:
-            if not all(tuple(myb(i) for i in xrange(3))):
+            print myb.decay()
+            if not all(tuple(myb(i) for i in xrange(5))):
                 continue
-
-            b, k, psi = tuple(myb(i) for i in xrange(3))
-            jpsi, pi1, pi2 = tuple(psi(i) for i in xrange(1, 4))
+            b, jpsi, k, pi1, pi2 = tuple(myb(i) for i in xrange(5))
 
             # add DTF-applied information
             nt.column('DTFm_b', dtffun_m(myb) / GeV)
@@ -202,7 +204,7 @@ class MCAnalysisAlgorithm(AlgoMC):
             nt.column('MIPCHI2DV_pi2', MIPCHI2DVfun(pi2))
 
             nt.column('mcTrueB'   , trueB(b))
-            nt.column('mcTruePsi' , truePsi(psi))
+            nt.column('mcTruePsi' , trueJPsi(jpsi(0)))
             nt.column('mcTrueK'   , trueK(k))
             nt.column('mcTruePi1' , truePi(pi1))
             nt.column('mcTruePi2' , truePi(pi2))

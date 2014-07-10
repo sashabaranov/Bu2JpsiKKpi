@@ -27,6 +27,8 @@ cuts_ += "&& ((psi_l2tos & 2) == 2)"
 
 
 cuts_Bu = cuts_
+cuts_mc = cuts_ + mctrue
+
 
 
 def prntCuts(cuts, prefix=""):

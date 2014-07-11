@@ -7,44 +7,6 @@ nbin_Bu = 100
 binning_b = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
 
 
-
-events_binning = (m_Bu.getMax() - m_Bu.getMin()) / nbin_Bu * 1000
-
-m_Bu_a = ROOT.RooRealVar('m_Bu', 'mass(J/psiKKpi)', 5.16, 5.45)
-
-
-# K*(892)
-m_Kstar = ROOT.RooRealVar('DTFm_kpi', 'mass(K+ pi-)', 0.634, 1.2)
-nbin_Kstar = 20
-
-mm_Kstar = ROOT.RooRealVar('mm_Kstar', 'mass(Kstar0)', 0.85, 0.9)
-mm_Kstar.fix(0.892)
-
-width_Kstar = ROOT.RooRealVar('width_Kstar', 'width(Kstar0)', 0.0, 1.0)
-
-low_kpi = ROOT.RooRealVar('low', 'low_KstarBg', 0.6, 0.7)
-low_kpi.fix(0.634)
-high_kpi = ROOT.RooRealVar('high', 'high_KstarBg', 1.3, 2.0)
-
-
-
-# Phi(1020)
-m_Phi = ROOT.RooRealVar('DTFm_kk', 'mass(KK)', 1.0, 1.08)
-nbin_Phi = 30
-
-mm_Phi = ROOT.RooRealVar('mm_Phi', 'mass(Phi)', 1.0, 1.1)
-mm_Phi.fix(1.02)
-
-width_Phi = ROOT.RooRealVar('width_Phi', 'width(Phi)', 0.0, 1.0)
-
-low_kk = ROOT.RooRealVar('low', 'low_PhiBg', 0.9, 1.0)
-low_kk.fix(0.986)
-high_kk = ROOT.RooRealVar('high', 'high_PhiBg', 2.0, 2.1)
-#high_kk.fix(2.04)
-
-
-
-
 comparison_variables = [
     # (name, binning, range_min, range_max, name)
     # ("DTFchi2ndof", 25, 0.0, 6.0, "\chi^{2}_{DTF}/ndof"),

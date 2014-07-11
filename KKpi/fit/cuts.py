@@ -22,9 +22,12 @@ cuts_ += "&& minann_K  > 0.3"
 cuts_ += "&& ann_pion[0] > 0.3"
 cuts_ += "&& MIPCHI2DV_k1 > 12. && MIPCHI2DV_k2 > 12. && MIPCHI2DV_pi > 12."
 
-cuts_ += "&& " + cuts_trg
-
 mctrue = "&& mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTruePi && mcTrueMu1 && mcTrueMu2"
+
+cuts_ += "&& " + cuts_trg
+cuts_mc = cuts_ + mctrue
+
+
 
 Nsigma = 5
 

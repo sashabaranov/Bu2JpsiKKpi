@@ -1,14 +1,15 @@
+import os
+import shelve
 from tools import *
 import PyPAW.FitModels as Models
 
 from variables import m_Bu
-from variables import m_Kstar, mm_Kstar, width_Kstar, low_kpi, high_kpi
-from variables import m_Phi, mm_Phi, width_Phi, low_kk, high_kk
+
 
 from MyFitModels import Charm3_pdf
 
 
-db = shelve.open("$KKpidir/fit/histos.shelve")
+db = shelve.open(os.path.expandvars("$KKpidir/fit/histos.shelve"))
 
 
 

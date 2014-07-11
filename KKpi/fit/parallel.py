@@ -12,6 +12,8 @@ import uuid
 
 logger = getLogger(__name__)
 
+from Ostap.Selectors import SelectorWithVarsCached
+
 sel_Bu = SelectorWithVarsCached(
     variables=selector_variables,
     selection=cuts_Bu,
@@ -29,7 +31,7 @@ ds_Bu.Print('v')
 all_Kpipi = db['Kpipi']['MC'].values() + db['Kpipi']['RD'].values()
 
 #var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "sigma_Bu1", "tau_BBu", "covqual"]
-var_names = ["BBu", "S2Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll"]
+var_names = ["BBu", "S2Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll", "apolonios"]
 
 
 
@@ -81,12 +83,6 @@ def count_significance(model_Bu, ds_Bu, nbin_Bu):
 
 
 def perform_fit(i, model, ds, nbin):
-    c = ROOT.TCanvas(str(uuid.uuid4()), '', *canvas_size)
-
-    dw = cWidth  - c.GetWw()
-    dh = cHeight - c.GetWh()
-    c.SetWindowSize ( canvas_size[0] + dw , canvas_size[1] + dh )
-
     model.s.setMax(1.2 * len(ds))
     ru, fu = model.fitTo(ds, draw=True, nbins=nbin)
 
@@ -99,38 +95,58 @@ def perform_fit(i, model, ds, nbin):
     model.legend.AddEntry("", "N_{sig} \, = \," + str(ru("SBu")[0]), "")
     model.legend.Draw()
 
+    fu.SetTitle("")
+    
+    fu.SetXTitle('Inv.\,mass(J/\psi KK\pi), GeV/c^{2}}')
+    fu.SetYTitle("Events / %.1f MeV/c^{2}" % binning_b)
+
     fu.Draw()
+
     model.legend.Draw()
-    additional = [ru.covQual(), ru.minNll()]
-
-    output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
-    c.SaveAs('pics/{}{}.png'.format(i, base64.b64encode(":".join([str(x) for x in output]))))
-
-    return output
+    
+    return ru, fu
 
 
 
 
 
-def worker(i, kpipi_hist):
+def worker(i, kpipi_hist, apolonios, power):
     global ntuple
 
     print "wolverine ", kpipi_hist
 
-    s1_Bu = Models.CB2_pdf(
-        'Bu1',
-        m_Bu.getMin(),
-        m_Bu.getMax(),
-        fixMass=5.2792e+0,
-        fixSigma=0.006,
-        fixAlphaL=2.1018e+00,
-        fixAlphaR=1.9818e+00,
-        fixNL=6.1464e-01,
-        fixNR=2.1291e+00,
-        mass=m_Bu
-    )
+    if not apolonios:
+        s1_Bu = Models.CB2_pdf(
+            'Bu1',
+            m_Bu.getMin(),
+            m_Bu.getMax(),
+            fixMass=5.2792e+0,
+            fixSigma=0.006,
+            fixAlphaL=2.1018e+00,
+            fixAlphaR=1.9818e+00,
+            fixNL=6.1464e-01,
+            fixNR=2.1291e+00,
+            mass=m_Bu
+        )
+    else:
+        s1_Bu = Models.Apolonios_pdf(
+            'Bu1',
+            m_Bu.getMin(),
+            m_Bu.getMax(),
+            fixMass=5.2792e+0,
+            fixSigma=0.008499e+0,
+            fixAlpha=3.6,
+            fixN=0.08,
+            fixB=1.369,
+            mass=m_Bu
+        )
+        s1_Bu.alpha.relese()
+        s1_Bu.sigma.release()
+        s1_Bu.n.release()
+        s1_Bu.b.release()
 
-    bkg_Bu = Models.Bkg_pdf('BBu', mass=m_Bu, power=1)
+
+    bkg_Bu = Models.Bkg_pdf('BBu', mass=m_Bu, power=power)
     kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))
     
     model_B = Charm3_pdf(
@@ -140,12 +156,27 @@ def worker(i, kpipi_hist):
         suffix="Bu"
     )
 
-
+    bkg_Bu.tau.setMax(0.0)
 
     # model_Bu.background.tau.setMax(-2.0)
     # model_Bu.background.tau.setVal(-1.0)
+    c = ROOT.TCanvas(str(uuid.uuid4()), '', *canvas_size)
 
-    return perform_fit(i, model_B, ds_Bu, nbin_Bu)
+    ru,fu = perform_fit(i, model_B, ds_Bu, nbin_Bu)
+
+    additional = [ru.covQual(), ru.minNll(), int(apolonios), power]
+    output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
+
+    fu.Draw()
+    model_B.legend.Draw()
+
+    c.SaveAs('pics/{}{}.png'.format(i, base64.b64encode(":".join([str(x) for x in output]))))
+
+
+    return output
+
+
+
 
 def star(x):
     return worker(*x)
@@ -157,7 +188,9 @@ def main():
     jobs = []
 
     for i, kpipi_hist in enumerate(all_Kpipi):
-        jobs.append((i, kpipi_hist))
+        for power in (0, 1, 2, 3):
+            jobs.append((i, kpipi_hist, False, power))
+            jobs.append((i, kpipi_hist, True, power))
 
 
     # Parallel:

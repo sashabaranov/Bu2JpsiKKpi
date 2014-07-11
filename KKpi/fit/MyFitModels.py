@@ -10,8 +10,6 @@ import PyPAW.FitModels as Models
 
 from AnalysisPython.Logger import getLogger
 
-from variables import events_binning
-
 logger = getLogger(__name__)
 
 # =============================================================================
@@ -152,15 +150,6 @@ class Charm3_pdf (object):
             s.setMin(0.0)
             s.setMax(nmax)
 
-        self.b.setMax(1e+9)
-
-        self.s2.setMin(100)
-        self.s2.setMax(230 * 20 * 0.05)
-        self.s2.setVal(101)
-
-        self.s3.setMin(100)
-        self.s3.setMax(230 * 20 * 3 * 0.12)
-        self.s3.setVal(101)
 
         result = self.pdf.fitTo(dataset,
                                 ROOT.RooFit.Save(),
@@ -206,7 +195,7 @@ class Charm3_pdf (object):
                                  ROOT.RooFit.Name("signal2"),
                                  ROOT.RooFit.LineStyle(ROOT.kDashed),
                                  ROOT.RooFit.LineColor(ROOT.kCyan))
-                self.legend.AddEntry("signal2", legend_kkk(self.signal2.pdf.GetName()[5:]), "L")
+                self.legend.AddEntry("signal2", legend_kpipi(self.signal2.pdf.GetName()[5:]), "L")
 
             if hasattr(self, 'signal3'):
                 self.pdf .plotOn(frame,
@@ -215,17 +204,13 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("signal3"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kMagenta))
-                self.legend.AddEntry("signal3", legend_kpipi(self.signal3.pdf.GetName()[5:]), "L")
+                self.legend.AddEntry("signal3", legend_kkk(self.signal3.pdf.GetName()[5:]), "L")
 
 
             self.pdf.plotOn(frame, ROOT.RooFit.Name("total"), ROOT.RooFit.LineColor(ROOT.kRed))
 
             self.legend.AddEntry("total", "Total \,", "L")
 
-
-            frame.SetXTitle('#Inv.\,mass(J/\psi\,K K \pi), GeV/c^{2}')
-            frame.SetYTitle('Events / (%d \, MeV/c^{2})' % events_binning)
-            frame.SetZTitle('')
 
             frame.Draw()
             self.legend.Draw()

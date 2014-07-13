@@ -1,14 +1,5 @@
 import ROOT
-from AnalysisPython.PyRoot import *
-from PyPAW.PyRoUts import *
-from PyPAW.Utils import timing
-from PyPAW.Utils import rooSilent
-from PyPAW.LHCbStyle import *
-from AnalysisPython.Logger import getLogger
 
-from PyPAW.Selectors import SelectorWithVars
-
-logger = getLogger(__name__)
 
 interval = (5.1, 5.5)
 binning = 100

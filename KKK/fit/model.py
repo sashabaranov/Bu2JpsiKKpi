@@ -48,5 +48,5 @@ model_Bu_mc = Models.Fit1D(
 model_Bu_mc.b.fix(0)
 model_Bu_mc.background.tau.fix(0)
 
-model_Bu.b.fix(0)
+# model_Bu.b.fix(0)
 model_Bu.background.tau.fix(0)

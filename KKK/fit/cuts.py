@@ -17,6 +17,8 @@ cuts_ += "&& ((psi_l2tos & 2) == 2)"
 
 mctrue = " && mcTrueB && mcTruePsi && mcTrueK1 && mcTrueK2 && mcTrueK3 && mcTrueMu1 && mcTrueMu2"
 
+cuts_mc = cuts_ + mctrue
+
 # old Cuts
 # cuts_ = " DTFchi2ndof > 0"
 # cuts_ += "&& DTFchi2ndof < 5"

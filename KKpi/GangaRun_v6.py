@@ -18,7 +18,7 @@ j2011 = Job(
     ),
     outputfiles=output,
     backend=Dirac(),
-    splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True),
+    splitter=SplitByFiles(filesPerJob=1, maxFiles=-1, bulksubmit = True),
 )
 
 j2011.splitter.ignoremissing = False
@@ -39,7 +39,7 @@ j2012 = Job(
     ),
     outputfiles=output,
     backend=Dirac(),
-    splitter=SplitByFiles(filesPerJob=10, maxFiles=-1, bulksubmit = True)
+    splitter=SplitByFiles(filesPerJob=1, maxFiles=-1, bulksubmit = True)
 )
 
 j2012.splitter.ignoremissing = False

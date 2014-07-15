@@ -150,6 +150,7 @@ class Charm3_pdf (object):
             s.setMin(0.0)
             s.setMax(nmax)
 
+        self.b.setMax(1800)
 
         result = self.pdf.fitTo(dataset,
                                 ROOT.RooFit.Save(),
@@ -163,13 +164,13 @@ class Charm3_pdf (object):
                                     *args)
 
         if draw:
-            self.legend = ROOT.TLegend(0.55, 0.65, 0.95, 0.9)
+            self.legend = ROOT.TLegend(0.55, 0.65, 0.9, 0.9)
             self.legend.SetFillColor(ROOT.kWhite)
             self.legend.SetTextSize(0.023)
 
             frame = self.mass.frame(nbins)
             dataset  .plotOn(frame, ROOT.RooFit.Name("data"))
-            self.legend.AddEntry("data", "Data \,", "P")
+            self.legend.AddEntry("data", "Data", "P")
 
             self.pdf .plotOn(frame,
                              ROOT.RooFit.Components(
@@ -177,7 +178,7 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("background"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kBlue))
-            self.legend.AddEntry("background", "Exponential \, \, background", "L")
+            self.legend.AddEntry("background", "Exponential  background", "L")
 
 
             self.pdf .plotOn(frame,
@@ -186,7 +187,7 @@ class Charm3_pdf (object):
                              ROOT.RooFit.Name("signal"),
                              ROOT.RooFit.LineStyle(ROOT.kDashed),
                              ROOT.RooFit.LineColor(ROOT.kGreen))
-            self.legend.AddEntry("signal", "Signal \,", "L")
+            self.legend.AddEntry("signal", "Signal", "L")
 
             if hasattr(self, 'signal2'):
                 self.pdf .plotOn(frame,
@@ -209,7 +210,7 @@ class Charm3_pdf (object):
 
             self.pdf.plotOn(frame, ROOT.RooFit.Name("total"), ROOT.RooFit.LineColor(ROOT.kRed))
 
-            self.legend.AddEntry("total", "Total \,", "L")
+            self.legend.AddEntry("total", "Total", "L")
 
 
             frame.Draw()

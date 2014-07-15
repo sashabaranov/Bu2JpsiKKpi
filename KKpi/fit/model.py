@@ -13,7 +13,7 @@ db = shelve.open(os.path.expandvars("$KKpidir/fit/histos.shelve"))
 
 
 
-kkk_hist = db['KKK']['RD']['k3']
+kkk_hist = db['KKK']['RD']['k2']
 kpipi_hist = db['Kpipi']['MC']['p8_pi1']
 kkk = Models.H1D_pdf(name=kkk_hist.GetName(), mass=m_Bu, histo=smear_kkk(kkk_hist))
 kpipi = Models.H1D_pdf(name=kpipi_hist.GetName(), mass=m_Bu, histo=smear_kpipi(kpipi_hist))

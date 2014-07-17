@@ -31,7 +31,7 @@ ds_Bu.Print('v')
 all_Kpipi = db['Kpipi']['MC'].values() + db['Kpipi']['RD'].values()
 
 #var_names = ["BBu", "S2Bu", "S3Bu", "SBu", "mean_Bu1", "phi1_BBu", "sigma_Bu1", "tau_BBu", "covqual"]
-var_names = ["phi1_BBu", "BBu", "S2Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll", "apolonios", "power", "i"]
+var_names = ["phi1_BBu", "BBu", "S2Bu", "SBu", "mean_Bu1", "sigma_Bu1", "tau_BBu", "covqual", "minNll", "apolonios", "power", "i", "error"]
 
 
 
@@ -210,7 +210,7 @@ def worker(i, kpipi_hist, apolonios, power):
     else:
         ru, fu = perform_fit(i, model_B, ds_Bu, nbin_Bu)
 
-    additional = [ru.covQual(), ru.minNll(), int(apolonios), power, bkg_Bu.phis[-1], i]
+    additional = [ru.covQual(), ru.minNll(), int(apolonios), power, bkg_Bu.phis[-1], i, ru("SBu")[0].error()]
     output = [float(ru(v)[0]) for v in var_names[:-len(additional)]] + additional
 
     fu.Draw()

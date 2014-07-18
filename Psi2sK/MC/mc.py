@@ -127,21 +127,21 @@ class MCAnalysisAlgorithm(AlgoMC):
 
         # B+ -> K+ (psi(2S) -> (J/psi(1S) -> mu+ mu- {,gamma} {,gamma}) pi+ pi-)
         mcB = self.mcselect(
-            'mcB', "[( Beauty ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            'mcB', "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
 
         if 0 == mcB.size():
             return SUCCESS
 
         mcK = self.mcselect(
-            "mcK",  "[( Beauty ==> ^K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            "mcK",  "[( B+ ==> ^K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
         mcPi = self.mcselect(
-            "mcPi",  "[( Beauty ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) ^pi+ ^pi-))]CC")
+            "mcPi",  "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) ^pi+ ^pi-))]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( Beauty ==> K+ (psi(2S) => ( J/psi(1S) =>  ^mu+  ^mu-  ) pi+ pi-))]CC")
+            "mcMu", "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  ^mu+  ^mu-  ) pi+ pi-))]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==> K+ ^(psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            "mcPsi", "[( B+ ==> K+ ^(psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
         mcJPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==> K+ (psi(2S) => ^( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            "mcPsi", "[( B+ ==> K+ (psi(2S) => ^( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
@@ -155,7 +155,7 @@ class MCAnalysisAlgorithm(AlgoMC):
         trueMu = MCTRUTH(match, mcMu)
 
 
-        myB = self.select('Bu' , '[( Beauty ->  J/psi(1S)  K+  pi+  pi-)]CC' )
+        myB = self.select('Bu' , '[( B+ ->  J/psi(1S)  K+  pi+  pi-)]CC' )
 
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
@@ -166,7 +166,6 @@ class MCAnalysisAlgorithm(AlgoMC):
         nt = self.nTuple("t")
 
         for myb in myB:
-            print myb.decay()
             if not all(tuple(myb(i) for i in xrange(5))):
                 continue
             b, jpsi, k, pi1, pi2 = tuple(myb(i) for i in xrange(5))

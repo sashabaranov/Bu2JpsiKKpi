@@ -19,13 +19,13 @@ def from_ganga(job_id):
 # =============================================================================
 mc_files = {
     '2011': {
-        'Pythia6': from_ganga(237) + from_ganga(238),
-        'Pythia8': from_ganga(235) + from_ganga(236),
+        'Pythia6': from_ganga(587) + from_ganga(588),
+        'Pythia8': from_ganga(585) + from_ganga(586),
     },
 
     '2012': {
-        'Pythia6': from_ganga(239) + from_ganga(240),
-        'Pythia8': from_ganga(233) + from_ganga(234),
+        'Pythia6': from_ganga(589) + from_ganga(590),
+        'Pythia8': from_ganga(583) + from_ganga(584),
     }
 }
 

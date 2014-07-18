@@ -6,13 +6,13 @@ MODE = 'B+ -> (Psi(2S) -> J/psi pi pi) K+'
 
 config = {
     "Psi2sK-MC-2011-Pythia8": [
-        ('/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia8/Sim08e/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929', 'sim-20130522-vc-md100')
-        ('/MC/2011/Beam3500GeV-2011-MagUp-Nu2-Pythia8/Sim08e/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929', 'sim-20130522-vc-mu100')
+        ('/MC/2011/Beam3500GeV-2011-MagDown-Nu2-Pythia8/Sim08e/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929', 'sim-20130522-vc-md100'),
+        ('/MC/2011/Beam3500GeV-2011-MagUp-Nu2-Pythia8/Sim08e/Digi13/Trig0x40760037/Reco14a/Stripping20r1NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929', 'sim-20130522-vc-mu100'),
     ],
 
     "Psi2sK-MC-2012-Pythia8": [
-        ('/MC/2012/Beam4000GeV-2012-MagUp-Nu2.5-Pythia8/Sim08e/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929-1', 'sim-20130522-1-vc-mu100')
-        ('/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pythia8/Sim08e/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929-1', 'sim-20130522-1-vc-md100')
+        ('/MC/2012/Beam4000GeV-2012-MagUp-Nu2.5-Pythia8/Sim08e/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929-1', 'sim-20130522-1-vc-mu100'),
+        ('/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pythia8/Sim08e/Digi13/Trig0x409f0045/Reco14a/Stripping20NoPrescalingFlagged/12145020/ALLSTREAMS.DST', 'dddb-20130929-1', 'sim-20130522-1-vc-md100'),
     ],
 
 }

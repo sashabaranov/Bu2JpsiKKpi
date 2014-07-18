@@ -108,19 +108,39 @@ class MCAnalysisAlgorithm(AlgoMC):
             return self.Warning("No primary vertices", SUCCESS)
 
         mcB = self.mcselect(
-            'mcB', "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
+            'mcB', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
+
+        mcB_Ks = self.mcselect(
+            'mcB_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K*(892)~0 -> K- pi+) K+ )]CC")
+
+        mcB_f0 = self.mcselect(
+            'mcB_f0', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_0(980) -> K+ K- ) pi+ )]CC")
+
+        mcB_f2 = self.mcselect(
+            'mcB_f2', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_2(1270) -> K+ K- ) pi+ )]CC")
+
+
+        nt_sizes = self.nTuple("sizes")
+
+        nt_sizes.column('mcB', mcB.size())
+        nt_sizes.column('mcB_Ks', mcB_Ks.size())
+        nt_sizes.column('mcB_f0', mcB_f0.size())
+        nt_sizes.column('mcB_f2', mcB_f2.size())
+
+        nt_sizes.write()
+
 
         if mcB.size() != 1:
             return SUCCESS
 
         mcK = self.mcselect(
-            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K- pi+ )]CC")
+            "mcK",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K- pi+ )]CC")
         mcPi = self.mcselect(
-            "mcPi",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- ^pi+ )]CC")
+            "mcPi",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- ^pi+ )]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  K- pi+ )]CC")
+            "mcMu", "[( B+ ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  K- pi+ )]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
+            "mcPsi", "[( B+ ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
@@ -128,14 +148,19 @@ class MCAnalysisAlgorithm(AlgoMC):
 
         match = self.mcTruth()
         trueB = MCTRUTH(match, mcB)
+        trueB_Ks = MCTRUTH(match, mcB_Ks)
+        trueB_f0 = MCTRUTH(match, mcB_f0)
+        trueB_f2 = MCTRUTH(match, mcB_f2)
+
+
         trueK = MCTRUTH(match, mcK)
         truePi = MCTRUTH(match, mcPi)
         truePsi = MCTRUTH(match, mcPsi)
         trueMu = MCTRUTH(match, mcMu)
 
 
-        # myB = self.select('Bu' , '[( Beauty ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K-)]CC' )
-        myB = self.select('myB' , '[( Beauty ->  J/psi(1S)  K+  K- pi+)]CC' )
+        # myB = self.select('Bu' , '[( B+ ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K-)]CC' )
+        myB = self.select('myB' , '[( B+ ->  J/psi(1S)  K+  K- pi+)]CC' )
 
         # Minimal impact parameter chi2
         mipFun = MIP(prims, self.geo())
@@ -202,7 +227,12 @@ class MCAnalysisAlgorithm(AlgoMC):
                           self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
 
-            nt.column('mcTrueB', trueB(b))
+            nt.column('mcTrueB', trueB(myb))
+            nt.column('mcTrueB_Ks', trueB_Ks(myb))
+            nt.column('mcTrueB_f0', trueB_f0(myb))
+            nt.column('mcTrueB_f2', trueB_f2(myb))
+
+
             nt.column('mcTruePsi', truePsi(jpsi))
             nt.column('mcTrueK1', trueK(k1))
             nt.column('mcTrueK2', trueK(k2))
@@ -394,7 +424,7 @@ if __name__ == '__main__':
     configure(inputdata, params=test_params, castor=True)
 
     # run the job
-    run(2000)
+    run(5000)
 
     gaudi = appMgr()
 

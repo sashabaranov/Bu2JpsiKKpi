@@ -110,6 +110,9 @@ class MCAnalysisAlgorithm(AlgoMC):
         mcB = self.mcselect(
             'mcB', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
 
+        mcB_nonres = self.mcselect(
+            'mcB_nonres', "[( B+ =>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
+
         mcB_Ks = self.mcselect(
             'mcB_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K*(892)~0 -> K- pi+) K+ )]CC")
 
@@ -130,8 +133,9 @@ class MCAnalysisAlgorithm(AlgoMC):
         nt_sizes.write()
 
 
-        if mcB.size() != 1:
-            return SUCCESS
+        if mcB.size() != 1 or ((mcB_nonres.size() + mcB_Ks.size() + mcB_f0.size() + mcB_f2.size()) != 1):
+            return self.Warning("Something wrong with MC size " + str(mcB.size()), SUCCESS)
+
 
         mcK = self.mcselect(
             "mcK",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K- pi+ )]CC")
@@ -148,6 +152,7 @@ class MCAnalysisAlgorithm(AlgoMC):
 
         match = self.mcTruth()
         trueB = MCTRUTH(match, mcB)
+        trueB_NR = MCTRUTH(match, mcB_nonres)
         trueB_Ks = MCTRUTH(match, mcB_Ks)
         trueB_f0 = MCTRUTH(match, mcB_f0)
         trueB_f2 = MCTRUTH(match, mcB_f2)
@@ -228,6 +233,7 @@ class MCAnalysisAlgorithm(AlgoMC):
 
 
             nt.column('mcTrueB', trueB(myb))
+            nt.column('mcTrueB_NR', trueB_NR(myb))
             nt.column('mcTrueB_Ks', trueB_Ks(myb))
             nt.column('mcTrueB_f0', trueB_f0(myb))
             nt.column('mcTrueB_f2', trueB_f2(myb))

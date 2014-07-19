@@ -129,8 +129,8 @@ class MCAnalysisAlgorithm(AlgoMC):
         mcB = self.mcselect(
             'mcB', "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
 
-        if 0 == mcB.size():
-            return SUCCESS
+        if mcB.size() != 1:
+            return self.Warning("Something wrong with MC size " + str(mcB.size()), SUCCESS)
 
         mcK = self.mcselect(
             "mcK",  "[( B+ ==> ^K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")

@@ -40,12 +40,12 @@ def from_ganga(job_id):
 mc_files = {
     '2011': {
         # 'Pythia6': from_ganga(221) + from_ganga(222),
-        'Pythia8': from_ganga(581) + from_ganga(582),
+        'Pythia8': from_ganga(594) + from_ganga(595),
     },
 
     '2012': {
         # 'Pythia6': from_ganga(223) + from_ganga(224),
-        'Pythia8': from_ganga(579) + from_ganga(580),
+        'Pythia8': from_ganga(592) + from_ganga(593),
     }
 }
 

@@ -126,32 +126,72 @@ class MCAnalysisAlgorithm(AlgoMC):
             return self.Warning('No primary vertices are found', SUCCESS )
 
         mcB = self.mcselect(
-            'mcB', "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  pi+  pi- )]CC")
+            'mcB', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  pi+  pi- )]CC")
 
-        if 0 == mcB.size():
-            return SUCCESS
+        mcB_psi = self.mcselect(
+            'mcB_psi', "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+
+        mcB_X = self.mcselect(
+            'mcB_X', "[( B+ ==> K+ (X_1(3872) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+
+        mcB_K_Ks = self.mcselect(
+            'mcB_K_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K_1(1270)+  => (K*(892)0 => K+ pi-) pi+) )]CC")
+
+        mcB_K_rho = self.mcselect(
+            'mcB_K_rho', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K_1(1270)+  => (rho(770)0 => pi+ pi-) K+) )]CC")
+
+        mcB_K_K0s = self.mcselect(
+            'mcB_K_K0s', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K_1(1270)+  => (K*_0(1430)0 => K+ pi-) pi+) )]CC")
+
+
+        sizes = [
+            ("psi", mcB_psi.size()),
+            ("X", mcB_X.size()),
+            ("K_Ks", mcB_K_Ks.size()),
+            ("K_rho", mcB_K_rho.size()),
+            ("K_K0s", mcB_K_K0s.size()),
+        ]
+
+        nt_sizes = self.nTuple("sizes")
+
+        for name, size in sizes:
+            nt_sizes.column('mcB_' + name, size)
+        
+        nt_sizes.write()
+
+
+        if mcB.size() != 1 or sum([x[1] for x in sizes]) != 1:
+            return self.Warning("Something wrong with MC size " + str(mcB.size()), SUCCESS)
+
 
         mcK = self.mcselect(
-            "mcK",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  pi- pi+ )]CC")
+            "mcK",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  pi- pi+ )]CC")
         mcPi = self.mcselect(
-            "mcPi",  "[( Beauty ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  ^pi- ^pi+ )]CC")
+            "mcPi",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  ^pi- ^pi+ )]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( Beauty ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  pi- pi+ )]CC")
+            "mcMu", "[( B+ ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  pi- pi+ )]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( Beauty ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  pi- pi+ )]CC")
+            "mcPsi", "[( B+ ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  pi- pi+ )]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
 
         match = self.mcTruth()
         trueB = MCTRUTH(match, mcB)
+        true_mcB_psi(match, mcB_psi)
+        true_mcB_X(match, mcB_X)
+        true_mcB_K_Ks(match, mcB_K_Ks)
+        true_mcB_K_rho(match, mcB_K_rho)
+        true_mcB_K_K0s(match, mcB_K_K0s)
+
+
         trueK = MCTRUTH(match, mcK)
         truePi = MCTRUTH(match, mcPi)
         truePsi = MCTRUTH(match, mcPsi)
         trueMu = MCTRUTH(match, mcMu)
 
 
-        myB = self.select('Bu' , '[( Beauty ->  J/psi(1S)  K+  pi+  pi-)]CC' )
+        myB = self.select('Bu' , '[( B+ ->  J/psi(1S)  K+  pi+  pi-)]CC' )
 
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
@@ -202,6 +242,11 @@ class MCAnalysisAlgorithm(AlgoMC):
             nt.column('MIPCHI2DV_pi2', MIPCHI2DVfun(pi2))
 
             nt.column ( 'mcTrueB'    , trueB(b)          )
+            nt.column ( 'mcTrueB_psi'   , true_mcB_psi(myb))
+            nt.column ( 'mcTrueB_X'   , true_mcB_X(myb))
+            nt.column ( 'mcTrueB_K_Ks'   , true_mcB_K_Ks(myb))
+            nt.column ( 'mcTrueB_K_rho'   , true_mcB_K_rho(myb))
+            nt.column ( 'mcTrueB_K_K0s'   , true_mcB_K_K0s(myb))
             nt.column ( 'mcTruePsi' , truePsi(jpsi(0)    ))
             nt.column ( 'mcTrueK'    , trueK(myb(2))     )
             nt.column ( 'mcTruePi1'  , truePi(myb(3))    )

@@ -26,6 +26,8 @@ from LoKiTracks.decorators import *  # needed for TrKEY work
 
 import LHCbMath.Types                 ## easy access to various geometry routines
 
+import __builtin__
+
 from LoKiCore.basic import cpp
 
 
@@ -160,7 +162,7 @@ class MCAnalysisAlgorithm(AlgoMC):
         nt_sizes.write()
 
 
-        if mcB.size() != 1 or sum([x[1] for x in sizes]) != 1:
+        if mcB.size() != 1 or __builtin__.sum([x[1] for x in sizes]) != 1:
             return self.Warning("Something wrong with MC size " + str(mcB.size()), SUCCESS)
 
 
@@ -178,11 +180,12 @@ class MCAnalysisAlgorithm(AlgoMC):
 
         match = self.mcTruth()
         trueB = MCTRUTH(match, mcB)
-        true_mcB_psi(match, mcB_psi)
-        true_mcB_X(match, mcB_X)
-        true_mcB_K_Ks(match, mcB_K_Ks)
-        true_mcB_K_rho(match, mcB_K_rho)
-        true_mcB_K_K0s(match, mcB_K_K0s)
+
+        true_mcB_psi = MCTRUTH(match, mcB_psi)
+        true_mcB_X = MCTRUTH(match, mcB_X)
+        true_mcB_K_Ks = MCTRUTH(match, mcB_K_Ks)
+        true_mcB_K_rho = MCTRUTH(match, mcB_K_rho)
+        true_mcB_K_K0s = MCTRUTH(match, mcB_K_K0s)
 
 
         trueK = MCTRUTH(match, mcK)

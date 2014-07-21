@@ -20,15 +20,14 @@ def from_ganga(job_id):
 mc_files = {
     '2011': {
         'Pythia6': from_ganga(587) + from_ganga(588),
-        'Pythia8': from_ganga(585) + from_ganga(586),
+        'Pythia8': from_ganga(598) + from_ganga(599),
     },
 
     '2012': {
         'Pythia6': from_ganga(589) + from_ganga(590),
-        'Pythia8': from_ganga(583) + from_ganga(584),
+        'Pythia8': from_ganga(596) + from_ganga(597),
     }
 }
-
 
 mc_Pythia6 = Data('Bplus/t', mc_files['2011']['Pythia6'] + mc_files['2012']['Pythia6'])
 mc_Pythia8 = Data('Bplus/t', mc_files['2011']['Pythia8'] + mc_files['2012']['Pythia8'])

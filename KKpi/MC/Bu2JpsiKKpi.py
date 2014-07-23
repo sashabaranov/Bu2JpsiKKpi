@@ -114,13 +114,13 @@ class MCAnalysisAlgorithm(AlgoMC):
             'mcB_nonres', "[( B+ =>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
 
         mcB_Ks = self.mcselect(
-            'mcB_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K*(892)~0 -> K- pi+) K+ )]CC")
+            'mcB_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K*(892)~0 => K- pi+) K+ )]CC")
 
-        mcB_f0 = self.mcselect(
-            'mcB_f0', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_0(980) -> K+ K- ) pi+ )]CC")
+        mcB_f0 = self.mcselect( 
+            'mcB_f0', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_0(980) => K+ K- ) pi+ )]CC")
 
         mcB_f2 = self.mcselect(
-            'mcB_f2', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_2(1270) -> K+ K- ) pi+ )]CC")
+            'mcB_f2', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_2(1270) => K+ K- ) pi+ )]CC")
 
 
         nt_sizes = self.nTuple("sizes")

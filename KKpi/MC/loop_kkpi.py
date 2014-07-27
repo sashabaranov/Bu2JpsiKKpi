@@ -6,45 +6,29 @@ __date__ = "  "
 __version__ = "  "
 #=============================================================================
 
-import __builtin__
-
-from math import *
-
 # import everything from BENDER
 from Bender.All import *
+from Gaudi.Configuration import *
 import BenderTools.Fill
 import BenderTools.TisTos
-
-from Gaudi.Configuration import *
 
 # needed for job configuration
 
 # import of the useful units from Gaudi
 from GaudiKernel.SystemOfUnits import GeV, MeV, mm, micrometer
 from GaudiKernel.PhysicalConstants import c_light
+from math import *
 from LoKiTracks.decorators import *  # needed for TrKEY work
 
+
 import LHCbMath.Types                 ## easy access to various geometry routines
+from   Gaudi.Configuration import *   ## needed for job configuration
 
+from   GaudiKernel.SystemOfUnits     import GeV, MeV, mm
+from   GaudiKernel.PhysicalConstants import c_light
+
+import math
 from LoKiCore.basic import cpp
-
-
-class fakeK ( object ) :
-
-    def __init__(self, p, pid) :
-        self.particle = p
-        self.old_pid  = LHCb.ParticleID ( p.particleID() )
-        self.new_pid  = pid
-
-    def __enter__  ( self ) :
-        self.particle.setParticleID ( self.new_pid )
-
-    def __exit__   ( self , *_ ) :
-
-        self.particle.setParticleID ( self.old_pid )
-        self.particle = None
-
-
 
 #=============================================================================
 
@@ -116,50 +100,76 @@ class MCAnalysisAlgorithm(AlgoMC):
         if sc.isFailure () :
             return sc
 
-        self._mass = DTF_FUN ( M , True , 'J/psi(1S)' )
-
         return SUCCESS
 
     def analyse(self):
-        primaries = self.vselect( 'PVs' , ISPRIMARY )
-        if primaries.empty() :
-            return self.Warning('No primary vertices are found', SUCCESS )
+        prims = self.vselect('prims', ISPRIMARY)
+        if prims.empty():
+            return self.Warning("No primary vertices", SUCCESS)
 
-        # B+ -> K+ (psi(2S) -> (J/psi(1S) -> mu+ mu- {,gamma} {,gamma}) pi+ pi-)
         mcB = self.mcselect(
-            'mcB', "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            'mcB', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
 
-        if mcB.size() != 1:
+        mcB_nonres = self.mcselect(
+            'mcB_nonres', "[( B+ =>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
+
+        mcB_Ks = self.mcselect(
+            'mcB_Ks', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (K*(892)~0 => K- pi+) K+ )]CC")
+
+        mcB_f0 = self.mcselect( 
+            'mcB_f0', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_0(980) => K+ K- ) pi+ )]CC")
+
+        mcB_f2 = self.mcselect(
+            'mcB_f2', "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  (f_2(1270) => K+ K- ) pi+ )]CC")
+
+
+        nt_sizes = self.nTuple("sizes")
+
+        nt_sizes.column('mcB', mcB.size())
+        nt_sizes.column('mcB_Ks', mcB_Ks.size())
+        nt_sizes.column('mcB_f0', mcB_f0.size())
+        nt_sizes.column('mcB_f2', mcB_f2.size())
+
+        nt_sizes.write()
+
+
+        if mcB.size() != 1 or ((mcB_nonres.size() + mcB_Ks.size() + mcB_f0.size() + mcB_f2.size()) != 1):
             return self.Warning("Something wrong with MC size " + str(mcB.size()), SUCCESS)
 
+
         mcK = self.mcselect(
-            "mcK",  "[( B+ ==> ^K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            "mcK",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  ^K+  ^K- pi+ )]CC")
         mcPi = self.mcselect(
-            "mcPi",  "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) ^pi+ ^pi-))]CC")
+            "mcPi",  "[( B+ ==>  ( J/psi(1S) =>  mu+  mu-  )  K+  K- ^pi+ )]CC")
         mcMu = self.mcselect(
-            "mcMu", "[( B+ ==> K+ (psi(2S) => ( J/psi(1S) =>  ^mu+  ^mu-  ) pi+ pi-))]CC")
+            "mcMu", "[( B+ ==>  ( J/psi(1S) =>  ^mu+  ^mu-  )  K+  K- pi+ )]CC")
         mcPsi = self.mcselect(
-            "mcPsi", "[( B+ ==> K+ ^(psi(2S) => ( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
-        mcJPsi = self.mcselect(
-            "mcPsi", "[( B+ ==> K+ (psi(2S) => ^( J/psi(1S) =>  mu+  mu-  ) pi+ pi-))]CC")
+            "mcPsi", "[( B+ ==>  ^( J/psi(1S) =>  mu+  mu-  )  K+  K- pi+ )]CC")
 
         if mcK.empty() or mcMu.empty() or mcPsi.empty() or mcPi.empty():
             return self.Warning('No true MC-decay components are found', SUCCESS )
 
+
         match = self.mcTruth()
         trueB = MCTRUTH(match, mcB)
+        trueB_NR = MCTRUTH(match, mcB_nonres)
+        trueB_Ks = MCTRUTH(match, mcB_Ks)
+        trueB_f0 = MCTRUTH(match, mcB_f0)
+        trueB_f2 = MCTRUTH(match, mcB_f2)
+
+
         trueK = MCTRUTH(match, mcK)
         truePi = MCTRUTH(match, mcPi)
         truePsi = MCTRUTH(match, mcPsi)
-        trueJPsi = MCTRUTH(match, mcJPsi)
         trueMu = MCTRUTH(match, mcMu)
 
 
+
         kaons  = self.select ( 'K'  ,  ('K+'  == ABSID) & trueK )
+        kplus  = self.select ( 'K+' ,  kaons , Q > 0 )
+        kminus = self.select ( 'K-' ,  kaons , Q < 0 )
         pions  = self.select ( 'pi'  ,  ('pi+'  == ABSID) & truePi )
-        piplus  = self.select ( 'pi+' ,  pions , Q > 0 )
-        piminus = self.select ( 'pi-' ,  pions , Q < 0 )
-        psis = self.select( "Jpsi", ('J/psi(1S)'  == ABSID) & trueJPsi )
+        psis = self.select( "Jpsi", ('J/psi(1S)'  == ABSID) & truePsi )
 
 
         k_counter = self.counter("k_counter")
@@ -171,24 +181,21 @@ class MCAnalysisAlgorithm(AlgoMC):
         pi_counter += pions.size()
         jpsi_counter += psis.size()
 
-
-
-        
         if kaons.empty():
             return self.Warning("No reconstructed kaons", SUCCESS)  # RETURN
     
-
         if pions.empty():
             return self.Warning("No reconstructed pions", SUCCESS)  # RETURN
         
-        if piplus.empty() or piminus.empty():
-            return self.Warning("Both piplus and piminus are empty", SUCCESS)  # RETURN
+        if kplus.empty() or kminus.empty():
+            return self.Warning("K+/- empty", SUCCESS)  # RETURN
 
         if psis.empty():
             return self.Warning("No reconstructed psis", SUCCESS)  # RETURN
 
-
-        myB = self.loop('Jpsi K pi+ pi-', 'B+')
+        # myB = self.select('Bu' , '[( B+ ->  ( J/psi(1S) ->  mu+  mu-  )  K+  K+  K-)]CC' )
+        # myB = self.select('myB' , '[( B+ ->  J/psi(1S)  K+  K- pi+)]CC' )
+        myB = self.loop('Jpsi pi K+ K-', 'B+')
 
         cut_pi  = ( PT          > 200 * MeV ) & \
                 in_range ( 2          , ETA , 5         ) & \
@@ -216,8 +223,8 @@ class MCAnalysisAlgorithm(AlgoMC):
         for b in myB:
             if not 0 < VCHI2(b) < 100:
                 continue
-            k, pi1, pi2 = b(2), b(3), b(4)
-            if Q(k) > 0:
+            pi, k1, k2 = b(2), b(3), b(4)
+            if Q(pi) > 0:
                 b.setPID("B+")
             else:
                 b.setPID("B-")
@@ -227,9 +234,9 @@ class MCAnalysisAlgorithm(AlgoMC):
             # if not (cut_pi(b(3)) and cut_pi(b(4))):
             #     continue
 
-            if not cut_k(k):
+            if not (cut_k(k1) and cut_k(k1)):
                 continue
-            if not (cut_pi(pi1) and cut_pi(pi2)):
+            if not cut_pi(pi):
                 continue
             # if not cut_b(b):
             #     continue
@@ -240,33 +247,36 @@ class MCAnalysisAlgorithm(AlgoMC):
         b_counter += bb.size()
 
 
-        # myB = self.select('Bu' , '[( B+ ->  J/psi(1S)  K+  pi+  pi-)]CC' )
+        # Minimal impact parameter chi2
+        mipFun = MIP(prims, self.geo())
+        CHI2mipFun = MIPCHI2(prims, self.geo())
+        MIPCHI2DVfun= MIPCHI2DV()
+
+        DLLKpi = PIDK - PIDpi
+        DLLKp = PIDK - PIDp
 
         # Constrains
         dtffun_ctau = DTF_CTAU(0, True)
         dtffun_chi2 = DTF_CHI2NDOF(True, "J/psi(1S)")
         dtffun_m = DTF_FUN(M, True, "J/psi(1S)")
 
+        dtffun_m123 = DTF_FUN(MASS(1, 2, 3), True, "J/psi(1S)")
+        dtffun_m23 = DTF_FUN(M23, True, "J/psi(1S)")
+        dtffun_m34 = DTF_FUN(M34, True, "J/psi(1S)")
+        dtffun_m234 = DTF_FUN(MASS(2, 3, 4), True, "J/psi(1S)")
+
 
         nt = self.nTuple("t")
 
         for myb in bb:
-            
-            if not all(tuple(myb(i) for i in xrange(5))):
+            if not all([myb(i) for i in xrange(0, 5)]):
                 continue
+
+
+            b, jpsi, k1, k2, pi = tuple(myb(i) for i in xrange(5))
 
             if not dtffun_m(myb) / GeV > 5.0:
                 continue
-
-
-            b, jpsi, k, pi1, pi2 = tuple(myb(i) for i in xrange(5))
-
-            # add DTF-applied information
-            nt.column('DTFm_b', dtffun_m(myb) / GeV)
-            nt.column('DTFctau', dtffun_ctau(myb))
-            nt.column('DTFchi2ndof', dtffun_chi2(myb))
-
-            MIPCHI2DVfun = MIPCHI2DV()
 
             self.treatKine(nt, b, '_b')
             self.treatKine(nt, jpsi, '_jpsi')
@@ -277,32 +287,19 @@ class MCAnalysisAlgorithm(AlgoMC):
             self.treatMuons(nt, b)
             self.treatTracks(nt, b)
 
+            # add DTF-applied information
+            nt.column('DTFctau', dtffun_ctau(myb))
+            nt.column('DTFchi2ndof', dtffun_chi2(myb))
+            nt.column('DTFm_b', dtffun_m(myb) / GeV)
 
-            # ==========================================
-            # Do fake
-            # ==========================================
-            nt.column('mass', self._mass ( b )  / GeV )
+            nt.column('DTFm_jpsikk', dtffun_m123(myb) / GeV)
+            nt.column('DTFm_kk', dtffun_m23(myb) / GeV)
+            nt.column('DTFm_kpi', dtffun_m34(myb) / GeV)
+            nt.column('DTFm_kkpi', dtffun_m234(myb) / GeV)
 
-            ## try with pi1->K
-            with fakeK ( pi1, pid = LHCb.ParticleID( int(Q(pi1)) * 321 ) ) :
-                nt.column ( 'mass_pi1ask' , self._mass ( b ) / GeV )
-
-            self.fillMasses(nt, myb, "c2", True, "J/psi(1S)")
-
-            nt.column('MIPCHI2DV_k', MIPCHI2DVfun(k))
-            nt.column('MIPCHI2DV_pi1', MIPCHI2DVfun(pi1))
-            nt.column('MIPCHI2DV_pi2', MIPCHI2DVfun(pi2))
-
-            nt.column('mcTrueB'   , trueB(b))
-            nt.column('mcTruePsi' , trueJPsi(jpsi(0)))
-            nt.column('mcTrueK'   , trueK(k))
-            nt.column('mcTruePi1' , truePi(pi1))
-            nt.column('mcTruePi2' , truePi(pi2))
-
-            nt.column ( 'mcTrueMu1'  , trueMu(jpsi(1))    )
-            nt.column ( 'mcTrueMu2'  , trueMu(jpsi(2))    )
-
-
+            nt.column('MIPCHI2DV_k1', MIPCHI2DVfun(k1))
+            nt.column('MIPCHI2DV_k2', MIPCHI2DVfun(k2))
+            nt.column('MIPCHI2DV_pi', MIPCHI2DVfun(pi))
 
             # add the information needed for TisTos
             self.tisTos ( jpsi  , nt  , 'psi_' ,
@@ -317,6 +314,23 @@ class MCAnalysisAlgorithm(AlgoMC):
             self.tisTos ( jpsi  , nt  , 'psi3_' ,
                           self.lines [ 'psi3' ] , self.l0tistos , self.l1tistos , self.l2tistos )
 
+
+            nt.column('mcTrueB', trueB(myb))
+            nt.column('mcTrueB_NR', trueB_NR(myb))
+            nt.column('mcTrueB_Ks', trueB_Ks(myb))
+            nt.column('mcTrueB_f0', trueB_f0(myb))
+            nt.column('mcTrueB_f2', trueB_f2(myb))
+
+
+            nt.column('mcTruePsi', truePsi(jpsi))
+            nt.column('mcTrueK1', trueK(k1))
+            nt.column('mcTrueK2', trueK(k2))
+            nt.column('mcTruePi', truePi(pi))
+
+            nt.column('mcTrueMu1', trueMu(jpsi(1)))
+            nt.column('mcTrueMu2', trueMu(jpsi(2)))
+
+
             nt.write()
 
         return SUCCESS
@@ -325,8 +339,6 @@ class MCAnalysisAlgorithm(AlgoMC):
     def finalize(self):
         self.fill_finalize()
         self.tisTos_finalize ()
-
-        self._mass = None
         return AlgoMC.finalize(self)
 
 # =============================================================================
@@ -445,8 +457,6 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
             HLT_PASS_RE('Stripping.*FullDSTDiMuonJpsi2MuMuDetachedLine.*')
         """
     )
-
-
     davinci = DaVinci(
         EventPreFilters = fltrs.filters('WG'),
         InputType     = 'DST'    ,
@@ -458,7 +468,7 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
         DDDBtag = params['DDDB'],
         CondDBtag = params['SIMCOND'],
         # HistogramFile = 'DVHistos.root' ,
-        TupleFile     = 'output_psi2s.root' ,
+        TupleFile     = 'DVNtuples.root' ,
     )
 
     from Configurables import GaudiSequencer
@@ -507,8 +517,8 @@ if __name__ == '__main__':
     print ' Date    : %s ' % __date__
     print '*' * 120
 
-    inputdata = ['/lhcb/MC/2012/ALLSTREAMS.DST/00037107/0000/00037107_00000025_1.allstreams.dst']
-    test_params = {'DDDB': 'dddb-20130929-1', 'Mode': 'B+ -> psi(2S) K', 'SIMCOND': 'sim-20130522-1-vc-mu100', 'Year': '2012'}
+    inputdata = ['/lhcb/MC/2012/ALLSTREAMS.DST/00030439/0000/00030439_00000024_1.allstreams.dst']
+    test_params = {'DDDB': 'Sim08-20130503-1', 'Mode': 'B+ -> J/psi K+ K- pi+', 'SIMCOND': 'Sim08-20130503-1-vc-md100', 'Year': '2012'}
 
     configure(inputdata, params=test_params, castor=True)
 

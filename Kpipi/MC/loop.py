@@ -228,14 +228,18 @@ class MCAnalysisAlgorithm(AlgoMC):
         # myB = self.select('Bu' , '[( B+ ->  J/psi(1S)  K+  pi+  pi-)]CC' )
         myB = self.loop('Jpsi K pi+ pi-', 'B+')
 
-        cut_pi = ( CLONEDIST   > 5000      ) & \
-                ( TRGHOSTPROB < 0.5       ) & \
-                ( TRCHI2DOF   < 4         ) & \
+
+
+        cut_pi  = ( PT          > 200 * MeV ) & \
                 in_range ( 2          , ETA , 5         ) & \
                 in_range ( 3.2 * GeV  , P   , 150 * GeV ) & \
-                HASRICH                     & \
-                ( PROBNNpi     > 0.1      ) & \
                 ( MIPCHI2DV()  > 4        )
+
+                # ( PROBNNpi     > 0.1      ) & \
+                # ( CLONEDIST   > 5000      ) & \
+                # ( TRGHOSTPROB < 0.5       ) & \
+                # ( TRCHI2DOF   < 4         ) & \
+                # HASRICH                     #& \
         
         cut_k = ( PT          > 200 * MeV ) & \
                 ( CLONEDIST   > 5000      ) & \
@@ -247,19 +251,28 @@ class MCAnalysisAlgorithm(AlgoMC):
                 ( PROBNNk      > 0.1      ) & \
                 ( MIPCHI2DV()  > 4        )
 
+        cut_b = VFASPF(VCHI2PDOF) < 12 #& \
+                #(CTAU > (75 * micrometer))
+
         for b in myB:
             if not 0 < VCHI2(b) < 100:
                 continue
-            k = b(2)
+            k, pi1, pi2 = b(2), b(3), b(4)
             if Q(k) > 0:
                 b.setPID("B+")
             else:
                 b.setPID("B-")
+            if not trueB(b):
+                continue
 
             # if not (cut_pi(b(3)) and cut_pi(b(4))):
             #     continue
 
-            # if not cut_k(k):
+            if not cut_k(k):
+                continue
+            if not (cut_pi(pi1) and cut_pi(pi2)):
+                continue
+            # if not cut_b(b):
             #     continue
 
             b.save("BB")
@@ -469,8 +482,15 @@ def configure(datafiles, catalogs=[], params={}, castor=False):
     psi3k      = SelectionSequence ( 'Psi3K'       , builder.psi_3K   () )
     psi3kpi    = SelectionSequence ( 'Psi3Kpi'     , builder.psi_3Kpi () )
 
+    from PhysConf.Filters import LoKi_Filters
+    fltrs   = LoKi_Filters (
+        STRIP_Code = """
+            HLT_PASS_RE('Stripping.*FullDSTDiMuonJpsi2MuMuDetachedLine.*')
+        """
+    )
 
     davinci = DaVinci(
+        EventPreFilters = fltrs.filters('WG'),
         InputType     = 'DST'    ,
         Simulation    = True     ,
         PrintFreq     = 1000     ,
